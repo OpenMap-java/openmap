@@ -56,6 +56,7 @@ import com.bbn.openmap.util.Debug;
  * will be added, but if more than one per type is added, the last one added to
  * be BeanContext will be the one hooked up to this LayersMenu.
  */
+@SuppressWarnings("serial")
 public class LayersMenu extends AbstractOpenMapMenu implements Serializable, LayerListener {
 
 	/**
@@ -334,6 +335,11 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable, Lay
 			this.setText(layer.getName());
 			setState(layer.isVisible());
 
+			Object tooltip = layer.getAttribute(Layer.ToolTipProperty);
+			if (tooltip != null) {
+				this.setToolTipText(tooltip.toString());
+			}
+			
 			this.addActionListener(this);
 			layer.addComponentListener(this);
 		}

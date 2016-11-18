@@ -92,7 +92,7 @@ public class BoundaryCrossing {
      * @param regions An ExtentIndex filled with GeoRegions.
      * @return BoundaryCrossing.Collector
      */
-    public static Collector getCrossings(GeoPath path, Collection regions) {
+    public static Collector getCrossings(GeoPath path, Collection<GeoExtent> regions) {
         Collector collector = new Collector();
         CrossingIntersection crossings = new CrossingIntersection(collector);
         crossings.consider(path, regions);
@@ -105,10 +105,10 @@ public class BoundaryCrossing {
      * 
      * @author dietrick
      */
-    public static class Collector extends MatchCollector.SetMatchCollector {
+    public static class Collector extends MatchCollector.SetMatchCollector<GeoExtent> {
 
-        List crossings = new ArrayList(10);
-        List lastSegmentCrossingList;
+        List<BoundaryCrossing> crossings = new ArrayList<BoundaryCrossing>(10);
+        List<BoundaryCrossing> lastSegmentCrossingList;
         Geo lastSegmentStartingPoint;
 
         public Collector() {}
@@ -134,7 +134,7 @@ public class BoundaryCrossing {
          * @param segment GeoSegment
          * @param region GeoRegion
          */
-        protected void addCrossing(Collection c, GeoSegment segment,
+        protected void addCrossing(Collection<Geo> c, GeoSegment segment,
                                    GeoRegion region) {
 
             // We need to get all the BorderCrossings from the current
@@ -154,13 +154,13 @@ public class BoundaryCrossing {
                 crossings.addAll(lastSegmentCrossingList);
                 lastSegmentCrossingList.clear();
             } else if (lastSegmentCrossingList == null) {
-                lastSegmentCrossingList = new ArrayList(10);
+                lastSegmentCrossingList = new ArrayList<BoundaryCrossing>(10);
             }
 
             // The ordered list is for temporarily holding points for
             // the current segment as they are placed in the right
             // order.
-            LinkedList orderedList = new LinkedList();
+            LinkedList<BoundaryCrossing> orderedList = new LinkedList<BoundaryCrossing>();
             // Everything in the lastSegmentCrossingList has already
             // be ordered relative to what's already been searched, so
             // we can just add them now to place the new points around
@@ -173,8 +173,7 @@ public class BoundaryCrossing {
             // ready for the next cycle.
             lastSegmentCrossingList.clear();
 
-            for (Iterator it = c.iterator(); it.hasNext();) {
-                Geo current = (Geo) it.next();
+            for (Geo current : c) {
                 double curDist = start.distance(current);
                 // We just assume that crossing point is going into
                 // the current region, we'll check later to make sure.
@@ -182,14 +181,12 @@ public class BoundaryCrossing {
 
                 int lastCheckedIndex = 0;
                 BoundaryCrossing lastChecked = null;
-
-                for (Iterator it2 = orderedList.iterator(); it2.hasNext(); lastCheckedIndex++) {
-                    lastChecked = (BoundaryCrossing) it2.next();
-                    if (curDist < start.distance(lastChecked.geo)) {
+                for (BoundaryCrossing bcToBeChecked : orderedList) {
+                    if (curDist < start.distance(bcToBeChecked.geo)) {
+                    	lastChecked = bcToBeChecked;
                         break;
-                    } else {
-                        lastChecked = null;
                     }
+                    lastCheckedIndex++;
                 }
 
                 if (lastChecked != null) {
@@ -201,9 +198,7 @@ public class BoundaryCrossing {
 
             boolean goinin = !Intersection.isPointInPolygon(start,
                     region.getPoints());
-            for (Iterator it = orderedList.iterator(); it.hasNext();) {
-                BoundaryCrossing bc = (BoundaryCrossing) it.next();
-
+            for (BoundaryCrossing bc : orderedList) {
                 boolean sameRegion = (bc.in == region);
 
                 if (sameRegion) {
@@ -239,7 +234,7 @@ public class BoundaryCrossing {
             }
 
             Object[] bc = crossings.toArray();
-            crossings = new ArrayList(bc.length);
+            crossings = new ArrayList<BoundaryCrossing>(bc.length);
 
             BoundaryCrossing current, previous = null;
 
@@ -276,7 +271,7 @@ public class BoundaryCrossing {
             }
         }
 
-        public Iterator getCrossings() {
+        public Iterator<BoundaryCrossing> getCrossings() {
             compact();
             return crossings.iterator();
         }
@@ -303,7 +298,7 @@ public class BoundaryCrossing {
          */
         public boolean considerSegmentXRegion(GeoSegment segment,
                                               GeoRegion region) {
-            List hits = Intersection.segmentNearPoly(segment,
+            List<Geo> hits = Intersection.segmentNearPoly(segment,
                     region.getPoints(),
                     0.0);
 

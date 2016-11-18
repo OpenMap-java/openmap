@@ -26,7 +26,6 @@ package com.bbn.openmap.geo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -38,7 +37,7 @@ import java.util.Iterator;
  * 
  * @author mthome@bbn.com
  */
-public interface ExtentIndex extends java.util.Collection {
+public interface ExtentIndex extends java.util.Collection<GeoExtent> {
     /**
      * report on the maximum horizontalRange supported by this index.
      */
@@ -74,14 +73,14 @@ public interface ExtentIndex extends java.util.Collection {
      * generally include, for instance, additional space around the actual
      * segment to accommodate buffer zones around the segment.
      */
-    Iterator iterator(GeoExtent extent);
+    Iterator<GeoExtent> iterator(GeoExtent extent);
 
     /**
      * A basic implementation of ExtentIndex that uses Collection-typed buckets.
      * Extending classes must implement #makeBucket(int) to specify an
      * alternative Collection implementation.
      */
-    abstract class AbstractExtentIndex extends java.util.AbstractCollection
+    abstract class AbstractExtentIndex extends java.util.AbstractCollection<GeoExtent>
             implements ExtentIndex {
 
         /**
@@ -116,17 +115,17 @@ public interface ExtentIndex extends java.util.Collection {
          */
         public final double margin;
 
-        protected final Collection buckets[];
+        protected final Collection<GeoExtent> buckets[];
 
         /** all is a collection of everything successfully indexed. */
-        protected final Collection all;
+        protected final Collection<GeoExtent> all;
         /**
          * polar is a bucket for anything that is near enough to either pole to
          * cover more than 1/2 the buckets.
          */
-        protected final Collection polar;
+        protected final Collection<GeoExtent> polar;
 
-        protected final Collection discarded;
+        protected final Collection<GeoExtent> discarded;
 
         public AbstractExtentIndex() {
             this(D_NBUCKETS, D_MARGIN);
@@ -149,7 +148,7 @@ public interface ExtentIndex extends java.util.Collection {
             discarded = makeBucket();
         }
 
-        protected final Collection makeBucket() {
+        protected final Collection<GeoExtent> makeBucket() {
             return makeBucket(0);
         }
 
@@ -161,14 +160,14 @@ public interface ExtentIndex extends java.util.Collection {
          * @return A Collection instance suitable for use as a bucket
          * 
          */
-        abstract protected Collection makeBucket(int sizeHint);
+        abstract protected Collection<GeoExtent> makeBucket(int sizeHint);
 
         /**
          * Add an object to the index.
          * 
          * @return true if object is a GeoExtent and was added.
          */
-        public boolean add(Object o) {
+        public boolean add(GeoExtent o) {
             if (o instanceof GeoExtent) {
                 return addExtent((GeoExtent) o);
             } else {
@@ -226,7 +225,7 @@ public interface ExtentIndex extends java.util.Collection {
                                 rb += nbuckets;
                             for (int i = lb; i <= rb; i++) {
                                 int x = i % nbuckets;
-                                Collection b = buckets[x];
+                                Collection<GeoExtent> b = buckets[x];
                                 if (b == null) {
                                     b = makeBucket(5);
                                     buckets[x] = b;
@@ -286,7 +285,7 @@ public interface ExtentIndex extends java.util.Collection {
          * @param right right-most (east) bucket value.
          * @return Iterator over regions in buckets that cover range provided.
          */
-        protected Iterator lookup(double left, double right) {
+        protected Iterator<GeoExtent> lookup(double left, double right) {
             return lookup(left, right, null);
         }
 
@@ -302,26 +301,25 @@ public interface ExtentIndex extends java.util.Collection {
          * @return Iterator over regions in buckets that cover range provided
          *         that intersect with the BoundingCircle (if one is provided).
          */
-        protected Iterator lookup(double left, double right, BoundingCircle bc) {
-            Collection s = null;
+        protected Iterator<GeoExtent> lookup(double left, double right, BoundingCircle bc) {
+            Collection<GeoExtent> s = null;
             int lb = bucketFor(left);
             int rb = bucketFor(right);
             if (rb < lb)
                 rb += nbuckets;
             for (int i = lb; i <= rb; i++) {
-                Collection b = buckets[i % nbuckets];
+                Collection<GeoExtent> b = buckets[i % nbuckets];
                 if (b != null) {
                     if (bc == null) {
                         if (s == null) {
-                            s = new HashSet();
+                            s = new HashSet<GeoExtent>();
                         }
                         s.addAll(b);
                     } else {
-                        for (Iterator it = b.iterator(); it.hasNext();) {
-                            GeoExtent region = (GeoExtent) it.next();
+                        for (GeoExtent region : b) {
                             if (bc.intersects(region.getBoundingCircle())) {
                                 if (s == null) {
-                                    s = new HashSet();
+                                    s = new HashSet<GeoExtent>();
                                 }
                                 s.add(region);
                             }
@@ -331,12 +329,12 @@ public interface ExtentIndex extends java.util.Collection {
             }
             if (!polar.isEmpty()) {
                 if (s == null) {
-                    s = new HashSet();
+                    s = new HashSet<GeoExtent>();
                 }
                 s.addAll(polar); // add all the polar regions, just in case
             }
             if (s == null) {
-                return Collections.EMPTY_SET.iterator();
+                return new HashSet<GeoExtent>().iterator();
             } else {
                 return s.iterator();
             }
@@ -385,7 +383,7 @@ public interface ExtentIndex extends java.util.Collection {
                             rb += nbuckets;
                         for (int i = lb; i <= rb; i++) {
                             int x = i % nbuckets;
-                            Collection b = buckets[x];
+                            Collection<GeoExtent> b = buckets[x];
                             if (b != null) {
                                 ret = ret || b.remove(region);
                                 if (b.isEmpty()) {
@@ -422,33 +420,33 @@ public interface ExtentIndex extends java.util.Collection {
             return margin;
         }
 
-        public Iterator lookupBySegment(GeoSegment segment) {
+        public Iterator<GeoExtent> lookupBySegment(GeoSegment segment) {
             Geo[] pts = segment.getSeg();
             double[] lons = normalizeLons(new double[] { pts[0].getLongitude(),
                     pts[1].getLongitude() });
             return lookup(lons[0], lons[1], segment.getBoundingCircle());
         }
 
-        public Iterator lookupByPath(GeoPath path) {
-            Collection results = null;
-            GeoPath.SegmentIterator pit = path.segmentIterator();
+        public Iterator<GeoExtent> lookupByPath(GeoPath path) {
+            Collection<GeoExtent> results = null;
+            Iterator<GeoSegment> pit = path.segmentIterator();
             while (pit.hasNext()) {
-                GeoSegment seg = pit.nextSegment();
-                for (Iterator it = lookupBySegment(seg); it.hasNext();) {
+                GeoSegment seg = pit.next();
+                for (Iterator<GeoExtent> it = lookupBySegment(seg); it.hasNext();) {
                     if (results == null) {
-                        results = new HashSet();
+                        results = new HashSet<GeoExtent>();
                     }
                     results.add(it.next());
                 }
             }
             if (results == null) {
-                return Collections.EMPTY_SET.iterator();
+                return new HashSet<GeoExtent>().iterator();
             } else {
                 return results.iterator();
             }
         }
 
-        public Iterator lookupByBoundingCircle(BoundingCircle bc) {
+        public Iterator<GeoExtent> lookupByBoundingCircle(BoundingCircle bc) {
             double cLon = bc.getCenter().getLongitude();
             double rNM = Geo.nm(bc.getRadius()); // radius in nm at
             // equator
@@ -469,7 +467,7 @@ public interface ExtentIndex extends java.util.Collection {
          * @return an Iterator over BoundingCircle objects in the Collection
          *         where the GExtent may be related to them.
          */
-        public Iterator iterator(GeoExtent o) {
+        public Iterator<GeoExtent> iterator(GeoExtent o) {
             if (o instanceof GeoSegment) {
                 return lookupBySegment((GeoSegment) o);
             } else if (o instanceof GeoRegion) {
@@ -491,7 +489,7 @@ public interface ExtentIndex extends java.util.Collection {
         /**
          * @return Iterator over all entries in Collection.
          */
-        public Iterator iterator() {
+        public Iterator<GeoExtent> iterator() {
             return all.iterator();
         }
 
@@ -510,7 +508,7 @@ public interface ExtentIndex extends java.util.Collection {
             int entc = 0;
             int empties = 0;
             for (int i = 0; i < nbuckets; i++) {
-                Collection l = buckets[i];
+                Collection<GeoExtent> l = buckets[i];
                 if (l != null) {
                     entc += l.size();
                 } else {
@@ -520,7 +518,7 @@ public interface ExtentIndex extends java.util.Collection {
 
             return this.getClass().getName() + "[" + size() + " -"
                     + discarded.size() + " E" + (entc / ((float) nbuckets))
-                    + "]";
+                    + "] e(" + empties + ")";
         }
     }
 
@@ -541,11 +539,11 @@ public interface ExtentIndex extends java.util.Collection {
             super(nb, m);
         }
 
-        protected Collection makeBucket(int sizeHint) {
+        protected Collection<GeoExtent> makeBucket(int sizeHint) {
             if (sizeHint != 0) {
-                return new HashSet();
+                return new HashSet<GeoExtent>();
             } else {
-                return new HashSet(sizeHint);
+                return new HashSet<GeoExtent>(sizeHint);
             }
         }
     }
@@ -567,11 +565,11 @@ public interface ExtentIndex extends java.util.Collection {
             super(nb, m);
         }
 
-        protected Collection makeBucket(int sizeHint) {
+        protected Collection<GeoExtent> makeBucket(int sizeHint) {
             if (sizeHint != 0) {
-                return new ArrayList();
+                return new ArrayList<GeoExtent>();
             } else {
-                return new ArrayList(sizeHint);
+                return new ArrayList<GeoExtent>(sizeHint);
             }
         }
     }

@@ -13,6 +13,8 @@
 
 package com.bbn.openmap.geo;
 
+import java.util.Iterator;
+
 /**
  * An abstraction of an arbitrary geographic path. A path is assumed to mean a
  * chain of points that although it may share a common starting and end point,
@@ -22,10 +24,10 @@ package com.bbn.openmap.geo;
  */
 public interface GeoPath extends GeoExtent {
     /** @return an iterator over the segments of the path * */
-    GeoPath.SegmentIterator segmentIterator();
+    Iterator<GeoSegment> segmentIterator();
 
     /** @return an iterator over the points of the path * */
-    GeoPath.PointIterator pointIterator();
+    Iterator<GeoPoint> pointIterator();
 
     /** Does the segment s come within epsilon (in radians) of us? */
     boolean isSegmentNear(GeoSegment s, double epsilon);
@@ -44,46 +46,6 @@ public interface GeoPath extends GeoExtent {
      * @return the number of points in the path.
      */
     int length();
-
-    interface SegmentIterator extends java.util.Iterator {
-        /** Asking if there is another segment. * */
-        boolean hasNext();
-
-        /**
-         * standard implementation of Iterator.next() returns the same value as
-         * nextSegment(), albeit needing casting to GSegment.
-         */
-        Object next();
-
-        /**
-         * Advance to the next pegment. Some implementations will also implement
-         * GSegment, so that #next() returns the iterator instance itself, but
-         * this should not be depended on.
-         * 
-         * @return the next GSegment
-         */
-        GeoSegment nextSegment();
-    }
-
-    interface PointIterator extends java.util.Iterator {
-        /** Asking if is there another point. * */
-        boolean hasNext();
-
-        /**
-         * standard implementation of Iterator.next() returns the same value as
-         * nextPoint(), albeit needing casting to GPoint.
-         */
-        Object next();
-
-        /**
-         * Advance to the next point. Some implementations will also implement
-         * GPoint, so that #next() returns the iterator instance itself, but
-         * this should not be depended on.
-         * 
-         * @return the next GPoint
-         */
-        GeoPoint nextPoint();
-    }
 
     /**
      * An implementation of Path that takes an alternating lat/lon array and
@@ -184,11 +146,11 @@ public interface GeoPath extends GeoExtent {
             return length;
         }
 
-        public GeoPath.SegmentIterator segmentIterator() {
+        public Iterator<GeoSegment> segmentIterator() {
             return new SegIt();
         }
 
-        public GeoPath.PointIterator pointIterator() {
+        public Iterator<GeoPoint> pointIterator() {
             return new PointIt();
         }
 
@@ -216,7 +178,7 @@ public interface GeoPath extends GeoExtent {
             return new Integer(i);
         }
 
-        protected class SegIt implements GeoPath.SegmentIterator, GeoSegment {
+        protected class SegIt implements Iterator<GeoSegment>, GeoSegment {
             int i = -1;
             Geo[] seg = new Geo[] { new Geo(), new Geo() };
 
@@ -234,7 +196,7 @@ public interface GeoPath extends GeoExtent {
                 return i < (length - 2);
             }
 
-            public Object next() {
+            public GeoSegment next() {
                 return nextSegment();
             }
 
@@ -262,7 +224,7 @@ public interface GeoPath extends GeoExtent {
             }
 
             /**
-             * @return the current segment as a float[]. The first point is the
+             * @return the current segment as a double[]. The first point is the
              *         "current point" and the second is the next. TODO If there
              *         isn't another point available, will throw an
              *         indexOutOfBounds exception.
@@ -293,7 +255,7 @@ public interface GeoPath extends GeoExtent {
 
         }
 
-        protected class PointIt implements GeoPath.PointIterator, GeoPoint {
+        protected class PointIt implements Iterator<GeoPoint>, GeoPoint {
             int i = -1;
             Geo pt = new Geo();
 
@@ -304,11 +266,7 @@ public interface GeoPath extends GeoExtent {
                 // nextPoint.
             }
 
-            public Object next() {
-                return nextPoint();
-            }
-
-            public GeoPoint nextPoint() {
+            public GeoPoint next() {
                 i++;
                 return this;
             }

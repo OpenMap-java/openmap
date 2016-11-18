@@ -38,6 +38,7 @@ import com.bbn.openmap.util.MoreMath;
  * @author Michael Thome
  * @version $Revision: 1.30 $ on $Date: 2007/02/13 20:02:14 $
  */
+@SuppressWarnings("serial")
 public class Geo implements Serializable {
 
     /***************************************************************************

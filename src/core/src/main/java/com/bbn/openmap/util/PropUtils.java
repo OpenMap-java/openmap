@@ -609,12 +609,12 @@ public class PropUtils {
      * 
      * @param p properties
      * @param propName the name of the property
-     * @param dfault color to use if the property value doesn't work
-     * @return java.awt.Color
+     * @param dfault color or paint to use if the property value doesn't work
+     * @return object of type of the default
      * @see ColorFactory#parseColorFromProperties(Properties, String, String,
      *      boolean)
      */
-    public static Paint parseColorFromProperties(Properties p, String propName, Paint dfault) {
+    public static <T extends Paint> T parseColorFromProperties(Properties p, String propName, T dfault) {
         return ColorFactory.parseColorFromProperties(p, propName, dfault);
     }
 

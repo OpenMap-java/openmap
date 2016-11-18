@@ -114,15 +114,16 @@ public class ColorFactory {
 	 * @param propName
 	 *            the name of the property
 	 * @param dfault
-	 *            color to use if the property value doesn't work
-	 * @return java.awt.Color
+	 *            color or paint to use if the property value doesn't work
+	 * @return something of T
 	 * @see #parseColor(String, boolean)
 	 */
-	public static Paint parseColorFromProperties(Properties p, String propName, Paint dfault) {
+	@SuppressWarnings("unchecked")
+	public static <T extends Paint> T parseColorFromProperties(Properties p, String propName, T dfault) {
 		try {
 			String colorString = p.getProperty(propName);
 			if (colorString != null) {
-				return parseColor(colorString, true);
+				return (T) parseColor(colorString, true);
 			}
 		} catch (NumberFormatException nfe) {
 		}

@@ -29,6 +29,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.omGraphics.OMPoint;
@@ -47,6 +48,7 @@ import com.bbn.openmap.util.MoreMath;
  * 
  * @author dietrick
  */
+@SuppressWarnings("serial")
 public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
     protected GeoExtent extent;
@@ -330,11 +332,11 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             return ((GeoPath) getExtent()).length();
         }
 
-        public PointIterator pointIterator() {
+        public Iterator<GeoPoint> pointIterator() {
             return ((GeoPath) getExtent()).pointIterator();
         }
 
-        public SegmentIterator segmentIterator() {
+        public Iterator<GeoSegment> segmentIterator() {
             return ((GeoPath) getExtent()).segmentIterator();
         }
     }

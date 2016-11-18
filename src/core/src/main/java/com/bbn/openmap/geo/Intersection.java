@@ -34,7 +34,7 @@ import java.util.List;
 public class Intersection {
 
     protected final MatchFilter filter;
-    protected final MatchCollector collector;
+    protected final MatchCollector<GeoExtent> collector;
 
     /**
      * Create an Intersection class that will use the provided MatchFilter and
@@ -43,7 +43,7 @@ public class Intersection {
      * @param filter
      * @param collector
      */
-    public Intersection(MatchFilter filter, MatchCollector collector) {
+    public Intersection(MatchFilter filter, MatchCollector<GeoExtent> collector) {
         this.filter = filter;
         this.collector = collector;
     }
@@ -54,7 +54,7 @@ public class Intersection {
      * MatchCollector.SetMatchCollector.
      */
     public static Intersection intersector() {
-        return new Intersection(new MatchFilter.MatchParametersMF(MatchParameters.STRICT), new MatchCollector.SetMatchCollector());
+        return new Intersection(new MatchFilter.MatchParametersMF(MatchParameters.STRICT), new MatchCollector.SetMatchCollector<GeoExtent>());
     }
 
     /**
@@ -63,7 +63,7 @@ public class Intersection {
      * MatchCollector.SetMatchCollector.
      */
     public static Intersection intersector(MatchParameters params) {
-        return new Intersection(new MatchFilter.MatchParametersMF(params), new MatchCollector.SetMatchCollector());
+        return new Intersection(new MatchFilter.MatchParametersMF(params), new MatchCollector.SetMatchCollector<GeoExtent>());
 
     }
 
@@ -72,15 +72,15 @@ public class Intersection {
      * MatchFilter.MatchParameters class with provided settings, and a
      * MatchCollector.CollectionMatchCollector with the provided collector.
      */
-    public static Intersection intersector(MatchParameters params, final Collection c) {
-        return new Intersection(new MatchFilter.MatchParametersMF(params), new MatchCollector.CollectionMatchCollector(c));
+    public static Intersection intersector(MatchParameters params, final Collection<GeoExtent> c) {
+        return new Intersection(new MatchFilter.MatchParametersMF(params), new MatchCollector.CollectionMatchCollector<GeoExtent>(c));
     }
 
     /**
      * Create an Intersection class that will use the provided MatchFilter class
      * and the provided MatchCollector.
      */
-    public static Intersection intersector(MatchFilter filter, MatchCollector collector) {
+    public static Intersection intersector(MatchFilter filter, MatchCollector<GeoExtent> collector) {
         return new Intersection(filter, collector);
     }
 
@@ -90,7 +90,7 @@ public class Intersection {
      * 
      * @return MatchCollector that can be used to retrieve intersection results.
      */
-    public MatchCollector getCollector() {
+    public MatchCollector<GeoExtent> getCollector() {
         return collector;
     }
 
@@ -112,14 +112,15 @@ public class Intersection {
      * @param a A GeoExtent object, generally.
      * @param b A ExtentImpl object or GeoExtent object, generally.
      */
+    @SuppressWarnings("unchecked")
     public void consider(Object a, Object b) {
-        if (b instanceof Collection) {
+        if (b instanceof Collection<?>) {
             if (a instanceof GeoRegion) {
-                considerRegionXRegions((GeoRegion) a, (Collection) b);
+                considerRegionXRegions((GeoRegion) a, (Collection<GeoExtent>) b);
             } else if (a instanceof GeoPath) {
-                considerPathXRegions((GeoPath) a, (Collection) b);
+                considerPathXRegions((GeoPath) a, (Collection<GeoExtent>) b);
             } else if (a instanceof GeoPoint) {
-                considerPointXRegions((GeoPoint) a, (Collection) b);
+                considerPointXRegions((GeoPoint) a, (Collection<GeoExtent>) b);
             }
         } else if (b instanceof GeoRegion) {
             if (a instanceof GeoRegion) {
@@ -139,13 +140,13 @@ public class Intersection {
      * @param r the region in question
      * @param regions a Collection of GeoRegions.
      */
-    public void considerRegionXRegions(GeoRegion r, Collection regions) {
+    public void considerRegionXRegions(GeoRegion r, Collection<GeoExtent> regions) {
 
         /*
          * since the path is closed we'll check the region index for the whole
          * thing instead of segment-by-segment
          */
-        Iterator possibles;
+        Iterator<GeoExtent> possibles;
 
         if (regions instanceof ExtentIndex) {
             // if we've got an index, narrow the set down
@@ -155,7 +156,7 @@ public class Intersection {
         }
 
         while (possibles.hasNext()) {
-            GeoExtent extent = (GeoExtent) possibles.next();
+            GeoExtent extent = possibles.next();
             if (extent instanceof GeoRegion) {
                 considerRegionXRegion(r, (GeoRegion) extent);
             } else if (extent instanceof GeoPath) {
@@ -165,8 +166,8 @@ public class Intersection {
                 // collected
                 // instead of extent. I've inlined the essential body and left
                 // it here
-                for (GeoPath.SegmentIterator pit = ((GeoPath) extent).segmentIterator(); pit.hasNext();) {
-                    GeoSegment seg = pit.nextSegment();
+                for (Iterator<GeoSegment> pit = ((GeoPath) extent).segmentIterator(); pit.hasNext();) {
+                    GeoSegment seg = pit.next();
                     if (filter.preConsider(seg, r) && considerSegmentXRegion(seg, r)) {
                         collector.collect(seg, extent);
                     }
@@ -216,8 +217,8 @@ public class Intersection {
         } else {
             // gotta try harder, so we fall back to segment-by-segment
             // intersections
-            for (GeoPath.SegmentIterator pit = r.segmentIterator(); pit.hasNext();) {
-                GeoSegment seg = pit.nextSegment();
+            for (Iterator<GeoSegment> pit = r.segmentIterator(); pit.hasNext();) {
+                GeoSegment seg = pit.next();
                 if (filter.preConsider(seg, region) && considerSegmentXRegion(seg, region)) {
                     collector.collect(seg, region);
                     // For the default implementation, we just care
@@ -234,14 +235,14 @@ public class Intersection {
      * @param path
      * @param regions
      */
-    public void considerPathXRegions(GeoPath path, Collection regions) {
+    public void considerPathXRegions(GeoPath path, Collection<GeoExtent> regions) {
         /*
          * Since the path is open, then our best bet is to check each segment
          * separately
          */
-        for (GeoPath.SegmentIterator pit = path.segmentIterator(); pit.hasNext();) {
-            GeoSegment seg = pit.nextSegment();
-            Iterator rit;
+        for (Iterator<GeoSegment> pit = path.segmentIterator(); pit.hasNext();) {
+            GeoSegment seg = pit.next();
+            Iterator<GeoExtent> rit;
             if (regions instanceof ExtentIndex) {
                 rit = ((ExtentIndex) regions).iterator(seg);
             } else {
@@ -249,7 +250,7 @@ public class Intersection {
             }
 
             while (rit.hasNext()) {
-                GeoExtent extent = (GeoExtent) rit.next();
+                GeoExtent extent = rit.next();
                 if (filter.preConsider(path, extent)) {
                     if (extent instanceof GeoRegion) {
                         GeoRegion region = (GeoRegion) extent;
@@ -280,8 +281,8 @@ public class Intersection {
      * @param region
      */
     public void considerPathXRegion(GeoPath path, GeoRegion region) {
-        for (GeoPath.SegmentIterator pit = path.segmentIterator(); pit.hasNext();) {
-            GeoSegment seg = pit.nextSegment();
+        for (Iterator<GeoSegment> pit = path.segmentIterator(); pit.hasNext();) {
+            GeoSegment seg = pit.next();
 
             if (filter.preConsider(seg, region) && considerSegmentXRegion(seg, region)) {
                 collector.collect(seg, region);
@@ -311,8 +312,8 @@ public class Intersection {
      * @param p
      * @param regions
      */
-    public void considerPointXRegions(GeoPoint p, Collection regions) {
-        Iterator rit;
+    public void considerPointXRegions(GeoPoint p, Collection<GeoExtent> regions) {
+        Iterator<GeoExtent> rit;
         if (regions instanceof ExtentIndex) {
             rit = ((ExtentIndex) regions).iterator(p);
         } else {
@@ -364,8 +365,8 @@ public class Intersection {
      * @param regions
      * @return an iterator over list of the intersecting regions.
      */
-    public static Iterator intersect(Object path, Object regions) {
-        MatchCollector.SetMatchCollector c = new MatchCollector.SetMatchCollector();
+    public static Iterator<GeoExtent> intersect(Object path, Object regions) {
+        MatchCollector.SetMatchCollector<GeoExtent> c = new MatchCollector.SetMatchCollector<GeoExtent>();
         Intersection ix = new Intersection(new MatchFilter.MatchParametersMF(MatchParameters.STRICT), c);
         ix.consider(path, regions);
         return c.iterator();
