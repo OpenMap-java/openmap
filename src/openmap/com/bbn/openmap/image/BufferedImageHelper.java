@@ -235,7 +235,9 @@ public class BufferedImageHelper {
         String path = url.getPath();
         boolean noAlpha = path.endsWith("jpg") || path.endsWith("jpeg");
 
-        return getBufferedImage(ii, x, y, w, h, !noAlpha);
+        BufferedImage bufferedImage = getBufferedImage(ii, x, y, w, h, !noAlpha);
+        ii.getImage().flush();
+        return bufferedImage;
     }
 
     /**
