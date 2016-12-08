@@ -127,9 +127,8 @@ import com.bbn.openmap.util.Debug;
  * 
  * @see Layer
  */
-public class MapBean extends JComponent implements ComponentListener,
-		ContainerListener, ProjectionListener, PanListener, ZoomListener,
-		LayerListener, CenterListener, SoloMapComponent {
+public class MapBean extends JComponent implements ComponentListener, ContainerListener, ProjectionListener,
+		PanListener, ZoomListener, LayerListener, CenterListener, SoloMapComponent {
 
 	private static Logger logger = Logger.getLogger(MapBean.class.getName());
 
@@ -162,8 +161,7 @@ public class MapBean extends JComponent implements ComponentListener,
 
 	private static boolean DEBUG_THREAD = true;
 
-	private static final String copyrightNotice = "OpenMap(tm) Version "
-			+ version + "\r\n"
+	private static final String copyrightNotice = "OpenMap(tm) Version " + version + "\r\n"
 			+ "  Copyright (C) BBNT Solutions LLC.  All rights reserved.\r\n"
 			+ "  See http://openmap-java.org/ for details.\r\n";
 
@@ -182,11 +180,10 @@ public class MapBean extends JComponent implements ComponentListener,
 
 	protected int minWidth = 100;
 
-	protected Proj projection = new Mercator(new LatLonPoint.Double(
-			DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON), DEFAULT_SCALE,
-			DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	protected Proj projection = new Mercator(new LatLonPoint.Double(DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON),
+			DEFAULT_SCALE, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-	protected ProjectionSupport projectionSupport;
+	protected final ProjectionSupport projectionSupport;
 
 	/**
 	 * Layers that are removed from the MapBean are held until the next
@@ -195,7 +192,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * layer on and off won't cause them to get rid of their resources, in case
 	 * the user is just creating different views of the map.
 	 */
-	protected Vector<Layer> removedLayers = new Vector<Layer>(0);
+	protected final Vector<Layer> removedLayers = new Vector<Layer>(0);
 
 	/**
 	 * Some users may want the layers deleted immediately when they are removed
@@ -210,12 +207,12 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * This vector is to let the layers know when they have been added to the
 	 * map.
 	 */
-	protected Vector<Layer> addedLayers = new Vector<Layer>(0);
+	protected final Vector<Layer> addedLayers = new Vector<Layer>(0);
 
 	/**
 	 * The PaintListeners want to know when the map has been repainted.
 	 */
-	protected PaintListenerSupport painters = null;
+	protected final PaintListenerSupport painters;
 
 	/**
 	 * The background color for this particular MapBean. If null, the setting
@@ -231,7 +228,8 @@ public class MapBean extends JComponent implements ComponentListener,
 	 */
 	protected MapBeanRepaintPolicy repaintPolicy = null;
 	/**
-	 * The MapBeanBackgroundPolicy is used to manipulate/manage the background paint.
+	 * The MapBeanBackgroundPolicy is used to manipulate/manage the background
+	 * paint.
 	 */
 	protected MapBeanBackgroundPolicy backgroundPolicy = null;
 	/**
@@ -240,8 +238,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 */
 	protected double rotationAngle = 0;
 
-	public final static Color DEFAULT_BACKGROUND_COLOR = new Color(191, 239,
-			255);
+	public final static Color DEFAULT_BACKGROUND_COLOR = new Color(191, 239, 255);
 
 	/**
 	 * Return the OpenMap Copyright message.
@@ -277,6 +274,8 @@ public class MapBean extends JComponent implements ComponentListener,
 		addComponentListener(this);
 		addContainerListener(this);
 
+		painters = new PaintListenerSupport(this);
+
 		// ----------------------------------------
 		// In a builder tool it seems that the OverlayLayout
 		// makes the MapBean fail to resize. And since it has
@@ -294,8 +293,7 @@ public class MapBean extends JComponent implements ComponentListener,
 			});
 		}
 
-		setPreferredSize(new Dimension(projection.getWidth(),
-				projection.getHeight()));
+		setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
 
 		DEBUG_TIMESTAMP = logger.isLoggable(Level.FINER);
 		DEBUG_THREAD = logger.isLoggable(Level.FINER);
@@ -319,18 +317,10 @@ public class MapBean extends JComponent implements ComponentListener,
 
 		if (projectionSupport != null) {
 			projectionSupport.dispose();
-			projectionSupport = null;
 		}
 
-		if (painters != null) {
-			painters.clear();
-			painters = null;
-		}
-
-		if (addedLayers != null) {
-			addedLayers.removeAllElements();
-			addedLayers = null;
-		}
+		painters.clear();
+		addedLayers.removeAllElements();
 
 		currentLayers = null;
 		projectionFactory = null;
@@ -351,19 +341,15 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * citizen, and should not be called directly. Use the add() methods
 	 * inherited from java.awt.Container instead.
 	 * 
-	 * @param comp
-	 *            Component
-	 * @param constraints
-	 *            Object
-	 * @param index
-	 *            int location
+	 * @param comp Component
+	 * @param constraints Object
+	 * @param index int location
 	 */
 	protected final void addImpl(Component comp, Object constraints, int index) {
 		if (comp instanceof Layer) {
 			super.addImpl(comp, constraints, index);
 		} else {
-			throw new IllegalArgumentException(
-					"only Layers can be added to a MapBean");
+			throw new IllegalArgumentException("only Layers can be added to a MapBean");
 		}
 	}
 
@@ -417,8 +403,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * Invoked when component has been resized, and kicks off a projection
 	 * change.
 	 * 
-	 * @param e
-	 *            ComponentEvent
+	 * @param e ComponentEvent
 	 */
 	public void componentResized(ComponentEvent e) {
 		if (logger.isLoggable(Level.FINE)) {
@@ -434,8 +419,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * ComponentListener interface method. Should not be called directly.
 	 * Invoked when component has been moved.
 	 * 
-	 * @param e
-	 *            ComponentEvent
+	 * @param e ComponentEvent
 	 */
 	public void componentMoved(ComponentEvent e) {
 	}
@@ -444,8 +428,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * ComponentListener interface method. Should not be called directly.
 	 * Invoked when component has been shown.
 	 * 
-	 * @param e
-	 *            ComponentEvent
+	 * @param e ComponentEvent
 	 */
 	public void componentShown(ComponentEvent e) {
 	}
@@ -454,8 +437,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * ComponentListener interface method. Should not be called directly.
 	 * Invoked when component has been hidden.
 	 * 
-	 * @param e
-	 *            ComponentEvent
+	 * @param e ComponentEvent
 	 */
 	public void componentHidden(ComponentEvent e) {
 	}
@@ -470,19 +452,17 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * the layer when it is added to the MapBean. Use this method for other
 	 * objects that you want to know about the MapBean's projection.
 	 * 
-	 * @param l
-	 *            ProjectionListener
+	 * @param l ProjectionListener
 	 */
 	public synchronized void addProjectionListener(ProjectionListener l) {
 		projectionSupport.add(l);
-		// Assume that it wants the current projection
+
+		// Assume the listener wants the current projection
 		try {
-			l.projectionChanged(new ProjectionEvent(this,
-					getRotatedProjection()));
+			l.projectionChanged(new ProjectionEvent(this, getRotatedProjection()));
 		} catch (Exception e) {
 			if (logger.isLoggable(Level.FINER)) {
-				logger.fine("ProjectionListener not handling projection well: "
-						+ l.getClass().getName() + " : "
+				logger.fine("ProjectionListener not handling projection well: " + l.getClass().getName() + " : "
 						+ e.getClass().getName() + " : " + e.getMessage());
 				e.printStackTrace();
 			}
@@ -496,8 +476,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * for other objects that you want to remove from receiving projection
 	 * events.
 	 * 
-	 * @param l
-	 *            ProjectionListener
+	 * @param l ProjectionListener
 	 */
 	public synchronized void removeProjectionListener(ProjectionListener l) {
 		projectionSupport.remove(l);
@@ -587,8 +566,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * setting, setting it to a <strong>maxscale </strong> or <strong>minscale
 	 * </strong> value.
 	 * 
-	 * @param newScale
-	 *            the new scale
+	 * @param newScale the new scale
 	 * @see Proj#setScale
 	 */
 	public void setScale(float newScale) {
@@ -609,8 +587,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * Sets the center of the map.
 	 * 
-	 * @param newCenter
-	 *            the center point of the map
+	 * @param newCenter the center point of the map
 	 * @see Proj#setCenter(Point2D)
 	 */
 	public void setCenter(Point2D newCenter) {
@@ -621,10 +598,8 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * Sets the center of the map.
 	 * 
-	 * @param lat
-	 *            the latitude of center point of the map in decimal degrees
-	 * @param lon
-	 *            the longitude of center point of the map in decimal degrees
+	 * @param lat the latitude of center point of the map in decimal degrees
+	 * @param lon the longitude of center point of the map in decimal degrees
 	 * @see Proj#setCenter(double, double)
 	 */
 	public void setCenter(double lat, double lon) {
@@ -635,10 +610,8 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * Sets the center of the map.
 	 * 
-	 * @param lat
-	 *            the latitude of center point of the map in decimal degrees
-	 * @param lon
-	 *            the longitude of center point of the map in decimal degrees
+	 * @param lat the latitude of center point of the map in decimal degrees
+	 * @param lon the longitude of center point of the map in decimal degrees
 	 * @see Proj#setCenter(double, double)
 	 */
 	public void setCenter(float lat, float lon) {
@@ -649,8 +622,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * Set the background color of the map. If the background for this MapBean
 	 * is not null, the background of the projection will be used.
 	 * 
-	 * @param color
-	 *            java.awt.Color.
+	 * @param color java.awt.Color.
 	 */
 	public void setBackgroundColor(Color color) {
 		setBackground(color);
@@ -674,8 +646,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * Set the background of the map. If the background for this MapBean is not
 	 * null, the background of the projection will be used.
 	 * 
-	 * @param paint
-	 *            java.awt.Paint.
+	 * @param paint java.awt.Paint.
 	 */
 	public void setBckgrnd(Paint paint) {
 		setBufferDirty(true);
@@ -715,16 +686,16 @@ public class MapBean extends JComponent implements ComponentListener,
 	 */
 	public Paint getBckgrnd() {
 		Paint ret = background;
-		
+
 		MapBeanBackgroundPolicy mbbp = backgroundPolicy;
 		if (mbbp != null) {
 			ret = mbbp.getBckgrnd();
 		}
-		
+
 		if (ret == null) {
 			ret = super.getBackground();
 		}
-		
+
 		return ret;
 	}
 
@@ -744,8 +715,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 */
 	public Projection getRotatedProjection() {
 		RotationHelper rotation = getUpdatedRotHelper();
-		Projection proj = rotation != null ? rotation.getProjection()
-				: projection;
+		Projection proj = rotation != null ? rotation.getProjection() : projection;
 		// Double check
 		((Proj) proj).setRotationAngle(getRotationAngle());
 		return proj;
@@ -754,16 +724,13 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * Set the projection. Shouldn't be null, and won't do anything if it is.
 	 * 
-	 * @param aProjection
-	 *            Projection
+	 * @param aProjection Projection
 	 */
 	public void setProjection(Projection aProjection) {
-		if (aProjection != null
-				&& !aProjection.getProjectionID().contains("NaN")) {
+		if (aProjection != null && !aProjection.getProjectionID().contains("NaN")) {
 			setBufferDirty(true);
 			projection = (Proj) aProjection;
-			setPreferredSize(new Dimension(projection.getWidth(),
-					projection.getHeight()));
+			setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
 			fireProjectionChanged();
 		}
 	}
@@ -775,8 +742,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * Handles incoming <code>CenterEvents</code>.
 	 * 
-	 * @param evt
-	 *            the incoming center event
+	 * @param evt the incoming center event
 	 */
 	public void center(CenterEvent evt) {
 		setCenter(evt.getLatitude(), evt.getLongitude());
@@ -789,8 +755,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * Handles incoming <code>PanEvents</code>.
 	 * 
-	 * @param evt
-	 *            the incoming pan event
+	 * @param evt the incoming pan event
 	 */
 	public void pan(PanEvent evt) {
 		if (logger.isLoggable(Level.FINE)) {
@@ -815,8 +780,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * Zoom the Map. Part of the ZoomListener interface. Sets the scale of the
 	 * MapBean projection, based on a relative or absolute amount.
 	 * 
-	 * @param evt
-	 *            the ZoomEvent describing the new scale.
+	 * @param evt the ZoomEvent describing the new scale.
 	 */
 	public void zoom(ZoomEvent evt) {
 		float newScale;
@@ -843,8 +807,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * of the ContainerListener interface, and it's here to make the MapBean a
 	 * good Container citizen.
 	 * 
-	 * @param value
-	 *            boolean
+	 * @param value boolean
 	 */
 	public void setDoContainerChange(boolean value) {
 		// if changing from false to true, call changeLayers()
@@ -872,8 +835,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * of the ContainerListener interface, and it's here to make the MapBean a
 	 * good Container citizen.
 	 * 
-	 * @param e
-	 *            ContainerEvent
+	 * @param e ContainerEvent
 	 */
 	public void componentAdded(ContainerEvent e) {
 		// Blindly cast. addImpl has already checked to be
@@ -902,8 +864,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * from doing unnecessary work if they are toggled on and off without
 	 * projection changes.
 	 * 
-	 * @param e
-	 *            ContainerEvent
+	 * @param e ContainerEvent
 	 * @see com.bbn.openmap.MapBean#purgeAndNotifyRemovedLayers
 	 */
 	public void componentRemoved(ContainerEvent e) {
@@ -920,8 +881,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * of the ContainerListener interface, and it's here to make the MapBean a
 	 * good Container citizen.
 	 * 
-	 * @param e
-	 *            ContainerEvent
+	 * @param e ContainerEvent
 	 */
 	protected void changeLayers(ContainerEvent e) {
 		// Container Changes can be disabled to speed adding/removing
@@ -955,8 +915,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * ProjectionListener interface method. Should not be called directly.
 	 * 
-	 * @param e
-	 *            ProjectionEvent
+	 * @param e ProjectionEvent
 	 */
 	public void projectionChanged(ProjectionEvent e) {
 		Projection newProj = e.getProjection();
@@ -968,8 +927,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * Set the Mouse cursor over the MapBean component.
 	 * 
-	 * @param newCursor
-	 *            Cursor
+	 * @param newCursor Cursor
 	 */
 	public void setCursor(Cursor newCursor) {
 		firePropertyChange(CursorProperty, this.getCursor(), newCursor);
@@ -983,20 +941,14 @@ public class MapBean extends JComponent implements ComponentListener,
 	 */
 	public void addPropertyChangeListener(PropertyChangeListener pcl) {
 		super.addPropertyChangeListener(pcl);
-		pcl.propertyChange(new PropertyChangeEvent(this, LayersProperty,
-				currentLayers, currentLayers));
-		pcl.propertyChange(new PropertyChangeEvent(this, CursorProperty, this
-				.getCursor(), this.getCursor()));
-		pcl.propertyChange(new PropertyChangeEvent(this, BackgroundProperty,
-				this.getBckgrnd(), this.getBckgrnd()));
+		pcl.propertyChange(new PropertyChangeEvent(this, LayersProperty, currentLayers, currentLayers));
+		pcl.propertyChange(new PropertyChangeEvent(this, CursorProperty, this.getCursor(), this.getCursor()));
+		pcl.propertyChange(new PropertyChangeEvent(this, BackgroundProperty, this.getBckgrnd(), this.getBckgrnd()));
 	}
 
 	protected final void debugmsg(String msg) {
-		logger.fine(this.toString()
-				+ (DEBUG_TIMESTAMP ? (" [" + System.currentTimeMillis() + "]")
-						: "")
-				+ (DEBUG_THREAD ? (" [" + Thread.currentThread() + "]") : "")
-				+ ": " + msg);
+		logger.fine(this.toString() + (DEBUG_TIMESTAMP ? (" [" + System.currentTimeMillis() + "]") : "")
+				+ (DEBUG_THREAD ? (" [" + Thread.currentThread() + "]") : "") + ": " + msg);
 	}
 
 	/**
@@ -1046,12 +998,10 @@ public class MapBean extends JComponent implements ComponentListener,
 		// configure it.
 		RotationHelper rotationHelper = getRotHelper();
 
-		if (painters != null) {
-			if (rotationHelper != null) {
-				rotationHelper.paintPainters(g);
-			} else {
-				painters.paint(g);
-			}
+		if (rotationHelper != null) {
+			rotationHelper.paintPainters(g);
+		} else {
+			painters.paint(g);
 		}
 	}
 
@@ -1079,8 +1029,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * the layers from back to front. No clipping is set, other than what is set
 	 * on the Graphics object.
 	 * 
-	 * @param g
-	 *            Graphics
+	 * @param g Graphics
 	 */
 	protected void paintLayers(Graphics g) {
 		synchronized (getTreeLock()) {
@@ -1125,33 +1074,19 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * Add a PaintListener.
 	 * 
-	 * @param l
-	 *            PaintListener
+	 * @param l PaintListener
 	 */
 	public synchronized void addPaintListener(PaintListener l) {
-		if (painters == null) {
-			painters = new PaintListenerSupport(this);
-		}
 		painters.add(l);
 	}
 
 	/**
 	 * Remove a PaintListener.
 	 * 
-	 * @param l
-	 *            PaintListener
+	 * @param l PaintListener
 	 */
 	public synchronized void removePaintListener(PaintListener l) {
-		if (painters == null) {
-			return;
-		}
 		painters.remove(l);
-
-		// Should we get rid of the support if there are no painters?
-		// The support will get created when a listener is added.
-		if (painters.isEmpty()) {
-			painters = null;
-		}
 	}
 
 	// ------------------------------------------------------------
@@ -1162,8 +1097,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * LayerListener interface method. A list of layers will be added, removed,
 	 * or replaced based on on the type of LayerEvent.
 	 * 
-	 * @param evt
-	 *            a LayerEvent
+	 * @param evt a LayerEvent
 	 */
 	public void setLayers(LayerEvent evt) {
 		setBufferDirty(true);
@@ -1259,8 +1193,7 @@ public class MapBean extends JComponent implements ComponentListener,
 		setBufferDirty(true);
 		if (logger.isLoggable(Level.FINER)) {
 			String name = layer.getName();
-			logger.finer((name == null ? layer.getClass().getName() : name)
-					+ " - wants a repaint()");
+			logger.finer((name == null ? layer.getClass().getName() : name) + " - wants a repaint()");
 		}
 		getMapBeanRepaintPolicy().repaint(layer);
 	}
@@ -1288,6 +1221,7 @@ public class MapBean extends JComponent implements ComponentListener,
 
 	/**
 	 * Get the MapBeanBackgroundPolicy set on this MapBean.
+	 * 
 	 * @return the backgroundPolicy
 	 */
 	public MapBeanBackgroundPolicy getBackgroundPolicy() {
@@ -1367,8 +1301,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * the pixel space of the unrotated maps (the space the projected OMGraphics
 	 * know about).
 	 * 
-	 * @param shape
-	 *            input shape
+	 * @param shape input shape
 	 * @return GeneralPath for transform shape if map is rotated, the input
 	 *         shape if the map is not rotated.
 	 */
@@ -1384,20 +1317,16 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * Checks the rotation set on the MapBean and accounts for it before calling
 	 * inverse on the projection.
 	 * 
-	 * @param x
-	 *            horizontal window pixel from left side
-	 * @param y
-	 *            vertical window pixel from top
-	 * @param ret
-	 *            Point2D object returned with coordinates suitable for
+	 * @param x horizontal window pixel from left side
+	 * @param y vertical window pixel from top
+	 * @param ret Point2D object returned with coordinates suitable for
 	 *            projection where mouse event is.
 	 * @return the provided T ret object, or new Point2D object from projection
 	 *         if ret is null.
 	 */
 	public <T extends Point2D> T inverse(double x, double y, T ret) {
 		RotationHelper rotationHelper = getRotHelper();
-		return (rotationHelper == null) ? getProjection().inverse(x, y, ret)
-				: rotationHelper.inverse(x, y, ret);
+		return (rotationHelper == null) ? getProjection().inverse(x, y, ret) : rotationHelper.inverse(x, y, ret);
 	}
 
 	/**
@@ -1415,8 +1344,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * Interface-like method to set a buffer dirty, if there is one. In MapBean,
 	 * there isn't.
 	 * 
-	 * @param value
-	 *            boolean
+	 * @param value boolean
 	 */
 	public void setBufferDirty(boolean value) {
 	}
@@ -1437,8 +1365,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	 * the layers from releasing resources if the layer is simply being toggled
 	 * on/off for different map views.
 	 * 
-	 * @param set
-	 *            the setting
+	 * @param set the setting
 	 */
 	public void setLayerRemovalDelayed(boolean set) {
 		layerRemovalDelayed = set;
@@ -1539,9 +1466,8 @@ public class MapBean extends JComponent implements ComponentListener,
 	}
 
 	/**
-	 * @param nRotHelper
-	 *            the locRotHelper to set as the current one. Disposes of the
-	 *            old one.
+	 * @param nRotHelper the locRotHelper to set as the current one. Disposes of
+	 *            the old one.
 	 */
 	protected void setRotHelper(RotationHelper nRotHelper) {
 		RotationHelper rotationHelper = this.rotHelper;
@@ -1555,8 +1481,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * Set the rotation of the map in RADIANS.
 	 * 
-	 * @param angle
-	 *            radians of rotation, increasing clockwise.
+	 * @param angle radians of rotation, increasing clockwise.
 	 */
 	public void setRotationAngle(double angle) {
 		setRotationAngle(angle, false);
@@ -1565,11 +1490,9 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * Set the rotation of the map in RADIANS.
 	 * 
-	 * @param angle
-	 *            radians of rotation, increasing clockwise.
-	 * @param fastRotation
-	 *            if true, fireProjectionChange will not be called, and the
-	 *            RotationHelper will be used to spin image buffer.
+	 * @param angle radians of rotation, increasing clockwise.
+	 * @param fastRotation if true, fireProjectionChange will not be called, and
+	 *            the RotationHelper will be used to spin image buffer.
 	 */
 	public void setRotationAngle(double angle, boolean fastRotation) {
 		if (this.rotationAngle != angle) {
@@ -1646,8 +1569,7 @@ public class MapBean extends JComponent implements ComponentListener,
 		 * difference will be 1/2 the difference of the height and width between
 		 * the rot image and the original projection (mapbean dimensions).
 		 * 
-		 * @param proj
-		 *            the projection to use to create the current image buffer
+		 * @param proj the projection to use to create the current image buffer
 		 * @return boolean true if the rotBufferHeight and/or rotBufferWidth
 		 *         have changed, indicating that the image buffer was recreated
 		 *         for new dimensions.
@@ -1665,17 +1587,15 @@ public class MapBean extends JComponent implements ComponentListener,
 			 * Woooooow, we're really going to have to work it, aren't we? We
 			 * need to handle GeoProj differently than Cartesian coords. That
 			 * seems to lend itself to moving this kind of calculations to the
-			 * super classes of the projection classes. *sigh*
-			 * 
-			 * For now, let's try assuming that GeoProj
+			 * super classes of the projection classes. *sigh* For now, let's
+			 * try assuming that GeoProj
 			 */
 			Geo centerGeo = new Geo(center.getY(), center.getX());
 			Geo ulGeo = new Geo(ul.getY(), ul.getX());
 			Geo lrGeo = new Geo(lr.getY(), lr.getX());
 
 			// Comparing the UL and LR corners for distance, get the greatest.
-			double dist = Math.max(centerGeo.distance(ulGeo),
-					centerGeo.distance(lrGeo));
+			double dist = Math.max(centerGeo.distance(ulGeo), centerGeo.distance(lrGeo));
 
 			// Now calculate the bounds of that distance in 4 directions
 			Geo N = Geo.offset(centerGeo, dist, 0);
@@ -1685,20 +1605,16 @@ public class MapBean extends JComponent implements ComponentListener,
 
 			// Calculate the coordinates of new bounds for that distance from
 			// center.
-			Point2D newUL = new Point2D.Double(W.getLongitude(),
-					N.getLatitude());
-			Point2D newLR = new Point2D.Double(E.getLongitude(),
-					S.getLatitude());
+			Point2D newUL = new Point2D.Double(W.getLongitude(), N.getLatitude());
+			Point2D newLR = new Point2D.Double(E.getLongitude(), S.getLatitude());
 
 			// Calculate the pixel bounds of the new bounding box to get new
 			// projection h, w
 			Point2D newULPix = proj.forward(newUL);
 			Point2D newLRPix = proj.forward(newLR);
 
-			int reqRotBufferHeight = (int) Math.abs(newLRPix.getY()
-					- newULPix.getY());
-			int reqRotBufferWidth = (int) Math.abs(newLRPix.getX()
-					- newULPix.getX());
+			int reqRotBufferHeight = (int) Math.abs(newLRPix.getY() - newULPix.getY());
+			int reqRotBufferWidth = (int) Math.abs(newLRPix.getX() - newULPix.getX());
 
 			// If the image is a little bigger than we need, we can reuse. Only
 			// replace it if it is significantly bigger, or at all smaller.
@@ -1710,15 +1626,14 @@ public class MapBean extends JComponent implements ComponentListener,
 			boolean bufferImageResized = false;
 
 			if (needNewHeightImage || needNewWidthImage) {
-				this.rotImage = new BufferedImage(reqRotBufferWidth,
-						reqRotBufferHeight, BufferedImage.TYPE_INT_ARGB);
+				this.rotImage = new BufferedImage(reqRotBufferWidth, reqRotBufferHeight, BufferedImage.TYPE_INT_ARGB);
 				rotBufferWidth = reqRotBufferWidth;
 				rotBufferHeight = reqRotBufferHeight;
 				bufferImageResized = true;
 			}
 
-			rotProjection = projectionFactory.makeProjection(proj.getClass(),
-					center, proj.getScale(), rotBufferWidth, rotBufferHeight);
+			rotProjection = projectionFactory.makeProjection(proj.getClass(), center, proj.getScale(), rotBufferWidth,
+					rotBufferHeight);
 			this.rotCenter = rotProjection.forward(center);
 
 			/*
@@ -1734,13 +1649,11 @@ public class MapBean extends JComponent implements ComponentListener,
 
 		public void updateAngle(double angle) {
 			this.angle = angle;
-			this.rotTransform = AffineTransform.getRotateInstance(angle,
-					rotCenter.getX(), rotCenter.getY());
+			this.rotTransform = AffineTransform.getRotateInstance(angle, rotCenter.getX(), rotCenter.getY());
 		}
 
 		/**
-		 * @param az
-		 *            angle to test against
+		 * @param az angle to test against
 		 * @return true if current angle or new angle is not zero. Two zero
 		 *         angles in a row is an indication that the RotationHelper is
 		 *         no longer needed.
@@ -1773,20 +1686,14 @@ public class MapBean extends JComponent implements ComponentListener,
 		}
 
 		public void paintPainters(Graphics g) {
-			if (painters != null) {
+			Graphics2D g2 = (Graphics2D) g.create();
+			AffineTransform transform = AffineTransform.getTranslateInstance(-rotXOffset + getX(),
+					-rotYOffset + getY());
+			transform.concatenate(rotTransform);
+			g2.setTransform(transform);
 
-				int x = getX();
-				int y = getY();
-				Graphics2D g2 = (Graphics2D) g.create();
-				AffineTransform transform = AffineTransform
-						.getTranslateInstance(-rotXOffset + getX(), -rotYOffset
-								+ getY());
-				transform.concatenate(rotTransform);
-				g2.setTransform(transform);
-
-				painters.paint(g2);
-				g2.dispose();
-			}
+			painters.paint(g2);
+			g2.dispose();
 		}
 
 		/**
@@ -1803,12 +1710,9 @@ public class MapBean extends JComponent implements ComponentListener,
 		 * Performs a projection.inverse operation that also takes into account
 		 * rotation.
 		 * 
-		 * @param x
-		 *            pixel x
-		 * @param y
-		 *            pixel y
-		 * @param ret
-		 *            T in the coordinate space of projection.
+		 * @param x pixel x
+		 * @param y pixel y
+		 * @param ret T in the coordinate space of projection.
 		 * @return T, either ret or a new object.
 		 */
 		public <T extends Point2D> T inverse(double x, double y, T ret) {
@@ -1828,15 +1732,13 @@ public class MapBean extends JComponent implements ComponentListener,
 		/**
 		 * Returns dst, the unrotated pixel location of the map.
 		 * 
-		 * @param src
-		 *            the pixel point
+		 * @param src the pixel point
 		 * @param dst
 		 * @return see above.
 		 */
 		public Point2D inverseTransform(Point2D src, Point2D dst) {
 			try {
-				src.setLocation(src.getX() + rotXOffset, src.getY()
-						+ rotYOffset);
+				src.setLocation(src.getX() + rotXOffset, src.getY() + rotYOffset);
 				dst = rotTransform.inverseTransform(src, dst);
 			} catch (NoninvertibleTransformException e) {
 				logger.log(Level.FINE, e.getMessage(), e);
@@ -1848,8 +1750,7 @@ public class MapBean extends JComponent implements ComponentListener,
 		 * Returns a transformed version of the Shape, unrotated into the
 		 * projected pixel space of the layer OMGraphics.
 		 * 
-		 * @param shape
-		 *            to transform
+		 * @param shape to transform
 		 * @return the transformed shape.
 		 */
 		public Shape inverseTransform(Shape shape) {
@@ -1857,8 +1758,7 @@ public class MapBean extends JComponent implements ComponentListener,
 			float[] coords = new float[6];
 			GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
 
-			PathIterator pi = shape
-					.getPathIterator(getInverseRotationTransform());
+			PathIterator pi = shape.getPathIterator(getInverseRotationTransform());
 			while (!pi.isDone()) {
 				int type = pi.currentSegment(coords);
 
@@ -1872,8 +1772,7 @@ public class MapBean extends JComponent implements ComponentListener,
 					if (type == PathIterator.SEG_QUADTO) {
 						path.quadTo(coords[0], coords[1], coords[2], coords[3]);
 					} else if (type == PathIterator.SEG_CUBICTO) {
-						path.curveTo(coords[0], coords[1], coords[2],
-								coords[3], coords[4], coords[5]);
+						path.curveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
 					}
 				}
 
@@ -1885,8 +1784,7 @@ public class MapBean extends JComponent implements ComponentListener,
 
 		public AffineTransform getInverseRotationTransform() {
 			try {
-				AffineTransform translateOffset = AffineTransform
-						.getTranslateInstance(rotXOffset, rotYOffset);
+				AffineTransform translateOffset = AffineTransform.getTranslateInstance(rotXOffset, rotYOffset);
 				AffineTransform transform = rotTransform.createInverse();
 				translateOffset.preConcatenate(transform);
 				return translateOffset;
