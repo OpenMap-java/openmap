@@ -28,7 +28,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -59,7 +60,7 @@ import com.bbn.openmap.util.stateMachine.State;
  */
 public class EditableOMPoly extends EditableOMAbstractLine {
 
-    protected ArrayList<GrabPoint> polyGrabPoints;
+    protected List<GrabPoint> polyGrabPoints;
     protected OffsetGrabPoint gpo; // offset
     protected OffsetGrabPoint gpm; // for grabbing the poly and
     // moving
@@ -203,7 +204,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
     public void enclose(boolean e) {
         setEnclosed(e);
 
-        if (polyGrabPoints == null) {
+        if (polyGrabPoints == null || polyGrabPoints.isEmpty()) {
             return;
         }
 
@@ -351,9 +352,9 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         // returned, instead of the duplicate ending point.
         int lastPointIndex = polyGrabPoints.size() - 1;
 
-        if (gb != null && gb == (GrabPoint) polyGrabPoints.get(lastPointIndex) && isEnclosed()) {
+        if (gb != null && gb == polyGrabPoints.get(lastPointIndex) && isEnclosed()) {
 
-            gb = (GrabPoint) polyGrabPoints.get(0);
+            gb = polyGrabPoints.get(0);
             setMovingPoint(gb);
         }
         return gb;
@@ -372,7 +373,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         // it's variable), and make sure everything's OK.
 
         if (polyGrabPoints == null) {
-            polyGrabPoints = new ArrayList<GrabPoint>();
+            polyGrabPoints = new Vector<GrabPoint>();
         }
 
         // At least we know about this one.
@@ -539,7 +540,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                 LatLonPoint movedPoint = new LatLonPoint.Double();
 
                 for (int i = 0; i < polyGrabPoints.size(); i++) {
-                    GrabPoint gb = (GrabPoint) polyGrabPoints.get(i);
+                    GrabPoint gb = polyGrabPoints.get(i);
 
                     int latIndex = i * 2;
                     int lonIndex = i * 2 + 1;
@@ -603,7 +604,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                 GrabPoint previous = gpo;
 
                 for (int i = 0; i < polyGrabPoints.size(); i++) {
-                    GrabPoint gb = (GrabPoint) polyGrabPoints.get(i);
+                    GrabPoint gb = polyGrabPoints.get(i);
 
                     if (poly.coordMode == OMPoly.COORDMODE_PREVIOUS) {
 
@@ -629,7 +630,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
             } else {
 
                 for (int i = 0; i < polyGrabPoints.size(); i++) {
-                    GrabPoint gb = (GrabPoint) polyGrabPoints.get(i);
+                    GrabPoint gb = polyGrabPoints.get(i);
 
                     ints[2 * i] = gb.getX();
                     ints[2 * i + 1] = gb.getY();
@@ -649,7 +650,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
      */
     public int addMovingPoint(int x, int y) {
         int position = addPoint(x, y);
-        setMovingPoint((GrabPoint) polyGrabPoints.get(position));
+        setMovingPoint(polyGrabPoints.get(position));
         return position;
     }
 
@@ -986,7 +987,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         }
 
         // Remove the GrabPoint for the deleted spot.
-        GrabPoint gp = (GrabPoint) polyGrabPoints.remove(position);
+        GrabPoint gp = polyGrabPoints.remove(position);
         if (gpo != null && gp != null) {
             gpo.removeGrabPoint(gp);
         }
@@ -1221,10 +1222,11 @@ public class EditableOMPoly extends EditableOMAbstractLine {
 
     /**
      * Get the array of grab points used for the EditableOMGraphic. Creates the
-     * array by copying all the grab points out of the ArrayList, and tacking
+     * array by copying all the grab points out of the List, and tacking
      * the offset grab point to the end.
      */
     public GrabPoint[] getGrabPoints() {
+    	
         int size = polyGrabPoints.size();
 
         // The second half of the test is the fix to the bug that caused

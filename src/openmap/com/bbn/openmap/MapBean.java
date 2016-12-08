@@ -127,9 +127,9 @@ import com.bbn.openmap.util.Debug;
  * 
  * @see Layer
  */
-public class MapBean extends JComponent implements ComponentListener, ContainerListener,
-        ProjectionListener, PanListener, ZoomListener, LayerListener, CenterListener,
-        SoloMapComponent {
+public class MapBean extends JComponent
+        implements ComponentListener, ContainerListener, ProjectionListener, PanListener,
+        ZoomListener, LayerListener, CenterListener, SoloMapComponent {
 
     private static Logger logger = Logger.getLogger(MapBean.class.getName());
 
@@ -183,7 +183,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
 
     protected Proj projection = new Mercator(new LatLonPoint.Double(DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON), DEFAULT_SCALE, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-    protected ProjectionSupport projectionSupport;
+    protected final ProjectionSupport projectionSupport;
 
     /**
      * Layers that are removed from the MapBean are held until the next
@@ -192,7 +192,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
      * layer on and off won't cause them to get rid of their resources, in case
      * the user is just creating different views of the map.
      */
-    protected Vector<Layer> removedLayers = new Vector<Layer>(0);
+    protected final Vector<Layer> removedLayers = new Vector<Layer>(0);
 
     /**
      * Some users may want the layers deleted immediately when they are removed
@@ -207,12 +207,12 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
      * This vector is to let the layers know when they have been added to the
      * map.
      */
-    protected Vector<Layer> addedLayers = new Vector<Layer>(0);
+    protected final Vector<Layer> addedLayers = new Vector<Layer>(0);
 
     /**
      * The PaintListeners want to know when the map has been repainted.
      */
-    protected PaintListenerSupport painters = null;
+    protected final PaintListenerSupport painters;
 
     /**
      * The background color for this particular MapBean. If null, the setting
@@ -269,6 +269,8 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         addComponentListener(this);
         addContainerListener(this);
 
+        painters = new PaintListenerSupport(this);
+
         // ----------------------------------------
         // In a builder tool it seems that the OverlayLayout
         // makes the MapBean fail to resize. And since it has
@@ -308,20 +310,9 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
     public void dispose() {
         setLayerRemovalDelayed(false);
 
-        if (projectionSupport != null) {
-            projectionSupport.dispose();
-            projectionSupport = null;
-        }
-
-        if (painters != null) {
-            painters.clear();
-            painters = null;
-        }
-
-        if (addedLayers != null) {
-            addedLayers.removeAllElements();
-            addedLayers = null;
-        }
+        projectionSupport.dispose();
+        painters.clear();
+        addedLayers.removeAllElements();
 
         currentLayers = null;
         projectionFactory = null;
@@ -993,12 +984,10 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         // configure it.
         RotationHelper rotationHelper = getRotHelper();
 
-        if (painters != null) {
-            if (rotationHelper != null) {
-                rotationHelper.paintPainters(g);
-            } else {
-                painters.paint(g);
-            }
+        if (rotationHelper != null) {
+            rotationHelper.paintPainters(g);
+        } else {
+            painters.paint(g);
         }
     }
 
@@ -1075,9 +1064,6 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
      * @param l PaintListener
      */
     public synchronized void addPaintListener(PaintListener l) {
-        if (painters == null) {
-            painters = new PaintListenerSupport(this);
-        }
         painters.add(l);
     }
 
@@ -1087,16 +1073,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
      * @param l PaintListener
      */
     public synchronized void removePaintListener(PaintListener l) {
-        if (painters == null) {
-            return;
-        }
         painters.remove(l);
-
-        // Should we get rid of the support if there are no painters?
-        // The support will get created when a listener is added.
-        if (painters.isEmpty()) {
-            painters = null;
-        }
     }
 
     // ------------------------------------------------------------
@@ -1682,10 +1659,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         }
 
         public void paintPainters(Graphics g) {
-            if (painters != null) {
-
-                int x = getX();
-                int y = getY();
+            if (!painters.isEmpty()) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 AffineTransform transform = AffineTransform.getTranslateInstance(-rotXOffset
                         + getX(), -rotYOffset + getY());

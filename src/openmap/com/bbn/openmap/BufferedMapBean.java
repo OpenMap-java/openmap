@@ -166,9 +166,7 @@ public class BufferedMapBean extends MapBean {
                 // without rotation
                 g.drawImage(localDrawingBuffer, 0, 0, null);
 
-                if (painters != null) {
-                    painters.paint(g);
-                }
+                painters.paint(g);
             }
         }
     }
@@ -268,7 +266,7 @@ public class BufferedMapBean extends MapBean {
             }
 
             RotationHelper rotationHelper = getRotHelper();
-            if (rotationHelper == null && painters != null) {
+            if (rotationHelper == null) {
                 painters.paint(g);
             }
         }

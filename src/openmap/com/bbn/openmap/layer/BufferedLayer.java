@@ -630,9 +630,7 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
          */
         public void componentRemoved(ContainerEvent e) {
             super.componentRemoved(e);
-            if (removedLayers != null) {
-                removedLayers.clear();
-            }
+            removedLayers.clear();
         }
     }
 }
