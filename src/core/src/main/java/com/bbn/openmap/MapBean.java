@@ -315,10 +315,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
 	public void dispose() {
 		setLayerRemovalDelayed(false);
 
-		if (projectionSupport != null) {
-			projectionSupport.dispose();
-		}
-
+		projectionSupport.dispose();
 		painters.clear();
 		addedLayers.removeAllElements();
 
