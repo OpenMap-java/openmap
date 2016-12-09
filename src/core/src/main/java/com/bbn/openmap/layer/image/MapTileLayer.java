@@ -80,6 +80,8 @@ import com.bbn.openmap.util.PropUtils;
  * tiles.rootDir=URL root directory of tiles
  * # a local location to cache tiles, to reduce load on server.
  * tiles.localCacheRootDir=/data/tiles/osmtiles
+ * # save cache when layer is done (true by default)
+ * tiles.saveCache=true
  * 
  * # other properties are the same.
  * tiles.fileExt=.png
@@ -159,23 +161,28 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 	 */
 	public final static String DATA_ATTRIBUTION_PROPERTY = "attribution";
 
-	/**
-	 * The MapTileFactory that knows how to fetch image files and create
-	 * OMRasters for them.
-	 */
-	protected MapTileFactory tileFactory;
-	/**
-	 * Flag to allow this layer to set itself as a repaint callback object on
-	 * the tile factory.
-	 */
-	protected boolean incrementalUpdates = false;
-	/**
-	 * The zoomLevel to use when requesting tiles from the MapTileFactory. Is -1
-	 * for default, which lets the factory choose the zoom level based on the
-	 * current scale setting. You can choose 1-20 if you want to force the layer
-	 * to use something else.
-	 */
-	protected int zoomLevel = -1;
+    /**
+     * A property to save or destroy the tile factory cache when the layer is
+     * removed.
+     */
+    public final static String SAVE_CACHE_PROPERTY = "saveCache";
+    /**
+     * The MapTileFactory that knows how to fetch image files and create
+     * OMRasters for them.
+     */
+    protected MapTileFactory tileFactory;
+    /**
+     * Flag to allow this layer to set itself as a repaint callback object on
+     * the tile factory.
+     */
+    protected boolean incrementalUpdates = false;
+    /**
+     * The zoomLevel to use when requesting tiles from the MapTileFactory. Is -1
+     * for default, which lets the factory choose the zoom level based on the
+     * current scale setting. You can choose 1-20 if you want to force the layer
+     * to use something else.
+     */
+    protected int zoomLevel = -1;
 
 	/**
 	 * Attribution for the map data. If it exists, it will be displayed on the
@@ -183,10 +190,15 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 	 */
 	protected String attribution = null;
 
-	/**
-	 * Rendering parameters for attribution string.
-	 */
-	protected DrawingAttributes attributionAttributes = DrawingAttributes.getDefaultClone();
+    /**
+     * Flag to save tile factory cache when the layer is no longer used.
+     */
+    protected boolean saveCache = true;
+
+    /**
+     * Rendering parameters for attribution string.
+     */
+    protected DrawingAttributes attributionAttributes = DrawingAttributes.getDefaultClone();
 
 	public MapTileLayer() {
 		setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
@@ -298,8 +310,10 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 		incrementalUpdates = PropUtils.booleanFromProperties(props, prefix + INCREMENTAL_UPDATES_PROPERTY,
 				incrementalUpdates);
 
-		setZoomLevel(PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel));
-	}
+        setZoomLevel(PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel));
+
+        saveCache = PropUtils.booleanFromProperties(props, prefix + SAVE_CACHE_PROPERTY, saveCache);
+    }
 
 	public Properties getProperties(Properties props) {
 		props = super.getProperties(props);
@@ -315,6 +329,7 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
         props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
         props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
         props.put(prefix + DATA_ATTRIBUTION_PROPERTY, PropUtils.unnull(attribution));
+        props.put(prefix + SAVE_CACHE_PROPERTY, Boolean.toString(saveCache));
 
 		attributionAttributes.getProperties(props);
 
@@ -329,29 +344,31 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 				"Force zoom level for queries (-1 is no forcing)", null);
 		PropUtils.setI18NPropertyInfo(i18n, props, this.getClass(), DATA_ATTRIBUTION_PROPERTY, "Attribution",
 				"Attribution for data source", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, this.getClass(), SAVE_CACHE_PROPERTY, "Disable Tile Factory Reset", "Disable tile factory reset on layer remove", null);
         if (tileFactory instanceof StandardMapTileFactory) {
             ((StandardMapTileFactory) tileFactory).getPropertyInfo(props);
             props.put(initPropertiesProperty, ((StandardMapTileFactory) tileFactory).getInitPropertiesOrder()
-                    + " " + ZOOM_LEVEL_PROPERTY + " " + DATA_ATTRIBUTION_PROPERTY);
+                    + " " + ZOOM_LEVEL_PROPERTY + " " + DATA_ATTRIBUTION_PROPERTY + " "
+                    + SAVE_CACHE_PROPERTY);
         } else {
             props.put(initPropertiesProperty, StandardMapTileFactory.ROOT_DIR_PROPERTY + " "
                     + StandardMapTileFactory.FILE_EXT_PROPERTY + " " + ZOOM_LEVEL_PROPERTY + " "
-                    + DATA_ATTRIBUTION_PROPERTY);
+                    + DATA_ATTRIBUTION_PROPERTY + " " + SAVE_CACHE_PROPERTY);
         }
 
         return props;
     }
 
-	/**
-	 * Called when the layer has been turned off and the projection changes,
-	 * signifying that the layer can clean up.
-	 */
-	public void removed(Container cont) {
-		MapTileFactory tileFactory = getTileFactory();
-		if (tileFactory != null) {
-			tileFactory.reset();
-		}
-	}
+    /**
+     * Called when the layer has been turned off and the projection changes,
+     * signifying that the layer can clean up.
+     */
+    public void removed(Container cont) {
+        MapTileFactory tileFactory = getTileFactory();
+        if (tileFactory != null && !saveCache) {
+            tileFactory.reset();
+        }
+    }
 
 	public MapTileFactory getTileFactory() {
 		return tileFactory;
