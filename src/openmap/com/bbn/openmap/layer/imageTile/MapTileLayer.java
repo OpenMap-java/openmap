@@ -161,6 +161,10 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
     public final static String DATA_ATTRIBUTION_PROPERTY = "attribution";
 
     /**
+     * A property to disable tile factory reset on layer being removed.
+     */
+    public final static String DISABLE_TILE_FACTORY_RESET = "disableTileFactoryReset";
+    /**
      * The MapTileFactory that knows how to fetch image files and create
      * OMRasters for them.
      */
@@ -183,6 +187,11 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
      * lower left corner of the map.
      */
     protected String attribution = null;
+
+    /**
+     * Flag to disable tile factory reset on layer being removed.
+     */
+    protected boolean disableTileFactoryReset = false;
 
     /**
      * Rendering parameters for attribution string.
@@ -300,6 +309,9 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 				incrementalUpdates);
 
         setZoomLevel(PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel));
+
+        disableTileFactoryReset = PropUtils.booleanFromProperties(props, prefix
+                + DISABLE_TILE_FACTORY_RESET, disableTileFactoryReset);
     }
 
     public Properties getProperties(Properties props) {
@@ -316,6 +328,7 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
         props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
         props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
         props.put(prefix + DATA_ATTRIBUTION_PROPERTY, PropUtils.unnull(attribution));
+        props.put(prefix + DISABLE_TILE_FACTORY_RESET, Boolean.toString(disableTileFactoryReset));
 
         attributionAttributes.getProperties(props);
 
@@ -329,14 +342,16 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 				"Force zoom level for queries (-1 is no forcing)", null);
 		PropUtils.setI18NPropertyInfo(i18n, props, this.getClass(), DATA_ATTRIBUTION_PROPERTY, "Attribution",
 				"Attribution for data source", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, this.getClass(), DISABLE_TILE_FACTORY_RESET, "Disable Tile Factory Reset", "Disable tile factory reset on layer remove", null);
         if (tileFactory instanceof StandardMapTileFactory) {
             ((StandardMapTileFactory) tileFactory).getPropertyInfo(props);
             props.put(initPropertiesProperty, ((StandardMapTileFactory) tileFactory).getInitPropertiesOrder()
-                    + " " + ZOOM_LEVEL_PROPERTY + " " + DATA_ATTRIBUTION_PROPERTY);
+                    + " " + ZOOM_LEVEL_PROPERTY + " " + DATA_ATTRIBUTION_PROPERTY + " "
+                    + DISABLE_TILE_FACTORY_RESET);
         } else {
             props.put(initPropertiesProperty, StandardMapTileFactory.ROOT_DIR_PROPERTY + " "
                     + StandardMapTileFactory.FILE_EXT_PROPERTY + " " + ZOOM_LEVEL_PROPERTY + " "
-                    + DATA_ATTRIBUTION_PROPERTY);
+                    + DATA_ATTRIBUTION_PROPERTY + " " + DISABLE_TILE_FACTORY_RESET);
         }
 
         return props;
@@ -348,7 +363,7 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
      */
     public void removed(Container cont) {
         MapTileFactory tileFactory = getTileFactory();
-        if (tileFactory != null) {
+        if (tileFactory != null && !disableTileFactoryReset) {
             tileFactory.reset();
         }
     }
