@@ -1,2 +1,2 @@
-OpenMap 5.1.14
-Aug 5, 2016
+OpenMap 5.1.15
+Dec 9, 2016
