@@ -1,3 +1,24 @@
+2016-12-09  Don Dietrick  <dietrick@hsawaknow.local>
+
+	* Tagged OpenMap 5.1.15
+
+	* MapBean internal listener support managers are final and
+	never get set to null, fixing a cleanup problem if listeners
+	try to disengage themselves from the MapBean after dispose()
+	has been called.
+
+	* EditableOMPoly grab points now in synchronized list to
+          handle rapid clicks and repaints.
+	
+	* Updated MapTileLayer to have a property where the local file
+	cache can be saved or destroyed after use "saveCache".
+
+	* BufferedImageHelper fixed issue where images weren't getting
+	reloaded from the file system, a cached version of the image was
+	being used instead.
+
+	* MapTileCoordinateTransform has settable min/max zoom levels.
+
 2016-08-05  Don Dietrick  <dietrick@hsawaknow.local>
 
 	* Tagged OpenMap 5.1.14
