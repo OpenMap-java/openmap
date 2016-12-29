@@ -75,18 +75,18 @@
 	from other people.
 	############################ -->
 	<target name="ext" depends="debug" description="Compiles the ext classes that OpenMap needs.">
-		<javac includeantruntime="false" srcdir="${openmap.src_ext}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.5" target="1.5">
+		<javac includeantruntime="false" srcdir="${openmap.src_ext}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.6" target="1.6">
 			<classpath refid="ext_tools_classpath" />
 			<compilerarg value="${compiler.args}"/>
 		</javac>
 	</target>
 
 	<target name="jai" depends="ext" description="Compiles the ext classes that OpenMap needs that depend on JAI." if="do.jai">
-		<javac includeantruntime="false" srcdir="${openmap.src_ext}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5">
+		<javac includeantruntime="false" srcdir="${openmap.src_ext}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.6" target="1.6">
 			<classpath refid="ext_tools_classpath" />
 			<compilerarg value="${compiler.args}"/>
 		</javac>
-		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5">
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.6" target="1.6">
 			<classpath refid="ext_tools_classpath" />
 			<compilerarg value="${compiler.args}"/>
 		</javac>
@@ -101,7 +101,7 @@
 	Standard target, to build everything you can.
 	############################ -->
 	<target name="classes.openmap" depends="jai" description="Compiles the OpenMap classes.  Ext classes compiled if needed.">
-		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.5" target="1.5">
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.6" target="1.6">
 			<classpath refid="ext_tools_classpath" />
 			<compilerarg value="${compiler.args}"/>
 		</javac>

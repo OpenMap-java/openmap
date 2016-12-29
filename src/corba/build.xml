@@ -152,7 +152,7 @@
 	<target name="classes.jdkcorba" depends="jdkcorba.stubs" description="Compiles the Corba classes with the JDK CORBA implementation. (Call this to build CORBA classes)" if="idl.compiled">
 
 		<echo message="Compiling CORBA classes with JDK CORBA..." />
-		<javac includeantruntime="false" srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/*.java" excludes="**/unimplemented/**" source="1.5" target="1.5">
+		<javac includeantruntime="false" srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/*.java" excludes="**/unimplemented/**" source="1.6" target="1.6">
 			<classpath>
 				<path refid="ext_tools_classpath" />
 				<pathelement path="${openmap.classes}" />

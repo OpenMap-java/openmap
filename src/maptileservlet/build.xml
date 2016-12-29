@@ -98,6 +98,7 @@
 
 	<target name="clean_jars" description="Delete only the jar files from the lib directory.">
 		<delete file="${ommaptile.home}/ommaptile.war" />
+		<delete dir="${ommaptile.lib_dir}" />
 	</target>
 
 	<target name="clean_docs" description="Delete only the generated API documentation.">
