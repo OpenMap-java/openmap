@@ -88,8 +88,7 @@
 
 	<modules>
 		<module>src/core</module>
-		<module>src/svg</module>
-		<module>src/j3d</module>
+		
 		<module>src/wmsservlet</module>
 		<module>src/maptileservlet</module>
 		<module>src/vpfbrowseservlet</module>

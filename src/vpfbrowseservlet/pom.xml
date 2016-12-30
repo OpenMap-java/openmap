@@ -4,7 +4,9 @@
 	<packaging>war</packaging>
 	<name>openmap-vpfbrowseservlet</name>
 	<description>OpenMap is a Java Beans based toolkit for building applications and applets needing geographic information.  This project contains components that can create a server to browse the contents of VPF libraries.</description>
-
+	<properties>
+	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>

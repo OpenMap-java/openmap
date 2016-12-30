@@ -6,6 +6,9 @@
 	<name>openmap</name>
 	<description>OpenMap is a Java Beans based toolkit for building applications and applets needing geographic information.  This project encapsulates the core components of the toolkit.</description>
 	<url>http://github.com/OpenMap-java/openmap</url>
+	<properties>
+	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.sun.media</groupId>
@@ -80,6 +83,21 @@
 			<artifactId>java-vector-tile</artifactId>
 			<version>1.0.8</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-svg-dom</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-rasterizer</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>java3d</groupId>
+			<artifactId>j3d-core-utils</artifactId>
+			<version>1.3.1</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -104,6 +122,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
 				<configuration>
 					<archive>
 						<manifest>

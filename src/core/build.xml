@@ -32,6 +32,9 @@
 		<property name="postgis.includes" value="**/postgis/**" />
 		<property name="browserlauncher.includes" value="**/BrowserLauncher*.java" />
 		<property name="vectortile.includes" value="**/VectorMapTileLayer.java, **/mb/**" />
+		<property name="svg.includes" value="**/SVGFormatter.java, **/SVGRasterizer.java, **/SVGSymbolImageMaker.java" />
+		<property name="j3d.includes" value="**/j3d/**" />				
+		
 
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
 		<available classname="com.sun.media.jai.codec.ImageCodec" property="do.jai" />
@@ -39,6 +42,8 @@
 		<available classname="org.postgis.PGgeometry" property="do.postgis" />
 		<available classname="edu.stanford.ejalbert.BrowserLauncher" property="do.browserlauncher" />
 		<available classname="no.ecc.vectortile.VectorTileDecoder" property="do.vectortile" />
+		<available classname="org.apache.batik.svggen.SVGGraphics2D" property="do.svg" />
+		<available classname="javax.media.j3d.Shape3D" property="do.j3d" />		
 
 		<echo message="Java Home: ${java.home}" />
 	</target>
@@ -69,7 +74,7 @@
 	    <mkdir dir="${openmap.classes}" />
 
 		<!-- Main OpenMap Classes -->
-		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes},${json.includes},${postgis.includes},${browserlauncher.includes},${vectortile.includes}" source="1.5" target="1.5"/>
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes},${json.includes},${postgis.includes},${browserlauncher.includes},${vectortile.includes},${svg.includes},${j3d.includes}"/>
 
 		<!-- Optional classes, depending on available external packages -->
 		<condition property="jai.message" value="jai dependencies found" else="jai dependencies NOT found, skipping those classes...">
@@ -96,6 +101,16 @@
 		  <isset property="do.vectortile"/>
 		</condition>
 		<echo message="${vectortile.message}"/>
+		
+		<condition property="svg.message" value="SVG dependencies found" else="SVG dependencies NOT found, skipping those classes...">
+		  <isset property="do.svg"/>
+		</condition>
+		<echo message="${svg.message}"/>		
+		
+		<condition property="j3d.message" value="J3D dependencies found" else="J3D dependencies NOT found, skipping those classes...">
+		  <isset property="do.j3d"/>
+		</condition>
+		<echo message="${j3d.message}"/>		
 
 		<condition property="suggestion.message" value="" else="NOTE: dependencies can be retrieved if you use maven to build OpenMap...">
 		  <isset property="do.vectortile" />
@@ -107,6 +122,8 @@
 		<antcall target="classes.postgis" />
 		<antcall target="classes.browserlauncher" />
 		<antcall target="classes.vectortile" />
+		<antcall target="classes.svg" />		
+		<antcall target="classes.j3d" />		
 
 		<echo message="gathering resources..."/>
 		<!-- Copy the gifs and other resources to the new classpath. -->
@@ -119,29 +136,39 @@
 
 	<target name="classes.jai" if="${do.jai}" >
 	  <echo message="Compiling JAI classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5"/>
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}"/>
 	</target>
 
 	<target name="classes.json" if="${do.json}" >
 	  <echo message="Compiling JSOM classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${json.includes}" source="1.5" target="1.5"/>
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${json.includes}"/>
 	</target>
 
 	<target name="classes.postgis" if="${do.postgis}" >
 	  <echo message="Compiling PostGIS classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${postgis.includes}" source="1.5" target="1.5"/>
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${postgis.includes}"/>
 	</target>
 
 	<target name="classes.browserlauncher" if="${do.browserlauncher}" >
 	  <echo message="Compiling BrowserLauncher classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${browserlauncher.includes}" source="1.5" target="1.5"/>
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${browserlauncher.includes}"/>
 	</target>
 
 	<target name="classes.vectortile" if="${do.vectortile}" >
 	  <echo message="Compiling Vector Tile classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${vectortile.includes}" source="1.5" target="1.5"/>
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${vectortile.includes}"/>
 	</target>
 
+	<target name="classes.svg" if="${do.svg}" >
+	  <echo message="Compiling SVG classes..." />
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${svg.includes}"/>
+	</target>	
+	
+	<target name="classes.j3d" if="${do.j3d}" >
+	  <echo message="Compiling J3D classes..." />
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${j3d.includes}" />
+	</target>	
+	
 	<!--  ############################
 	Build the documentation.
 	############################ -->
