@@ -40,7 +40,11 @@ import com.bbn.openmap.gui.menu.SavePropertiesMenuItem;
  */
 public class FileMenu extends AbstractOpenMapMenu {
 
-    private String defaultText = "File";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8780394246920152460L;
+	private String defaultText = "File";
     private int defaultMnemonic = 'F';
 
     /**

@@ -27,49 +27,55 @@ package com.bbn.openmap.gui.menu;
 import javax.swing.JMenu;
 
 import com.bbn.openmap.gui.AbstractOpenMapMenu;
-import com.bbn.openmap.image.AbstractImageFormatter;
+import com.bbn.openmap.image.SVGFormatter;
 import com.bbn.openmap.util.Debug;
 
 public class SaveAsMenu extends AbstractOpenMapMenu {
 
-    public SaveAsMenu() {
-        this("Save Map As");
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 977535233425016853L;
 
-    public SaveAsMenu(String title) {
-        super(title);
-        add(new SaveAsJpegMenuItem());
-        add(new SaveAsGifMenuItem());
-        addSVGMenuItem(this);
-    }
+	public SaveAsMenu() {
+		this("Save Map As");
+	}
 
-    /**
-     * Method checks to see if the SVGFormatter can be created, and if
-     * it can, adds it to the FileMenu-&lt;Save As menu. The SVGFormatter
-     * needs the right Batik jars in the classpath to compile.
-     */
-    public void addSVGMenuItem(JMenu menu) {
-        try {
-            Object obj = com.bbn.openmap.util.ComponentFactory.create("com.bbn.openmap.image.SVGFormatter");
+	public SaveAsMenu(String title) {
+		super(title);
+		add(new SaveAsJpegMenuItem());
+		add(new SaveAsGifMenuItem());
+		add(new SaveAsPngMenuItem());
 
-            if (obj != null) {
-                // This is a test to see if the batik package is
-                // available. If it isn't, this statement should
-                // throw an exception, and the SVG option will not be
-                // added to the SaveAs Menu item.
-                Class.forName("org.apache.batik.swing.JSVGCanvas")
-                        .newInstance();
-                menu.add(new SaveAsImageMenuItem("SVG", (AbstractImageFormatter) obj));
-                return;
-            }
-        } catch (ClassNotFoundException cnfe) {
-        } catch (InstantiationException ie) {
-        } catch (IllegalAccessException iae) {
-        } catch (NoClassDefFoundError ncdfe) {
-        }
+		addSVGMenuItem(this);
+	}
 
-        if (Debug.debugging("basic")) {
-            Debug.output("SVG not added to the Save As options, because Batik was not found in classpath.");
-        }
-    }
+	/**
+	 * Add the SVG menu item to the given menu if Batik can be found in the
+	 * classpath.
+	 * 
+	 * @param menu JMenu to add SVG option to
+	 */
+	protected void addSVGMenuItem(JMenu menu) {
+		try {
+
+			// This is a test to see if the batik package is
+			// available. If it isn't, this statement should
+			// throw an exception, and the SVG option will not be
+			// added to the SaveAs Menu item.
+
+			if (Class.forName("org.apache.batik.swing.JSVGCanvas") != null
+					&& Class.forName("org.w3c.dom.ElementTraversal") != null) {
+				menu.add(new SaveAsImageMenuItem("SVG", new SVGFormatter()));
+			}
+			return;
+
+		} catch (ClassNotFoundException cnfe) {
+		} catch (NoClassDefFoundError ncdfe) {
+		}
+
+		if (Debug.debugging("basic")) {
+			Debug.output("SVG not added to the Save As options, because Batik was not found in classpath.");
+		}
+	}
 }
