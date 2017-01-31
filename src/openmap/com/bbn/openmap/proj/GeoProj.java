@@ -128,7 +128,7 @@ public abstract class GeoProj extends Proj {
 
         // for rhumbline projecting
         if (!(this instanceof Mercator)) {
-            mercator = new Mercator(center, (float) scale, width, height);
+            mercator = new Mercator(center, getRhumbLineMercatorScale((float) scale), width, height);
         }
     }
 
@@ -267,6 +267,26 @@ public abstract class GeoProj extends Proj {
         return center;
     }
 
+    public void setScale(float s) {
+    	super.setScale(s);
+    	// for rhumbline projecting
+        if (mercator != null) {
+            mercator.setScale(getRhumbLineMercatorScale(s));
+        }
+    }
+    
+    /**
+     * Checks the provided scale and makes sure it's not bigger than what would give good coords.
+     * @param base
+     * @return return limited version of base.
+     */
+    protected float getRhumbLineMercatorScale(float base) {
+    	if (base > 1000000) {
+    		return 1000000;
+    	}
+    	return base;
+    }
+    
     /**
      * Sets radian latitude to something sane.
      * <p>
