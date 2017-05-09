@@ -254,7 +254,7 @@ public class CSVLinkHandler extends CSVLocationHandler {
      * @param qt the Quadtree to add the Location object, created from the row
      *        contents.
      */
-    protected void createLocation(List recordList, QuadTree<Location> qt) {
+    protected void createLocation(List recordList, QuadTree<OMGraphic> qt) {
 
         String name = tokenToString(recordList, nameIndex, "");
         double lat = tokenToDouble(recordList, latIndex, 0.0);
