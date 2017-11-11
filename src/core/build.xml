@@ -15,24 +15,16 @@
 		<property name="openmap.jar" value="${openmap.core}/target/openmap.jar" />
 		<property name="openmap.docs" value="${openmap.home}/doc" />
 
-		<property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
-							 **/ChangeLog, **/*.html, **/*.txt,
-							 **/*.*.txt, **/*.dat,
-							 **/*.pl,
-							 **/unimplemented/**, 
-							 **/build.xml" />
+		<property name="general.excludes" value="**/*.in,**/Makefile,**/*.bat,**/ChangeLog,**/*.html,**/*.txt,**/*.*.txt,**/*.dat,**/*.pl,**/unimplemented/**,**/build.xml" />
+		<property name="javac.excludes" value="${general.excludes},**/*.gif,**/*.png,**/*.properties" />
 
-		<property name="javac.excludes" value="${general.excludes}, 
-						       **/*.gif,
-						       **/*.png, 
-						       **/*.properties" />
-
-		<property name="jai.includes" value="**/jai/**, **/geotiff/**" />
-		<property name="json.includes" value="**/geojson/**, **/tpk/**" />
+		<property name="jai.includes" value="**/jai/**,**/geotiff/**" />
+		<property name="json.includes" value="**/geojson/**,**/tpk/**" />
 		<property name="postgis.includes" value="**/postgis/**" />
 		<property name="browserlauncher.includes" value="**/BrowserLauncher*.java" />
-		<property name="vectortile.includes" value="**/VectorMapTileLayer.java, **/mb/**" />
-		<property name="svg.includes" value="**/SVGFormatter.java, **/SVGRasterizer.java, **/SVGSymbolImageMaker.java" />
+		<property name="vectortile.includes" value="**/VectorMapTileLayer.java,**/mb/**" />
+		<!--<property name="svg.includes" value="**/SVGFormatter.java, **/SVGRasterizer.java, **/SVGSymbolImageMaker.java" />-->
+		<property name="svg.includes" value="**/SVG*.java" />		
 		<property name="j3d.includes" value="**/j3d/**" />				
 		
 

@@ -27,7 +27,8 @@ package com.bbn.openmap.gui.menu;
 import javax.swing.JMenu;
 
 import com.bbn.openmap.gui.AbstractOpenMapMenu;
-import com.bbn.openmap.image.SVGFormatter;
+import com.bbn.openmap.image.AbstractImageFormatter;
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 
 public class SaveAsMenu extends AbstractOpenMapMenu {
@@ -65,8 +66,16 @@ public class SaveAsMenu extends AbstractOpenMapMenu {
 			// added to the SaveAs Menu item.
 
 			if (Class.forName("org.apache.batik.swing.JSVGCanvas") != null
-					&& Class.forName("org.w3c.dom.ElementTraversal") != null) {
-				menu.add(new SaveAsImageMenuItem("SVG", new SVGFormatter()));
+					&& Class.forName("org.w3c.dom.ElementTraversal") != null
+					&& Class.forName("com.bbn.openmap.image.SVGFormatter") != null) {
+
+				// Need to do this in a way that allows it to be created if it's
+				// there, but gracefully skipped from compilation if the batik
+				// library is unavailable
+				Object obj = ComponentFactory.create("com.bbn.openmap.image.SVGFormatter");
+				if (obj instanceof AbstractImageFormatter) {
+					menu.add(new SaveAsImageMenuItem("SVG", (AbstractImageFormatter) obj));
+				}
 			}
 			return;
 

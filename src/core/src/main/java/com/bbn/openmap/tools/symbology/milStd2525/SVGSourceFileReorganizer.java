@@ -81,8 +81,6 @@ public class SVGSourceFileReorganizer
     }
 
     public boolean handleFile(File file) {
-        File newFile;
-        String parent = file.getParent();
 
         String fileName = file.getName();
         if (!fileName.endsWith(".svg")) {
@@ -112,17 +110,15 @@ public class SVGSourceFileReorganizer
     }
 
     /**
-     * Given a set of files or directories, parade through them to change their
-     * case.
+     * Given a set of files or directories, organize SVG files.
      * 
      * @param argv paths to files or directories, use -h to get a usage
      *        statement.
      */
     public static void main(String[] argv) {
         Debug.init();
-        boolean toUpper = true;
 
-        ArgParser ap = new ArgParser("ChangeCase");
+        ArgParser ap = new ArgParser("SVGSourceFileReorganizer");
         ap.add("source", "The directory to search for source svg files.", ArgParser.TO_END);
         ap.add("target", "The target directory to place gathered and modified files.", 1);
         ap.add("verbose", "Talk alot.");
