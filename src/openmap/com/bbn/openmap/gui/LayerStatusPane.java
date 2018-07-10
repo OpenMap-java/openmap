@@ -26,6 +26,7 @@ import java.net.URL;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
@@ -74,10 +75,20 @@ public class LayerStatusPane extends LayerPane implements LayerStatusListener {
     public void updateLayerStatus(LayerStatusEvent evt) {
         switch (evt.getStatus()) {
         case LayerStatusEvent.START_WORKING:
-            onoffButton.setSelectedIcon(layerWorking);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					onoffButton.setSelectedIcon(layerWorking);
+				}
+			});
             break;
         case LayerStatusEvent.FINISH_WORKING:
-            onoffButton.setSelectedIcon(layerDone);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					onoffButton.setSelectedIcon(layerDone);
+				}
+			});
             break;
         }
     }

@@ -758,7 +758,10 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @param g java.awt.Graphics to paint the poly onto.
      */
     public void render(Graphics g) {
-        
+		if (!isVisible()) {
+			return;
+		}
+
         if (getShape() != null) {
             super.render(g);
 

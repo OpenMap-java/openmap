@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
@@ -102,12 +103,18 @@ public class ScaleTextPanel extends OMToolComponent implements Serializable,
                     + String.valueOf(projection.getScale()) + "\"");
         }
 
-        String oldScale = scaleField.getText();
-        String newScale = df.format(projection.getScale());
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				String oldScale = scaleField.getText();
+				String newScale = df.format(projection.getScale());
 
-        if (!oldScale.equals(newScale)) {
-            scaleField.setText("1:" + newScale);
-        }
+				if (!oldScale.equals(newScale)) {
+					scaleField.setText("1:" + newScale);
+				}
+
+			}
+		});
     }
 
     /**

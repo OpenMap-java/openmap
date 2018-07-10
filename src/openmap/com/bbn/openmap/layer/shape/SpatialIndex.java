@@ -1138,6 +1138,8 @@ public class SpatialIndex extends ShapeUtils {
                             polyBounds = readBox(recBuf, 4);
                         } else {
                             polyBounds = new ESRIBoundingBox();
+							polyBounds.min = new ESRIPoint();
+							polyBounds.max = new ESRIPoint();
                         }
                         ptr += recLengthBytes + 8;
 

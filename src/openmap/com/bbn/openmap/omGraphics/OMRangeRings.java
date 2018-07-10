@@ -323,6 +323,9 @@ public class OMRangeRings
     * @param g Graphics context to render into
     */
    public void render(Graphics g) {
+		if (!isVisible()) {
+			return;
+		}
       super.render(g);
       drawingAttributes.setFrom(this);
 
