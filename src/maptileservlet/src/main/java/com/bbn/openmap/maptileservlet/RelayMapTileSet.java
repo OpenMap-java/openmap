@@ -32,8 +32,6 @@ public class RelayMapTileSet
 	extends ServerMapTileFactory
 	implements MapTileSet {
 
-	public final static String NAME_ATTRIBUTE = "name";
-
 	protected String name;
 	protected String description = null;
 
@@ -49,13 +47,15 @@ public class RelayMapTileSet
 		super.setProperties(prefix, props);
 		prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-		name = props.getProperty(prefix + NAME_ATTRIBUTE, name);
+		name = props.getProperty(prefix + StandardMapTileSet.NAME_ATTRIBUTE, name);
+		description = props.getProperty(prefix + StandardMapTileSet.DESCRIPTION_ATTRIBUTE, description);
 	}
 
 	public Properties getProperties(Properties props) {
 		props = super.getProperties(props);
 		String prefix = PropUtils.getScopedPropertyPrefix(this);
-		props.put(prefix + NAME_ATTRIBUTE, PropUtils.unnull(name));
+		props.put(prefix + StandardMapTileSet.NAME_ATTRIBUTE, PropUtils.unnull(name));
+		props.put(prefix + StandardMapTileSet.DESCRIPTION_ATTRIBUTE, PropUtils.unnull(name));		
 		return props;
 	}
 
