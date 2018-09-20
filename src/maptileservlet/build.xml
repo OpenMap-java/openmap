@@ -8,6 +8,7 @@
 		<property name="ommaptile.lib_dir" value="./WEB-INF/lib" />
 		<property name="ommaptile.classes" value="./WEB-INF/classes" />
 		<property name="ommaptile.dist" value="./dist" />
+		<property name="ommaptile.mvnclasses" value="./target/classes" />		
 		<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
 		<!--<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-4.0.1"/>-->
 		<!--<property name="tomcat.home" value="/usr/local/apache-tomcat-7.0.8" />-->
@@ -53,11 +54,17 @@
 			<fileset dir="${ommaptile.classes}"/>
 		</jar>
 	</target>
+	
+	<target name="ommaptilejar" depends="init" description="Builds the ommaptile.jar after compilation with maven">
+		<jar jarfile="${ommaptile.lib_dir}/ommaptile.jar">
+			<fileset dir="${ommaptile.mvnclasses}"/>
+		</jar>
+	</target>
 
 	<!--  ############################
 	Standard target, to build everything you can.
 	############################ -->
-	<target name="ommaptile" depends="init" description="Compiles the Ommaptile Servlet classes. ">
+	<target name="ommaptile" depends="init" description="Compiles the Map Tile Servlet classes. ">
 		<echo message="Building OMMapTile Servlet classes..." />
 		<mkdir dir="${ommaptile.lib_dir}" />
 		<mkdir dir="${ommaptile.classes}" />

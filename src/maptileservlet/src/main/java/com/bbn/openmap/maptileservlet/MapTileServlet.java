@@ -79,8 +79,20 @@ public class MapTileServlet extends HttpServlet {
         super.init(config);
         ServletContext context = config.getServletContext();
 
+        Logger logger = getLogger();        
+        String leafletCss = context.getInitParameter(LEAFLET_CSS_LOCATION_ATTRIBUTE);
+        if (leafletCss != null) {
+        	leafletCssLocation = leafletCss;
+        }
+        logger.info("leaflet.css located at :" + leafletCssLocation);
+        
+        String leafletJs = context.getInitParameter(LEAFLET_JS_LOCATION_ATTRIBUTE);
+        if (leafletJs != null) {
+        	leafletJsLocation = leafletJs;
+        }
+        logger.info("leaflet.js located at :" + leafletJsLocation);        
+        
         String descriptions = context.getInitParameter(TILE_SET_DESCRIPTION_ATTRIBUTE);
-        Logger logger = getLogger();
         logger.info("Looking for Tile Set Descriptions at: " + descriptions);
         if (descriptions != null) {
 
@@ -89,7 +101,7 @@ public class MapTileServlet extends HttpServlet {
             try {
 
                 URL descriptionFolder = PropUtils.getResourceOrFileOrURL(descriptions);
-                PropertiesWanderer wanderer = new PropertiesWanderer(new File(descriptionFolder.getFile()));
+                new PropertiesWanderer(new File(descriptionFolder.getFile()));
 
             } catch (MalformedURLException e) {
                 logger.warning("unable to open for Tile Set properties file given " + descriptions);
@@ -97,20 +109,7 @@ public class MapTileServlet extends HttpServlet {
                 logger.warning("Can't find directory holding Tile Set properties files: "
                         + descriptions);
             }
-        }
-        
-        String leafletCss = context.getInitParameter(LEAFLET_CSS_LOCATION_ATTRIBUTE);
-        if (leafletCss != null) {
-        	leafletCssLocation = leafletCss;
-        }
-        logger.info("leaflet.css located at :" + leafletCssLocation);
-        
-        
-        String leafletJs = context.getInitParameter(LEAFLET_JS_LOCATION_ATTRIBUTE);
-        if (leafletJs != null) {
-        	leafletJsLocation = leafletJs;
-        }
-        logger.info("leaflet.js located at :" + leafletJsLocation);        
+        }    
         
     }
 
@@ -356,8 +355,8 @@ public class MapTileServlet extends HttpServlet {
 
         StringBuilder ret = new StringBuilder();
 
-        ret.append("<html><head><link rel=\"stylesheet\" href=\"http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css\" />");
-        ret.append("<script src=\"http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js\"></script></head><body>");
+        ret.append("<html><head><link rel=\"stylesheet\" href=\"").append(leafletCssLocation).append("\" />");
+        ret.append("<script src=\"").append(leafletJsLocation).append("\"></script></head><body>");
         ret.append("<div id=\"map\" style=\"position:absolute; top:20px; left:20px; right:20px; bottom:20px;overflow:hidden;min-height;200px\"></div>");
         ret.append("<script>");
 
