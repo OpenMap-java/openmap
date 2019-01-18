@@ -34,7 +34,6 @@ import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.LineCoordinateGenerator;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.DeepCopyUtil;
 
 /**
@@ -260,6 +259,10 @@ public class OMDistance extends OMPoly {
     * @param g java.awt.Graphics to paint the poly onto.
     */
    public void render(Graphics g) {
+		if (!isVisible()) {
+			return;
+		}
+
       super.render(g);
 
       if (!paintOnlyPoly) {

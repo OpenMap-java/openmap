@@ -488,7 +488,7 @@ public class BinaryBufferedFile extends BinaryFile {
                 for (int i = 0; i < reallyread; i++) {
                     vec[offset++] = MoreMath.BuildIntegerBE(buffer, cursor);
                     cursor += 4;
-                }
+				}
             } else {
                 for (int i = 0; i < reallyread; i++) {
                     vec[offset++] = MoreMath.BuildIntegerLE(buffer, cursor);
@@ -582,4 +582,13 @@ public class BinaryBufferedFile extends BinaryFile {
         }
         return retstring;
     }
+
+	@Override
+	public void close() throws IOException {
+		super.close();
+		firstbyteoffset = 0;
+		bytesinbuffer = 0;
+		curptr = 0;
+	}
+
 }

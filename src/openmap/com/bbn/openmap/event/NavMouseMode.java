@@ -316,6 +316,9 @@ public class NavMouseMode extends CoordMouseMode {
         }
 
         super.mouseDragged(e);
+		if (point1 == null) {
+			return;
+		}
 
         Object obj = e.getSource();
 

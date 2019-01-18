@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.event.ProjectionEvent;
@@ -124,22 +125,27 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
      * 
      * @param e ProjectionEvent
      */
-    public void projectionChanged(ProjectionEvent e) {
+	public void projectionChanged(final ProjectionEvent e) {
 
-        Projection newProj = e.getProjection();
+		final Projection newProj = e.getProjection();
 
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(newProj != null ? newProj.toString() : "null");
         }
 
-        if (newProj != null
-                && (projection == null || (!projection.equals(newProj)))) {
-            setProjection((Projection) newProj.makeClone());
-            Object source = e.getSource();
-            if (source instanceof Component) {
-                projComponent = (Component) source;
-            }
-        }
+ 		SwingUtilities.invokeLater(new Runnable() {
+ 			@Override
+ 			public void run() {
+ 				if (newProj != null
+ 						&& (projection == null || (!projection.equals(newProj)))) {
+ 					setProjection((Projection) newProj.makeClone());
+ 					Object source = e.getSource();
+ 					if (source instanceof Component) {
+ 						projComponent = (Component) source;
+ 					}
+				}
+			}
+		}); 
     }
 
     /**
