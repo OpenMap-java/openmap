@@ -16,6 +16,7 @@ package com.bbn.openmap.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
@@ -93,9 +94,8 @@ public class OverlayMapPanel extends BasicMapPanel implements PropertyChangeList
 	 * Create a OverlayMapPanel with the option of delaying the search for
 	 * properties until the <code>create()</code> call is made.
 	 * 
-	 * @param delayCreation
-	 *            true to let the MapPanel know that the artful programmer will
-	 *            call <code>create()</code>
+	 * @param delayCreation true to let the MapPanel know that the artful
+	 *            programmer will call <code>create()</code>
 	 */
 	public OverlayMapPanel(boolean delayCreation) {
 		super(null, delayCreation);
@@ -115,9 +115,8 @@ public class OverlayMapPanel extends BasicMapPanel implements PropertyChangeList
 	 * in the PropertyHandler provided, and with the option of delaying the
 	 * search for properties until the <code>create()</code> call is made.
 	 * 
-	 * @param delayCreation
-	 *            true to let the MapPanel know that the artful programmer will
-	 *            call <code>create()</code>
+	 * @param delayCreation true to let the MapPanel know that the artful
+	 *            programmer will call <code>create()</code>
 	 */
 	public OverlayMapPanel(PropertyHandler propertyHandler, boolean delayCreation) {
 		super(propertyHandler, delayCreation);
@@ -161,7 +160,6 @@ public class OverlayMapPanel extends BasicMapPanel implements PropertyChangeList
 	 * @param map
 	 */
 	protected void layoutPanel(MapBean map) {
-		Dimension minimumSize = new Dimension(MapBean.DEFAULT_WIDTH, MapBean.DEFAULT_HEIGHT);
 
 		JPanel hackPanel = new JPanel();
 		hackPanel.setLayout(new BorderLayout());
@@ -169,8 +167,35 @@ public class OverlayMapPanel extends BasicMapPanel implements PropertyChangeList
 		hackPanel.add(map, BorderLayout.CENTER);
 
 		centerContainer = new JPanel();
-
 		centerContainer.setLayout(new OverlayLayout(centerContainer));
+
+		addMapComponent(new ProjectionStack());
+		widgets = getComponentsFloatingOnMap(map);
+
+		setBorders(map, widgets);
+
+		centerContainer.add(widgets);
+		centerContainer.add(hackPanel);
+
+		add(centerContainer, BorderLayout.CENTER);
+	}
+
+	/**
+	 * Create the panel containing the components that will float over the map.
+	 * Default is a nav panel and scale indicator.
+	 * 
+	 * @param map The MapBean
+	 * @return a JPanel with the layout and rendering attributes set for the
+	 *         area over the map.
+	 */
+	protected JPanel getComponentsFloatingOnMap(MapBean map) {
+
+		JPanel floatingWidgets = new JPanel();
+		floatingWidgets.setLayout(new BorderLayout());
+		floatingWidgets.setBackground(OMGraphicConstants.clear);
+		floatingWidgets.setOpaque(false);
+		floatingWidgets.setBounds(0, 0, map.getWidth(), map.getHeight());
+		floatingWidgets.setMinimumSize(new Dimension(MapBean.DEFAULT_WIDTH, MapBean.DEFAULT_HEIGHT));
 
 		// These may be null, but the EmbeddedNavPanel will choose it's own
 		// default colors if that is so.
@@ -180,28 +205,14 @@ public class OverlayMapPanel extends BasicMapPanel implements PropertyChangeList
 
 		EmbeddedNavPanel navPanel = new EmbeddedNavPanel(activeWidgetColors, inactiveWidgetColors, widgetButtonSize);
 		navPanel.setBounds(12, 12, navPanel.getMinimumSize().width, navPanel.getMinimumSize().height);
-
 		addMapComponent(navPanel);
-		addMapComponent(new ProjectionStack());
+		floatingWidgets.add(navPanel, BorderLayout.WEST);
 
 		EmbeddedScaleDisplayPanel scaleDisplay = new EmbeddedScaleDisplayPanel();
 		addMapComponent(scaleDisplay);
+		floatingWidgets.add(scaleDisplay, BorderLayout.EAST);
 
-		widgets = new JPanel();
-		widgets.setLayout(new BorderLayout());
-		widgets.setBackground(OMGraphicConstants.clear);
-		widgets.setOpaque(false);
-		widgets.setBounds(0, 0, map.getWidth(), map.getHeight());
-		widgets.setMinimumSize(minimumSize);
-		widgets.add(navPanel, BorderLayout.WEST);
-		widgets.add(scaleDisplay, BorderLayout.EAST);
-
-		setBorders(map, widgets);
-
-		centerContainer.add(widgets);
-		centerContainer.add(hackPanel);
-
-		add(centerContainer, BorderLayout.CENTER);
+		return floatingWidgets;
 	}
 
 	/**
@@ -287,8 +298,7 @@ public class OverlayMapPanel extends BasicMapPanel implements PropertyChangeList
 	 * Add object to MapHandler via addMapComponent(Object), then return this
 	 * MapPanel.
 	 *
-	 * @param obj
-	 *            object to add to MapHandler
+	 * @param obj object to add to MapHandler
 	 * @return this MapPanel
 	 */
 	public OverlayMapPanel with(Object obj) {
@@ -297,24 +307,24 @@ public class OverlayMapPanel extends BasicMapPanel implements PropertyChangeList
 	}
 
 	/**
-	 * Create an OverlayMapPanel with a LayerHandler, MouseDelegator and OMMouseMode pre-added().
+	 * Create an OverlayMapPanel with a LayerHandler, MouseDelegator and
+	 * OMMouseMode pre-added().
 	 * 
 	 * @return OverlayMapPanel
 	 */
 	public static OverlayMapPanel standardConfig() {
-	   return new OverlayMapPanel()
-			   .with(new com.bbn.openmap.LayerHandler())
-			   .with(new com.bbn.openmap.MouseDelegator())
-			   .with(new com.bbn.openmap.event.OMMouseMode());
+		return new OverlayMapPanel().with(new com.bbn.openmap.LayerHandler()).with(new com.bbn.openmap.MouseDelegator())
+				.with(new com.bbn.openmap.event.OMMouseMode());
 	}
-	
+
 	/** A main() method that just brings up a JFrame containing the MapPanel. */
 	public static void main(String argv[]) {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
 
-				OverlayMapPanel map = OverlayMapPanel.standardConfig().with(new ShapeLayer("share/data/shape/cntry02/cntry02.shp"));
+				OverlayMapPanel map = OverlayMapPanel.standardConfig()
+						.with(new ShapeLayer("share/data/shape/cntry02/cntry02.shp"));
 				map.addMapComponent(new com.bbn.openmap.InformationDelegator());
 				map.getMapBean().setBckgrnd(new Color(0x99b3cc));
 				map.includeExitMenuItem();
@@ -333,13 +343,28 @@ public class OverlayMapPanel extends BasicMapPanel implements PropertyChangeList
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
 	 * PropertyChangeEvent)
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(MapBean.CursorProperty)) {
 			centerContainer.setCursor(((Cursor) evt.getNewValue()));
+		}
+	}
+
+	/**
+	 * If one of the widgets gets removed from the MapHandler, we'll remove it
+	 * from the interface, too.
+	 */
+	public void findAndUndo(Object someObj) {
+		super.findAndUndo(someObj);
+
+		/*
+		 * It's no harm to call this for every Component. Component checks to
+		 * see if widgets is the Component's parent first.
+		 */
+		if (widgets != null && someObj instanceof Component) {
+			widgets.remove((Component) someObj);
 		}
 	}
 
