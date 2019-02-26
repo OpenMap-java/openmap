@@ -280,8 +280,10 @@ public class OMWarpingImage extends OMGraphicAdapter implements OMGraphic {
     public boolean generate(Projection proj) {
         if (warp != null) {
             if (updateImageForProjection(proj) || raster == null) {
-                raster = warp.getOMRaster(proj);
+                raster = warp.getOMRaster(proj, getAttribute(OMGraphic.LABEL));
                 DrawingAttributes.sTransfer(this, raster);
+            	// Need to transfer label to raster for display
+            	raster.putAttribute(OMGraphic.LABEL, getAttribute(OMGraphic.LABEL));
             }
         }
 
