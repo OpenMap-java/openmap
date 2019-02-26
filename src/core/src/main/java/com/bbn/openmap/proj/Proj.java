@@ -886,10 +886,11 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 	}
 
 	/**
+	 * @param lat latitude y point
+	 * @param lon latitude x point
+	 * @return true if the lat/lon can be displayed in the current projection window.
 	 */
-	public boolean isPlotable(double lat, double lon) {
-		return isPlotable(lat, lon);
-	}
+	public abstract boolean isPlotable(double lat, double lon);
 
 	public boolean isPlotable(Point2D point) {
 		return isPlotable(point.getY(), point.getX());
