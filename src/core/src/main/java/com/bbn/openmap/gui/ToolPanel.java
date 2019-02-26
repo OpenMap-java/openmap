@@ -643,7 +643,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild, BeanContext
             Container face = tool.getFace();
             // make sure tool != filler - filler(JPanel) test is for object
             // equivalence
-            if (!filler.equals(tool) && face != null && face.isVisible()) {
+            if (filler != tool && face != null && face.isVisible()) {
                 return true;
             }
         }
