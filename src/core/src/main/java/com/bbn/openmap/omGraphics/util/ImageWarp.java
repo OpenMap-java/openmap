@@ -34,6 +34,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.dataAccess.image.WorldFile;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMLabeler;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.GeoCoordTransformation;
@@ -223,6 +225,18 @@ public class ImageWarp {
      *         projection.
      */
     public OMRaster getOMRaster(Projection p) {
+    	return getOMRaster(p, null);
+    }
+    
+    /**
+     * Return an OMRaster that covers the given projection, with the image
+     * warped for the projection.
+     * 
+     * @param p map projection
+     * @param labeler optional OMLabel that will be stored in the raster before generation, in case a label is desired.
+     * @return OMRaster or null if the image isn't within the current projection.
+     */
+    public OMRaster getOMRaster(Projection p, Object labeler) {
         int[] pixels = getImagePixels(p);
         if (pixels != null && projectedImageBounds != null) {
             int width = (int) Math.ceil(projectedImageBounds.getWidth());
@@ -230,6 +244,9 @@ public class ImageWarp {
             int x = (int) Math.floor(projectedImageBounds.getMin().getX());
             int y = (int) Math.floor(projectedImageBounds.getMin().getY());
             OMRaster raster = new OMRaster(x, y, width, height, pixels);
+            if (labeler != null) {
+            	raster.putAttribute(OMGraphic.LABEL, labeler);
+            }
             raster.generate(p);
             return raster;
         }
