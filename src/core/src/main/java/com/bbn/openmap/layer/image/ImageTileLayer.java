@@ -117,7 +117,7 @@ import com.bbn.openmap.util.PropUtils;
  *                     
  * # optional - image Reader loaders specify which image files are handled
  * imageTileLayer.imageReaderLoaders=geotiff
- * imageTileLayer.geotiff=com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageReader.Loader
+ * imageTileLayer.geotiff=com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageReaderLoader
  *                       
  * # optional - Drawing attributes properties for image highlighting
  * imageTileLayer.lineWidth=2
