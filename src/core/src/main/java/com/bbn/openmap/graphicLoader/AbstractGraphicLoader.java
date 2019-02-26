@@ -150,7 +150,7 @@ public abstract class AbstractGraphicLoader extends OMComponent implements
      * setTimer().
      */
     public void createTimer() {
-        Timer t = new Timer(updateInterval, this);
+        Timer t = new Timer(updateInterval, null);
         t.setInitialDelay(0);
         setTimer(t);
     }
