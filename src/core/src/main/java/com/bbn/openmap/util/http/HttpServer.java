@@ -29,6 +29,8 @@ import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import com.bbn.openmap.util.Debug;
+
 /**
  * A simple HTTP Server implementing HTTP/0.9 protocols.
  * 
@@ -207,6 +209,7 @@ public class HttpServer extends Thread {
      * @param args command line args
      */
     public static void main(String[] args) {
+    	Debug.init();
         int port = 0;
         if (args.length == 1) {
             try {
