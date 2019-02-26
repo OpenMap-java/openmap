@@ -113,9 +113,8 @@ public class TimeFrameApp extends Main {
             };
             omf.setTitle("TimeFrame");
             getMapHandler().add(omf);
+            setWindowListenerOnFrame(omf);
         }
-
-        setWindowListenerOnFrame(omf);
 
         omf.setVisible(true);
         mapPanel.getMapBean().showLayerPalettes();
