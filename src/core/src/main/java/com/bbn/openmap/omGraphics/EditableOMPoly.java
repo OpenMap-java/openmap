@@ -569,12 +569,12 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                 }
 
                 double[] oldCoords = ProjMath.arrayRadToDeg(poly.getLatLonArrayCopy());
-                int changeCount = 0;
+                //int changeCount = 0;
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < oldCoords.length - 1; i += 2) {
                     if (oldCoords[i] != newCoords[i] || oldCoords[i + 1] != newCoords[i + 1]) {
                         sb.append(i / 2).append(" ");
-                        changeCount++;
+                        //changeCount++;
                     }
                 }
 
@@ -1040,11 +1040,9 @@ public class EditableOMPoly extends EditableOMAbstractLine {
             return;
 
         // Reset the points to the offset point.
-        int count = 0;
         for (GrabPoint gb : polyGrabPoints) {
             if (gb != null) {
                 ogp.addGrabPoint(gb);
-                count++;
             }
         }
 
