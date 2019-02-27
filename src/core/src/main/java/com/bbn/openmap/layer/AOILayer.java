@@ -41,7 +41,7 @@ import com.bbn.openmap.util.PropUtils;
  * could be used for this layer:
  * <pre> 
  * 
- * aoi.class=com.bbn.hotwash.map.AOILayer
+ * aoi.class=com.bbn.openmap.layer.AOILayer
  * aoi.prettyName=Areas of Interest
  * aoi.aoi=area1 area2
  * aoi.area1.name=First Area
