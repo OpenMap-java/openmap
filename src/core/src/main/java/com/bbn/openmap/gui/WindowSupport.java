@@ -573,6 +573,15 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
             return null;
         }
     }
+    
+    /**
+     * Resize based on content changes.
+     */
+    public void repack() {
+    	if (display != null) {
+    		display.repack();
+    	}
+    }
 
     public static interface WSDisplay {
 
@@ -595,6 +604,8 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
         public void addComponentListener(ComponentListener cl);
 
         public void removeComponentListener(ComponentListener cl);
+        
+        public void repack();
 
     }
 
@@ -647,6 +658,12 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
             toFront();
         }
 
+		public void repack() {
+			revalidate();
+			pack();
+			repaint();
+		}
+
     }
 
     public static class Dlg extends JDialog implements WSDisplay {
@@ -689,7 +706,12 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
             }
             super.setVisible(true);
         }
-
+        
+		public void repack() {
+			revalidate();
+			pack();
+			repaint();
+		}
     }
 
     public static class Frm extends JFrame implements WSDisplay {
@@ -743,6 +765,12 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
             }
             toFront();
         }
+        
+		public void repack() {
+			revalidate();
+			pack();
+			repaint();
+		}
     }
 
     /**
