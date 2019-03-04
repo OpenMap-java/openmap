@@ -1115,11 +1115,15 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
      * @return JButton returns a JButton that triggers a pop-up menu.
      */
     public Component getGUI() {
+    	return getGUI(null);
+    }
+    
+    public Component getGUI(String buttonText) {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("DrawingAttributes: creating palette.");
         }
 
-        return getALineButton();
+        return getALineButton(buttonText);
     }
 
     /**
@@ -1175,7 +1179,11 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
      * @return a new JButton is created, every time.
      */
     public JButton getALineButton() {
-        JButton lineButton = new DrawingAttributesGUIButton(this);
+    	return getALineButton(null);
+    }
+    
+    public JButton getALineButton(String buttonText) {
+        JButton lineButton = new DrawingAttributesGUIButton(buttonText, this);
 
         lineButton.setToolTipText(i18n.get(DrawingAttributes.class, "drawingAttributesButton", I18n.TOOLTIP, "Modify Drawing Parameters"));
 
@@ -2087,11 +2095,15 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
         DrawingAttributes parentDA;
 
         protected DrawingAttributesGUIButton(DrawingAttributes da) {
-            super(getDrawingAttributesIcon(da, icon_width, icon_height, true));
+            this(null, da);
+        }
+
+        protected DrawingAttributesGUIButton(String buttonText, DrawingAttributes da) {
+            super(buttonText, getDrawingAttributesIcon(da, icon_width, icon_height, true));
             da.propertyChangeSupport.addPropertyChangeListener(DrawingAttributesGUIButton.this);
             parentDA = da;
         }
-
+        
         /*
          * (non-Javadoc)
          * 
