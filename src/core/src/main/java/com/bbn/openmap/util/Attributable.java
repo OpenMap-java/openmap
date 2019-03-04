@@ -31,7 +31,7 @@ import java.util.Map;
  * 
  * @author dietrick
  */
-public interface Attributable {
+public interface Attributable<K, V> {
 
     /**
      * Put an attribute in the object, the value can be retrieved later via the
@@ -40,7 +40,7 @@ public interface Attributable {
      * @param key attribute key
      * @param value attribute value
      */
-    public void putAttribute(Object key, Object value);
+    public void putAttribute(K key, V value);
 
     /**
      * Get the attribute stored under a key.
@@ -48,7 +48,7 @@ public interface Attributable {
      * @param key attribute key
      * @return value if found, null if not.
      */
-    public Object getAttribute(Object key);
+    public Object getAttribute(K key);
 
     /**
      * Tells the object to clear all of its attributes.
@@ -61,7 +61,7 @@ public interface Attributable {
      * 
      * @return Map of all attributes
      */
-    public Map<?, ?> getAttributes();
+    public Map<K, V> getAttributes();
     
     /**
      * Convenience method to allow super class methods access to an attribute
@@ -69,5 +69,5 @@ public interface Attributable {
      * 
      * @param map Map of all attributes
      */
-    public void setAttributes(Map<?, ?> map);
+    public void setAttributes(Map<K, V> map);
 }
