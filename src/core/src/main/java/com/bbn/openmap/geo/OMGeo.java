@@ -31,8 +31,11 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicAdapter;
+import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
@@ -101,6 +104,11 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 			super(new GeoPoint.Impl(lat, lon, isDegrees));
 		}
 
+		public Pt(OMPoint pnt) {
+			this(pnt.getLat(), pnt.getLon(), true);
+			setAttributes(pnt.getAttributes());
+		}
+		
 		public Geo getGeo() {
 			return ((GeoPoint) getExtent()).getPoint();
 		}
@@ -175,6 +183,11 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
 		public Line(Geo[] gs) {
 			super(new GeoSegment.Impl(gs));
+		}
+
+		public Line(OMLine line) {
+			this(new Geo[] { new Geo(line.getLL()[0], line.getLL()[1]), new Geo(line.getLL()[2], line.getLL()[3]) });
+			setAttributes(line.getAttributes());
 		}
 
 		public Geo[] getGeoArray() {
@@ -256,6 +269,11 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 			super(new GeoPath.Impl(points));
 		}
 
+		public Polyline(OMPoly poly) {
+			this(GeoArray.Double.createFromLatLonRadians(poly.getLatLonArray()));
+			setAttributes(poly.getAttributes());
+		}
+
 		public GeoArray getPoints() {
 			return ((GeoPath) getExtent()).getPoints();
 		}
@@ -264,7 +282,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
 			setNeedToRegenerate(true);
 
-			boolean isPolygon = getExtent() instanceof GeoRegion;
+			boolean isPolygon = isGeometryClosed();
 
 			if (proj == null) {
 				Debug.message("omgraphic", "GeoOMGraphic.Poly: null projection in generate!");
@@ -314,6 +332,10 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 			return true;
 		}
 
+		protected boolean isGeometryClosed() {
+			return false;
+		}
+
 		protected boolean isGeometryClosed(float[] rawllpts) {
 			boolean geometryClosed = false;
 
@@ -359,8 +381,17 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 			super(new GeoRegion.Impl(points));
 		}
 
+		public Polygon(OMPoly poly) {
+			this(GeoArray.Double.createFromLatLonRadians(poly.getLatLonArray()));
+			setAttributes(poly.getAttributes());
+		}
+
 		public boolean isPointInside(Geo point) {
 			return ((GeoRegion) getExtent()).isPointInside(point);
+		}
+
+		protected boolean isGeometryClosed() {
+			return true;
 		}
 	}
 
@@ -375,6 +406,23 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 			return new OMGeo.Polyline((GeoPath) extent);
 		}
 		return new OMGeo.Pt(extent.getBoundingCircle().getCenter());
+	}
+	
+	public static OMGeo create(OMGraphic omg) {
+		if (omg instanceof OMPoint) {
+			return new OMGeo.Pt((OMPoint) omg);
+		} else if (omg instanceof OMLine) {
+			return new OMGeo.Line((OMLine) omg);
+		} else if (omg instanceof OMPoly){
+			OMPoly poly = (OMPoly) omg;
+			if (poly.isPolygon()) {
+				return new OMGeo.Polygon(poly);
+			} else {
+				return new OMGeo.Polyline(poly);
+			}
+		}
+		
+		return null;
 	}
 
 }
