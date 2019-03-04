@@ -39,6 +39,10 @@ import com.bbn.openmap.event.SelectMouseMode;
 public class EditorLayerMouseMode extends CoordMouseMode {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
      * Mouse Mode identifier, which is "EditorLayer". This is returned
      * on getID(). This mouse mode is invisible, so id doesn't have to
      * be pretty for the GUI.

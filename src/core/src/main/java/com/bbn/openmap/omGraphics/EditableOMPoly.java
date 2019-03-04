@@ -163,6 +163,10 @@ public class EditableOMPoly extends EditableOMAbstractLine {
      */
     protected boolean syncEnclosed() {
         try {
+        	if (polyGrabPoints == null || polyGrabPoints.isEmpty()) {
+        		return false;
+        	}
+        	
             OffsetGrabPoint gb0 = (OffsetGrabPoint) polyGrabPoints.get(0);
             OffsetGrabPoint ogb = (OffsetGrabPoint) polyGrabPoints.get(polyGrabPoints.size() - 1);
 

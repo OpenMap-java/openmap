@@ -36,7 +36,11 @@ import com.bbn.openmap.util.PropUtils;
 public abstract class AbstractEventPresenter extends OMComponentPanel implements
         EventPresenter {
 
-    protected String name;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected String name;
 
     public AbstractEventPresenter() {
         name = "";

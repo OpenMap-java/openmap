@@ -98,12 +98,6 @@ public abstract class AbstractLocationHandler extends OMComponent implements Loc
 
     private String prettyName = "";
 
-    /**
-     * All LocationHandlers have access to an I18n object, which is provided by
-     * the Environment.
-     */
-    protected transient I18n i18n = Environment.getI18n();
-
     protected AbstractLocationHandler() {
         GraphicAttributes nAttributes = new GraphicAttributes();
         nAttributes.setRenderType(OMGraphic.RENDERTYPE_LATLON);

@@ -89,22 +89,27 @@ import com.bbn.openmap.util.propertyEditor.Inspector;
  * 
  * <pre>
  * 
- *                                # Properties for DrawingToolLayer:
- *                                drawingToolLayer.class=com.bbn.openmap.layer.DrawingToolLayer
+ *   # Properties for DrawingToolLayer:
+ *   drawingToolLayer.class=com.bbn.openmap.layer.DrawingToolLayer
+ *                              
+ *   drawingToolLayer.prettyName=General Layer
+ *                              
+ *   # optional flag to tell layer to display tooltip queues over it's OMGraphics
+ *   drawingToolLayer.showHints=true
  *                               
- *                                drawingToolLayer.prettyName=General Layer
- *                               
- *                                # optional flag to tell layer to display tooltip queues over it's OMGraphics
- *                                drawingToolLayer.showHints=true
- *                               
- *                                # optional flag to specify file to store and read OMGraphics.  A Save button 
- *                                # is available on the palette.  If it's not specified and the Save button is 
- *                                # chosen, the user will queried for this location.
- *                                drawingToolLayer.file=file to read OMGraphics from
+ *   # optional flag to specify file to store and read OMGraphics.  A Save button 
+ *   # is available on the palette.  If it's not specified and the Save button is 
+ *   # chosen, the user will queried for this location.
+ *   drawingToolLayer.file=file to read OMGraphics from
  * 
  * </pre>
  */
 public class DrawingToolLayer extends OMGraphicHandlerLayer implements DrawingToolRequestor {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** Get a handle on the DrawingTool. */
 	protected OMDrawingTool drawingTool;
@@ -385,7 +390,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements DrawingTo
 	}
 
 	protected JPanel box;
-	protected JComboBox jcb;
+	protected JComboBox<Action> jcb;
 
 	public Component getGUI() {
 		if (box == null) {
@@ -398,7 +403,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements DrawingTo
 			GridBagConstraints c = new GridBagConstraints();
 			box.setLayout(gridbag);
 
-			jcb = new JComboBox(getActions());
+			jcb = new JComboBox<Action>(getActions());
 			c.gridx = GridBagConstraints.REMAINDER;
 			gridbag.setConstraints(jcb, c);
 			box.add(jcb);
@@ -460,6 +465,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements DrawingTo
 	 * 
 	 * @return Vector of Actions
 	 */
+	@SuppressWarnings("serial")
 	protected Vector<Action> getActions() {
 		if (actions == null) {
 			actions = new Vector<Action>();

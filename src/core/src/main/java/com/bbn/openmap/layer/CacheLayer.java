@@ -173,7 +173,7 @@ public class CacheLayer extends Layer implements ActionListener,
      */
     public Component getGUI() {
 
-        JButton rereadFilesButton = new JButton("ReRead OMGraphics");
+        JButton rereadFilesButton = new JButton("Reload OMGraphics");
         rereadFilesButton.setActionCommand(READ_DATA_COMMAND);
         rereadFilesButton.addActionListener(this);
 

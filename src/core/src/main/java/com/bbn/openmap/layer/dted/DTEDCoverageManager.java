@@ -83,19 +83,19 @@ public class DTEDCoverageManager extends OMGraphicList implements PropertyConsum
      */
     protected CoverageDataFile coverageFile = null;
 
-    protected DrawingAttributes[] attributes = null;
+    protected DrawingAttributes[] drawingAttributes = null;
     protected OMGraphicList[] levelRects = null;
 
     public DTEDCoverageManager(String[] paths) {
         this.paths = paths;
 
-        attributes = new DrawingAttributes[3];
-        attributes[0] = DrawingAttributes.getDefaultClone();
-        attributes[0].setLinePaint(PropUtils.parseColor(DEFAULT_LEVEL0_COLOR_STRING));
-        attributes[1] = DrawingAttributes.getDefaultClone();
-        attributes[1].setLinePaint(PropUtils.parseColor(DEFAULT_LEVEL1_COLOR_STRING));
-        attributes[2] = DrawingAttributes.getDefaultClone();
-        attributes[2].setLinePaint(PropUtils.parseColor(DEFAULT_LEVEL2_COLOR_STRING));
+        drawingAttributes = new DrawingAttributes[3];
+        drawingAttributes[0] = DrawingAttributes.getDefaultClone();
+        drawingAttributes[0].setLinePaint(PropUtils.parseColor(DEFAULT_LEVEL0_COLOR_STRING));
+        drawingAttributes[1] = DrawingAttributes.getDefaultClone();
+        drawingAttributes[1].setLinePaint(PropUtils.parseColor(DEFAULT_LEVEL1_COLOR_STRING));
+        drawingAttributes[2] = DrawingAttributes.getDefaultClone();
+        drawingAttributes[2].setLinePaint(PropUtils.parseColor(DEFAULT_LEVEL2_COLOR_STRING));
 
         levelRects = new OMGraphicList[3];
         levelRects[0] = new OMGraphicList();
@@ -267,7 +267,7 @@ public class DTEDCoverageManager extends OMGraphicList implements PropertyConsum
                         double right = lon + 1.0 - offset;
 
                         rect = new OMRect(up, left, down, right, lineType);
-                        attributes[level].setTo(rect);
+                        drawingAttributes[level].setTo(rect);
                         rect.generate(proj);
                         rectangles.add(rect);
                     }
@@ -288,7 +288,7 @@ public class DTEDCoverageManager extends OMGraphicList implements PropertyConsum
             getList = new Properties();
         }
 
-        for (DrawingAttributes atts : attributes) {
+        for (DrawingAttributes atts : drawingAttributes) {
             atts.getProperties(getList);
         }
 
@@ -329,9 +329,9 @@ public class DTEDCoverageManager extends OMGraphicList implements PropertyConsum
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        attributes[0].setProperties(prefix + "0", setList);
-        attributes[1].setProperties(prefix + "1", setList);
-        attributes[2].setProperties(prefix + "2", setList);
+        drawingAttributes[0].setProperties(prefix + "0", setList);
+        drawingAttributes[1].setProperties(prefix + "1", setList);
+        drawingAttributes[2].setProperties(prefix + "2", setList);
 
         String coverageFileString = setList.getProperty(prefix + COVERAGE_FILE_PROPERTY);
         if (coverageFileString != null) {
@@ -389,7 +389,7 @@ public class DTEDCoverageManager extends OMGraphicList implements PropertyConsum
                 jcb.addActionListener(aListener);
                 jcb.setActionCommand(Integer.toString(level));
                 pane.add(jcb);
-                pane.add(attributes[level].getGUI());
+                pane.add(drawingAttributes[level].getGUI());
                 c.gridy = level;
                 gridbag.setConstraints(pane, c);
                 panel.add(pane);

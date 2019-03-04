@@ -63,7 +63,7 @@ public interface EditorTool extends MapMouseInterpreter, LightMapHandlerChild {
     public boolean isVisible();
 
     /**
-     * The method that allows an EditorTool provide it's GUI.
+     * The method that allows an EditorTool provide its GUI.
      */
     public Container getFace();
 
