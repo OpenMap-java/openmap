@@ -74,8 +74,8 @@ import com.bbn.openmap.util.PropUtils;
  *  #----------------------------------------------------------------------
  *  # Properties file for TerrainLayer
  *  #----------------------------------------------------------------------
- *  # The default tool to use for the terrain layer.  Can be PROFILE or
- *  LOS.  terrain.default.mode=PROFILE
+ *  # The default tool to use for the terrain layer.  Can be PROFILE or LOS.  
+ *  terrain.default.mode=PROFILE
  *  #----------------------------------------------------------------------
  *  # End of properties file for TerrainLayer
  *  #----------------------------------------------------------------------
