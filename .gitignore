@@ -1,6 +1,7 @@
 /classes
 target
-
 src/core/nbactions.xml
-
 src/wmsservlet/src/main/webapp/WEB-INF/glassfish-web.xml
+*/.classpath
+*/.settings
+
