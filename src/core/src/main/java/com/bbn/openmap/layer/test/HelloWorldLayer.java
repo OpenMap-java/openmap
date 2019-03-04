@@ -42,7 +42,11 @@ import com.bbn.openmap.omGraphics.OMPoly;
  */
 public class HelloWorldLayer extends Layer {
 
-    protected OMGraphicList graphics;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected OMGraphicList graphics;
 
     /**
      * Construct the layer.

@@ -92,7 +92,11 @@ import com.bbn.openmap.util.PaletteHelper;
 public class TestLayer extends OMGraphicHandlerLayer implements
         MapMouseListener {
 
-    public final static transient String LineVisibleProperty = ".line.visible";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public final static transient String LineVisibleProperty = ".line.visible";
     public final static transient String CircVisibleProperty = ".circ.visible";
     public final static transient String RectVisibleProperty = ".rect.visible";
     public final static transient String TextVisibleProperty = ".text.visible";
@@ -393,7 +397,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
      */
     protected JPanel getGraphicPalette(final GraphicBase obj, final String title) {
 
-        final JComboBox jcb;
+        final JComboBox<String> jcb;
         final JFrame jframe;
         final JRootPane main;
         final JPanel parent;
@@ -403,7 +407,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
         main = jframe.getRootPane();
 
         // different controls for different render types
-        jcb = new JComboBox();
+        jcb = new JComboBox<String>();
         jcb.addItem("LatLon");// indices correspond to LineType.java
         jcb.addItem("XY");
         jcb.addItem("Offset");
@@ -630,13 +634,13 @@ public class TestLayer extends OMGraphicHandlerLayer implements
             }
         }
 
-        protected void setType(JComboBox jcb) {
+        protected void setType(JComboBox<String> jcb) {
             type = jcb.getSelectedIndex() + 1;
             setList(generateGraphics());
             repaint();
         }
 
-        protected void setRender(JComboBox jcb) {
+        protected void setRender(JComboBox<String> jcb) {
             rt = jcb.getSelectedIndex() + 1;
             setList(generateGraphics());
             repaint();
@@ -667,7 +671,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
         protected void makeColorBox(JComponent parent, String title,
                                     final boolean isFill) {
             JPanel pal = PaletteHelper.createVerticalPanel(title);
-            final JComboBox jcb = new JComboBox();
+            final JComboBox<String> jcb = new JComboBox<String>();
             for (int i = 0; i < NCOLORS; i++) {
                 jcb.addItem(colorNames[i]);
             }
@@ -721,7 +725,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
         protected void makeArrowHeadGUI(JComponent parent) {
             JPanel pal;
             pal = PaletteHelper.createVerticalPanel(null);
-            final JComboBox jcb = new JComboBox();
+            final JComboBox<String> jcb = new JComboBox<String>();
             jcb.addItem("None");
             jcb.addItem("Arrow Forward");
             jcb.addItem("Arrow Back");
@@ -775,15 +779,16 @@ public class TestLayer extends OMGraphicHandlerLayer implements
 
             if (rt == OMGraphic.RENDERTYPE_LATLON) {
                 pal = PaletteHelper.createVerticalPanel(null);
-                JComboBox jcb = new JComboBox();
+                JComboBox<String> jcb = new JComboBox<String>();
                 jcb.addItem("Straight");// indices correspond to
                                         // LineType.java
                 jcb.addItem("Rhumb");
                 jcb.addItem("Great Circle");
                 jcb.setSelectedIndex(type - 1);
                 jcb.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        setType((JComboBox) e.getSource());
+                    @SuppressWarnings("unchecked")
+					public void actionPerformed(ActionEvent e) {
+                        setType((JComboBox<String>) e.getSource());
                     }
                 });
                 pal.add(jcb);
@@ -1071,8 +1076,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
 
         protected void setXY(JTextArea jta) {
             try {
-                if (false)
-                    throw new NumberFormatException("foo");
+            	// throw new NumberFormatException("foo");
             } catch (NumberFormatException ex) {
                 return;
             }
@@ -1105,15 +1109,16 @@ public class TestLayer extends OMGraphicHandlerLayer implements
 
             if (rt == OMGraphic.RENDERTYPE_LATLON) {
                 pal = PaletteHelper.createVerticalPanel(null);
-                JComboBox jcb = new JComboBox();
+                JComboBox<String> jcb = new JComboBox<String>();
                 jcb.addItem("Straight");// indices correspond to
                                         // LineType.java
                 jcb.addItem("Rhumb");
                 jcb.addItem("Great Circle");
                 jcb.setSelectedIndex(type - 1);
                 jcb.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        setType((JComboBox) e.getSource());
+                    @SuppressWarnings("unchecked")
+					public void actionPerformed(ActionEvent e) {
+                        setType((JComboBox<String>) e.getSource());
                     }
                 });
                 pal.add(jcb);
@@ -1202,7 +1207,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
             final JPanel pop;
             JPanel pal;
             JTextField tf;
-            final JComboBox jcb;
+            final JComboBox<String> jcb;
             pop = PaletteHelper.createVerticalPanel(null);
 
             tf = PaletteHelper.createTextEntry("text", data, pop);
@@ -1220,7 +1225,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
             });
 
             pal = PaletteHelper.createVerticalPanel(null);
-            jcb = new JComboBox();
+            jcb = new JComboBox<String>();
             jcb.addItem("right");// indices correspond to values in
                                  // OMText
             jcb.addItem("center");

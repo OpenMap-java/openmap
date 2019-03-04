@@ -19,7 +19,7 @@
 // $Author: dietrick $
 // 
 // **********************************************************************
-package com.bbn.openmap.layer;
+package com.bbn.openmap.layer.test;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -41,6 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import com.bbn.openmap.event.MapMouseEvent;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.FontSizer;
@@ -99,13 +100,17 @@ import com.bbn.openmap.util.PaletteHelper;
  * OMDrawingTool. The Palette has buttons that can be used to start the tool in
  * several different ways.
  * 
- * @see com.bbn.openmap.layer.DemoLayer
+ * @see com.bbn.openmap.layer.test.DemoLayer
  * 
  *      Just added some decorated splines to test them. EL
  */
 public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolRequestor {
 
-    protected JPanel legend;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected JPanel legend;
     /**
      * Found in the findAndInit() method, in the MapHandler.
      */

@@ -26,16 +26,27 @@ package com.bbn.openmap.layer.test;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 
 import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.Intersection;
+import com.bbn.openmap.layer.editor.DrawingEditorTool;
 import com.bbn.openmap.layer.editor.EditorLayer;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.tools.drawing.OMLineLoader;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
 
 /**
  * This layer was developed to provide a simple picture of how vector cross
@@ -79,110 +90,146 @@ import com.bbn.openmap.util.Debug;
 
 public class GeoCrossDemoLayer extends EditorLayer {
 
-    protected OMGraphicList lines = new OMGraphicList();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected OMGraphicList lines = new OMGraphicList();
 
-    /**
-     * 
-     */
-    public GeoCrossDemoLayer() {
-        super();
-    }
+	/**
+	 * 
+	 */
+	public GeoCrossDemoLayer() {
+		super();
+		
+		DrawingEditorTool drawingEditorTool = new DrawingEditorTool(this);
+		drawingEditorTool.addEditToolLoader(new OMLineLoader());
+		setEditorTool(drawingEditorTool);
+		setFaceOnPalette(true);
+	}
 
-    public synchronized OMGraphicList prepare() {
-        OMGraphicList list = getList();
+	public synchronized OMGraphicList prepare() {
+		OMGraphicList list = getList();
 
-        if (list == null) {
-            list = new OMGraphicList();
-        } else {
-            list.clear();
-        }
+		if (list == null) {
+			list = new OMGraphicList();
+		} else {
+			list.clear();
+		}
 
-        OMLine oldLine = null;
-        Geo ogc = null;
+		OMLine oldLine = null;
+		Geo ogc = null;
 
-        for (OMGraphic omg : lines) {
+		for (OMGraphic omg : lines) {
 
-            OMLine line = (OMLine) omg;
-            double[] ll = line.getLL();
-            Geo g1 = new Geo(ll[0], ll[1]);
-            Geo g2 = new Geo(ll[2], ll[3]);
+			OMLine line = (OMLine) omg;
+			double[] ll = line.getLL();
+			Geo g1 = new Geo(ll[0], ll[1]);
+			Geo g2 = new Geo(ll[2], ll[3]);
 
-            Geo gc = g1.crossNormalize(g2);
+			Geo gc = g1.crossNormalize(g2);
 
-            OMPoint p = new OMPoint((float) gc.getLatitude(), (float) gc
-                    .getLongitude(), 3);
-            p.setLinePaint(line.getLinePaint());
-            p.setFillPaint(line.getFillPaint());
-            p.setStroke(line.getStroke());
+			OMPoint p = new OMPoint((float) gc.getLatitude(), (float) gc.getLongitude(), 3);
+			p.setLinePaint(line.getLinePaint());
+			p.setFillPaint(line.getFillPaint());
+			p.setStroke(line.getStroke());
 
-            line.addArrowHead(true);
+			line.addArrowHead(true);
 
-            list.add(line);
-            list.add(p);
+			list.add(line);
+			list.add(p);
 
-            if (oldLine != null && ogc != null) {
+			if (oldLine != null && ogc != null) {
 
-                double[] ll2 = oldLine.getLL();
-                Geo g3 = new Geo(ll2[0], ll2[1]);
-                Geo g4 = new Geo(ll2[2], ll2[3]);
+				double[] ll2 = oldLine.getLL();
+				Geo g3 = new Geo(ll2[0], ll2[1]);
+				Geo g4 = new Geo(ll2[2], ll2[3]);
 
-                OMLine line2 = new OMLine((float) ogc.getLatitude(),
-                        (float) ogc.getLongitude(), (float) gc.getLatitude(),
-                        (float) gc.getLongitude(),
-                        OMGraphic.LINETYPE_GREATCIRCLE);
-                line2.setLinePaint(line.getLinePaint());
-                line2
-                        .setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT,
-                                BasicStroke.JOIN_BEVEL, 0f, new float[] { 10,
-                                        10 }, 0f));
-                line2.addArrowHead(true);
-                list.add(line2);
+				OMLine line2 = new OMLine((float) ogc.getLatitude(), (float) ogc.getLongitude(),
+						(float) gc.getLatitude(), (float) gc.getLongitude(), OMGraphic.LINETYPE_GREATCIRCLE);
+				line2.setLinePaint(line.getLinePaint());
+				line2.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0f,
+						new float[] { 10, 10 }, 0f));
+				line2.addArrowHead(true);
+				list.add(line2);
 
-                Geo i = gc.crossNormalize(ogc);
-                Color iColor = Color.white;
-                if (!(Intersection.isOnSegment(g1, g2, i) || Intersection
-                        .isOnSegment(g3, g4, i))) {
-                    i = i.antipode();
-                    iColor = Color.black;
-                }
+				Geo i = gc.crossNormalize(ogc);
+				Color iColor = Color.white;
+				if (!(Intersection.isOnSegment(g1, g2, i) || Intersection.isOnSegment(g3, g4, i))) {
+					i = i.antipode();
+					iColor = Color.black;
+				}
 
-                p = new OMPoint((float) i.getLatitude(), (float) i
-                        .getLongitude(), 3);
-                p.setOval(true);
-                p.setLinePaint(line.getLinePaint());
-                p.setFillPaint(iColor);
-                p.setStroke(line.getStroke());
+				p = new OMPoint((float) i.getLatitude(), (float) i.getLongitude(), 3);
+				p.setOval(true);
+				p.setLinePaint(line.getLinePaint());
+				p.setFillPaint(iColor);
+				p.setStroke(line.getStroke());
 
-                list.add(p);
-            }
+				list.add(p);
+			}
 
-            oldLine = line;
-            ogc = gc;
-        }
+			oldLine = line;
+			ogc = gc;
+		}
 
-        list.generate(getProjection());
+		list.generate(getProjection());
 
-        return list;
+		return list;
 
-    }
+	}
 
-    public void drawingComplete(OMGraphic omg, OMAction action) {
+	/**
+	 * We're assuming that faceOnPalette is true, so the drawing tool for this layer is in the palette, not in the ToolPanel.
+	 */
+	public Component getGUI() {
+		if (box == null && editorTool != null) {
 
-        releaseProxyMouseMode();
+			String interString = i18n.get(GeoCrossDemoLayer.class, "DRAW_LINES", "Draw lines to calculate intersections");
 
-        if (omg instanceof OMLine && lines != null) {
-            lines.doAction(omg, action);
-            deselect(lines);
-            doPrepare();
-        } else {
-            Debug.error("Layer " + getName() + " received " + omg + " and "
-                    + action + " with no list ready");
-        }
+			box = PaletteHelper.createHorizontalPanel(interString);
+			
+			Container fce = editorTool.getFace();
 
-        // This is important!!
-        if (editorTool != null) {
-            editorTool.drawingComplete(omg, action);
-        }
-    }
+			GridBagLayout gridbag = new GridBagLayout();
+			GridBagConstraints c = new GridBagConstraints();
+			box.setLayout(gridbag);
+
+			c.gridx = GridBagConstraints.REMAINDER;
+			gridbag.setConstraints(fce, c);
+			box.add(fce);
+
+			interString = i18n.get(GeoCrossDemoLayer.class, "CLEAR_LINES", "Clear Lines");
+			JButton button = new JButton(interString);
+			button.setToolTipText(interString);
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent event) {
+					lines.clear();
+					doPrepare();
+				}
+			});
+			box.add(button);
+		}
+
+		return box;
+	}
+	
+	public void drawingComplete(OMGraphic omg, OMAction action) {
+
+		releaseProxyMouseMode();
+
+		if (omg instanceof OMLine && lines != null) {
+			lines.doAction(omg, action);
+			deselect(lines);
+			doPrepare();
+		} else {
+			Debug.error("Layer " + getName() + " received " + omg + " and " + action + " with no list ready");
+		}
+
+		// This is important!!
+		if (editorTool != null) {
+			editorTool.drawingComplete(omg, action);
+		}
+	}
 
 }

@@ -18,7 +18,11 @@ import com.bbn.openmap.util.DataBounds;
  */
 public class BoundsTestLayer extends OMGraphicHandlerLayer implements DrawingToolRequestor {
 
-    OMGraphicList holder = new OMGraphicList();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	OMGraphicList holder = new OMGraphicList();
     OMDrawingTool drawingTool = null;
     String BOUNDS = "bounds";
     String HIT = "hit";
