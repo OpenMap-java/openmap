@@ -37,7 +37,7 @@ import com.bbn.openmap.util.Attributable;
  * 
  * @author dietrick
  */
-public class OMEvent implements Attributable {
+public class OMEvent implements Attributable<Object, Object> {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.event.OMEvent");
 
@@ -69,7 +69,7 @@ public class OMEvent implements Attributable {
     protected boolean atCurrentTime = false;
     protected boolean selected = false;
 
-    protected Map attributes;
+    protected Map<Object, Object> attributes;
 
     public OMEvent(Object src, String desc, long tStamp) {
         this(src, desc, tStamp, null, null);
@@ -79,7 +79,8 @@ public class OMEvent implements Attributable {
         this(src, desc, tStamp, loc, null);
     }
 
-    public OMEvent(Object src, String desc, long tStamp, Point2D loc,
+    @SuppressWarnings("unchecked")
+	public OMEvent(Object src, String desc, long tStamp, Point2D loc,
             Rectangle rect) {
         description = desc;
         timeStamp = tStamp;
@@ -88,7 +89,7 @@ public class OMEvent implements Attributable {
         source = src;
 
         if (src instanceof Attributable) {
-            attributes = ((Attributable) src).getAttributes();
+            attributes = ((Attributable<Object, Object>) src).getAttributes();
         }
     }
 
@@ -173,7 +174,7 @@ public class OMEvent implements Attributable {
      * @param filters
      * @return true if this event passes filters
      */
-    public boolean passesMacroFilters(List filters) {
+    public boolean passesMacroFilters(List<String> filters) {
         return true;
     }
 
@@ -183,7 +184,7 @@ public class OMEvent implements Attributable {
         }
 
         if (attributes == null) {
-            attributes = new Hashtable();
+            attributes = new Hashtable<Object, Object>();
         }
 
         if (value != null) {
@@ -207,7 +208,7 @@ public class OMEvent implements Attributable {
         }
     }
 
-    public Map getAttributes() {
+    public Map<Object, Object> getAttributes() {
         return attributes;
     }
 
@@ -215,7 +216,7 @@ public class OMEvent implements Attributable {
      * Doesn't set the attribute map on the source, if the source if
      * Attributable. Just sets the attribute Map on the OMEvent.
      */
-    public void setAttributes(Map map) {
+    public void setAttributes(Map<Object, Object> map) {
         attributes = map;
     }
 
