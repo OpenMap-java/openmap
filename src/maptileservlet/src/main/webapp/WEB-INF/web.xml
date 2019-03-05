@@ -27,6 +27,23 @@
 		  Standard tile set properties
 		</description>
 	</context-param>
+	
+	<!-- You can set these if you want to host leaflet locally -->
+	<context-param>
+        <param-name>leaflet_css</param-name>
+        <param-value>http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css</param-value>
+        <description>
+            CSS for leaflet map.
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>leaflet_js</param-name>
+        <param-value>http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js</param-value>
+        <description>
+            Leaflet map source and definitions.
+        </description>
+    </context-param>
 
     <!-- Servlet definitions -->
 	<servlet>
