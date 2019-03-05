@@ -25,8 +25,8 @@
 package com.bbn.openmap.gui.event;
 
 import java.beans.PropertyChangeListener;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -48,17 +48,17 @@ public interface FilterPresenter {
     public JPanel getFilterPanel();
 
     /**
-     * @return a hashtable of filters that can be used for this
+     * @return a Map of filters that can be used for this
      *         display. The keys are the Strings for the filters, the
      *         values are Booleans indicating whether events of the
      *         key type are on or off.
      */
-    public Hashtable getFilters();
+    public Map<String, Boolean> getFilters();
     
     /**
      * @return the list of strings for things that should be shown.
      */
-    public List getActiveFilters();
+    public List<String> getActiveFilters();
 
     /**
      * Master control for turning all filters on or off.

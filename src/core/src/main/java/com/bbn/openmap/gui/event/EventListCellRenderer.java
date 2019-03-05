@@ -42,8 +42,12 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
 
-public class EventListCellRenderer extends OMComponentPanel implements ListCellRenderer {
+public class EventListCellRenderer extends OMComponentPanel implements ListCellRenderer<OMEvent> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected JLabel label = new JLabel();
 	protected JLabel timeMark = new JLabel();
 	protected JLabel ratingMark = new JLabel();
@@ -141,7 +145,7 @@ public class EventListCellRenderer extends OMComponentPanel implements ListCellR
 		return drawingAttributes;
 	}
 
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+	public Component getListCellRendererComponent(JList<? extends OMEvent> list, OMEvent value, int index, boolean isSelected,
 			boolean cellHasFocus) {
 		label.setText(value.toString());
 

@@ -69,7 +69,12 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class EventPanel extends OMComponentPanel implements MapPanelChild {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.event.EventPanel");
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.event.EventPanel");
 
     public final static String SHOW_ALL_EVENTS_STRING = " Show All Events ";
     public final static String HIDE_ALL_EVENTS_STRING = " Hide All Events ";

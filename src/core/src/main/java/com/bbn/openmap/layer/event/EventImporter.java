@@ -30,7 +30,7 @@ import com.bbn.openmap.omGraphics.time.TemporalOMGraphicList;
  * EventImporter is an object that the EventLayer uses to query a data source
  * for events/records. It creates a TemporalOMGraphicList for the EventLayer to
  * use.
- * 
+ *
  * @author dietrick
  */
 public interface EventImporter {
@@ -43,6 +43,9 @@ public interface EventImporter {
      * <li>Add OMEvents to the callback.events list, one for each TemporalPoint created.
      * <li>Add locations to callback's DataBounds (callback.getDataBounds()).
      * </ul>
+	 *
+	 * @param callback EventLayer to set all the information on.
+	 * @return TemporalOMGraphicList with the events on the map.
      */
     TemporalOMGraphicList createData(EventLayer callback);
 

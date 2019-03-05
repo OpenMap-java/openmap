@@ -26,6 +26,8 @@ package com.bbn.openmap.gui.event;
 
 import java.util.List;
 
+import com.bbn.openmap.event.OMEvent;
+
 /**
  * A Macro filter knows how to take a Collection of objects and return a list of
  * them that pass its filters.
@@ -33,5 +35,5 @@ import java.util.List;
  * @author dietrick
  */
 public interface MacroFilter extends FilterPresenter {
-    public List getMacroFilteredList(List listOfEvents);
+    public List<OMEvent> getMacroFilteredList(List<OMEvent> listOfEvents);
 }
