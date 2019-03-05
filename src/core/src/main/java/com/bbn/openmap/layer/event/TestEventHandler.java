@@ -73,7 +73,7 @@ public class TestEventHandler extends OMEventHandlerAdapter implements
         timeBounds.addTimeToBounds(event.getTimeStamp());
     }
     
-    public List<OMEvent> getEventList(List filters) {
+    public List<OMEvent> getEventList(List<String> filters) {
         // At this level, we just want to return all events. Let
         // subclasses worry about macro-filtered events...
         // return getMacroFilteredList(events);
