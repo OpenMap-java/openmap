@@ -230,7 +230,7 @@ public class DTEDFrame
 
                 int lflon_index = (int) Math.floor(lon_index);
                 int lclon_index = (int) Math.ceil(lon_index);
-                /* int lflat_index = (int) Math.floor(lat_index); */
+                int lflat_index = (int) Math.floor(lat_index); 
                 int lclat_index = (int) Math.ceil(lat_index);
 
                 if (elevations[lflon_index] == null)
@@ -256,8 +256,8 @@ public class DTEDFrame
 
                 int ul = elevations[lflon_index][lclat_index];
                 int ur = elevations[lclon_index][lclat_index];
-                int ll = elevations[lflon_index][lclat_index];
-                int lr = elevations[lclon_index][lclat_index];
+                int ll = elevations[lflon_index][lflat_index];
+                int lr = elevations[lclon_index][lflat_index];
 
                 float answer = resolveFourPoints(ul, ur, lr, ll, lat_index, lon_index);
                 return Math.round(answer);
