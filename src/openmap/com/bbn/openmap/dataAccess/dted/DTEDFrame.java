@@ -187,8 +187,7 @@ public class DTEDFrame
     // ////////////////
 
     /**
-     * The elevation at the closest SW post to the given lat/lon. This is just a
-     * go-to-the-closest-post solution.
+     * The elevation at the closest post to the given lat/lon. 
      * 
      * @param lat latitude in decimal degrees.
      * @param lon longitude in decimal degrees.
