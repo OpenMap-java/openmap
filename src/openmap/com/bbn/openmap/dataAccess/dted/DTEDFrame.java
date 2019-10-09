@@ -187,8 +187,7 @@ public class DTEDFrame
     // ////////////////
 
     /**
-     * The elevation at the closest SW post to the given lat/lon. This is just a
-     * go-to-the-closest-post solution.
+     * The elevation at the closest post to the given lat/lon. 
      * 
      * @param lat latitude in decimal degrees.
      * @param lon longitude in decimal degrees.
@@ -211,7 +210,60 @@ public class DTEDFrame
         }
         return -32767; // Considered a null elevation value
     }
+    
+    /**
+     * Bi-linear interpolated elevation at a given lat/lon - should be more 
+     * precise than elevationAt(), but that depends on the resolution of the 
+     * data.
+     * 
+     * @param lat latitude in decimal degrees.
+     * @param lon longitude in decimal degrees.
+     * @return elevation at lat/lon in meters.
+     */
+    public int biLinearInterpElevationAt(float lat, float lon) {
+        if (frame_is_valid == true) {
+            if (lat >= dsi.sw_lat && 
+            		lat <= dsi.ne_lat && 
+            		lon >= dsi.sw_lon && 
+            		lon <= dsi.ne_lon) {
 
+                // lat/lon_post_intervals are *10 too big -
+                // extra 0 in 36000 to counteract
+                float lat_index = (lat - dsi.sw_lat) * 36000F / uhl.lat_post_interval;
+                float lon_index = (lon - dsi.sw_lon) * 36000F / uhl.lon_post_interval;
+
+                int lflon_index = (int) Math.floor(lon_index);
+                int lclon_index = (int) Math.ceil(lon_index);
+                int lflat_index = (int) Math.floor(lat_index);
+                int lclat_index = (int) Math.ceil(lat_index);
+
+                if (elevations[lflon_index] == null)
+                    readDataRecord(lflon_index);
+                if (elevations[lclon_index] == null)
+                    readDataRecord(lclon_index);
+
+                int ul = elevations[lflon_index][lclat_index];
+                int ur = elevations[lclon_index][lclat_index];
+                int ll = elevations[lflon_index][lflat_index];
+                int lr = elevations[lclon_index][lflat_index];
+                
+                float answer = biLinearInterpolation(
+                		ul, 
+                		ur, 
+                		lr, 
+                		ll, 
+                		lflon_index, 
+                		lflat_index, 
+                		lclon_index,
+                		lclat_index, 
+                		lat_index, 
+                		lon_index);
+                return Math.round(answer);
+            }
+        }
+        return -32767; // Considered a null elevation value
+    }
+    
     /**
      * Interpolated elevation at a given lat/lon - should be more precise than
      * elevationAt(), but that depends on the resolution of the data.
@@ -231,7 +283,7 @@ public class DTEDFrame
 
                 int lflon_index = (int) Math.floor(lon_index);
                 int lclon_index = (int) Math.ceil(lon_index);
-                /* int lflat_index = (int) Math.floor(lat_index); */
+                int lflat_index = (int) Math.floor(lat_index); 
                 int lclat_index = (int) Math.ceil(lat_index);
 
                 if (elevations[lflon_index] == null)
@@ -257,8 +309,8 @@ public class DTEDFrame
 
                 int ul = elevations[lflon_index][lclat_index];
                 int ur = elevations[lclon_index][lclat_index];
-                int ll = elevations[lflon_index][lclat_index];
-                int lr = elevations[lclon_index][lclat_index];
+                int ll = elevations[lflon_index][lflat_index];
+                int lr = elevations[lclon_index][lflat_index];
 
                 float answer = resolveFourPoints(ul, ur, lr, ll, lat_index, lon_index);
                 return Math.round(answer);
@@ -393,6 +445,61 @@ public class DTEDFrame
     // Internal methods
     // ////////////////
 
+    /**
+     * Perform a bilinear interpolation of 4 known elevation post values.
+     *  
+     * @param ul elevation value for the upper left coordinate.
+     * @param ur elevation value for the upper right coordinate.
+     * @param lr elevation value for the lower right coordinate.
+     * @param ll elevation value for the lower left coordinate.
+     * @param flon lower (floor) longitude index
+     * @param flat lower (floor) latitude index
+     * @param clon upper (ceiling) longitude index
+     * @param clat upper (ceiling) latitude index
+     * @param lat_index Target latitude location.
+     * @param lon_index Target longitude location.
+     * @return A bi-linear interpolation of the input known values.
+     */
+    private float biLinearInterpolation(
+    		int ul, 
+    		int ur, 
+    		int lr, 
+    		int ll, 
+    		int flon, 
+    		int flat, 
+    		int clon, 
+    		int clat, 
+    		float lat_index, 
+    		float lon_index) {
+    	
+    	float R1     = 0.0f;
+    	float R2     = 0.0f;
+    	float result = 0.0f;
+    	
+    	if (((clon - lon_index) == 0.0f) && 
+    			((lon_index - flon) == 0.0f)) {
+    		R1 = ll;
+    	}
+    	else {
+    		R1 = (clon - lon_index) * ll + (lon_index - flon) * lr;
+    	}
+    	if (((clon - lon_index) == 0.0f) && 
+    			((lon_index - flon) == 0.0f)) {
+    		R2 = ul;
+    	}
+    	else {
+    		R2 = (clon - lon_index) * ul + (lon_index - flon) * ur;
+    	}
+    	if (((clat - lat_index) == 0.0f) && 
+    			((lat_index - flat) == 0.0f)) {
+    		result = (R1 + R2)/2.0f;
+    	}
+    	else {
+    		result = (clat - lat_index) * R1 + (lat_index - flat) * R2;
+    	}
+     	return result;
+    }
+    
     /**
      * A try at interpolating the corners of the surrounding posts, given a lat
      * lon. Called from a function where the data for the lon has been read in.
