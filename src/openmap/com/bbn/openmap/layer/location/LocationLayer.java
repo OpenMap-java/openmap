@@ -581,14 +581,22 @@ public class LocationLayer extends OMGraphicHandlerLayer {
             props.put(prefix + AllowPartialsProperty, new Boolean(declutterMatrix.isAllowPartials()).toString());
         }
 
-        StringBuffer handlerList = new StringBuffer();
+        StringBuilder handlerList = new StringBuilder();
 
         // Need to hand this off to the location handlers, and build a
         // list of marker names to use in the LocationLayer property
         // list.
         if (dataHandlers != null) {
+            String handler;
             for (LocationHandler dataHandler : dataHandlers) {
                 dataHandler.getProperties(props);
+                handler = dataHandler.getPropertyPrefix();
+                if (handler != null && !(handler = handler.trim()).isEmpty()) {
+                    if (handlerList.length() != 0) {
+                        handlerList.append(' ');
+                    }
+                    handlerList.append(handler);
+                }
             }
         }
 
