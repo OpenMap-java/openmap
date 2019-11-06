@@ -588,14 +588,22 @@ public class LocationLayer extends OMGraphicHandlerLayer {
         // list.
         if (dataHandlers != null) {
             String handler;
+            int len;
             for (LocationHandler dataHandler : dataHandlers) {
                 dataHandler.getProperties(props);
                 handler = dataHandler.getPropertyPrefix();
-                if (handler != null && !(handler = handler.trim()).isEmpty()) {
-                    if (handlerList.length() != 0) {
-                        handlerList.append(' ');
+                if (handler != null) {
+                    handler = handler.trim();
+                    len = handler.length();
+                    if (handler.charAt(len - 1) == '.') {
+                        len--;
                     }
-                    handlerList.append(handler);
+                    if (len > 0) {
+                        if (handlerList.length() != 0) {
+                            handlerList.append(' ');
+                        }
+                        handlerList.append(handler, 0, len);
+                    }
                 }
             }
         }
