@@ -582,7 +582,7 @@ public class PropUtils {
      */
     public static Color parseColorFromProperties(Properties p, String propName, String dfault)
             throws NumberFormatException {
-        return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
+        return ColorFactory.parseColorFromProperties(p, propName, dfault, true);
     }
 
     /**
@@ -657,7 +657,7 @@ public class PropUtils {
      * @see ColorFactory#parseColor(String, boolean)
      */
     public static Color parseColor(String colorString) throws NumberFormatException {
-        return ColorFactory.parseColor(colorString, false);
+        return ColorFactory.parseColor(colorString, true);
     }
 
     /**
