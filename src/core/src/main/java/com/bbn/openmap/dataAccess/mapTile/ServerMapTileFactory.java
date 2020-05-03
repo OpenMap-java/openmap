@@ -245,7 +245,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 
 				imageBytes = out.toByteArray();
 
-				if (localFilePath != null) {
+				if (localFilePath != null && localCacheDir != null) {
 					File localFile = new File(localFilePath);
 
 					File parentDir = localFile.getParentFile();
@@ -335,6 +335,10 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 		prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
 		localCacheDir = setList.getProperty(prefix + LOCAL_CACHE_ROOT_DIR_PROPERTY, localCacheDir);
+		
+		if (localCacheDir != null && localCacheDir.trim().isEmpty()) {
+			localCacheDir = null;
+		}
 	}
 
 	public String getInitPropertiesOrder() {
