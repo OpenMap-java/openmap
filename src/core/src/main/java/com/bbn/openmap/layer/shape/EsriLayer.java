@@ -182,6 +182,7 @@ public class EsriLayer
 	extends OMGraphicHandlerLayer
 	implements ShapeConstants, DataBoundsProvider {
 
+	private static final long serialVersionUID = 1L;
 	private EsriGraphicList _list = null;
 	private DbfTableModel _model = null;
 	private int _type = -1;
@@ -459,7 +460,7 @@ public class EsriLayer
 	 * @param model The DbfModel to set for this layer
 	 */
 	public void setModel(DbfTableModel model) {
-		if (_model != null) {
+		if (model != null) {
 			_model = model;
 			_list.putAttribute(DBF_ATTRIBUTE, model);
 		}
