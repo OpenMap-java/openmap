@@ -75,7 +75,12 @@ import com.bbn.openmap.util.Taskable;
  */
 public class DateLayer extends LabelLayer implements Taskable, MapMouseListener {
 
-    // property keys
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	// property keys
     public final static transient String dateFormatProperty = "date.format";
 
     // properties

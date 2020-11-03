@@ -44,9 +44,6 @@ import com.bbn.openmap.util.PropUtils;
 
 public class EventListCellRenderer extends OMComponentPanel implements ListCellRenderer<OMEvent> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	protected JLabel label = new JLabel();
 	protected JLabel timeMark = new JLabel();

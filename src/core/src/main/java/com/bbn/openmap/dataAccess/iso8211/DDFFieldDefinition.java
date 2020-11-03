@@ -22,8 +22,8 @@
 
 package com.bbn.openmap.dataAccess.iso8211;
 
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bbn.openmap.layer.vpf.MutableInt;
 import com.bbn.openmap.util.Debug;
@@ -50,7 +50,7 @@ public class DDFFieldDefinition implements DDFConstants {
     protected DataStructCode _data_struct_code;
     protected DataTypeCode _data_type_code;
 
-    protected Vector paoSubfieldDefns;
+    protected List<DDFSubfieldDefinition> paoSubfieldDefns;
 
     /**
      * Fetch a pointer to the field name (tag).
@@ -244,8 +244,8 @@ public class DDFFieldDefinition implements DDFConstants {
         buf.append("      _data_type_code = ").append(_data_type_code).append("\n");
 
         if (paoSubfieldDefns != null) {
-            for (Iterator it = paoSubfieldDefns.iterator(); it.hasNext();) {
-                buf.append((DDFSubfieldDefinition) it.next());
+            for (DDFSubfieldDefinition ddsfd : paoSubfieldDefns) {
+                buf.append(ddsfd);
             }
         }
 
@@ -263,13 +263,13 @@ public class DDFFieldDefinition implements DDFConstants {
             pszSublist = pszSublist.substring(1);
         }
 
-        Vector papszSubfieldNames = PropUtils.parseMarkers(pszSublist, "!");
+        List<String> papszSubfieldNames = PropUtils.parseMarkers(pszSublist, "!");
 
-        paoSubfieldDefns = new Vector();
+        paoSubfieldDefns = new ArrayList<>();
 
-        for (Iterator it = papszSubfieldNames.iterator(); it.hasNext();) {
+        for (String ddfsdName : papszSubfieldNames) {
             DDFSubfieldDefinition ddfsd = new DDFSubfieldDefinition();
-            ddfsd.setName((String) it.next());
+            ddfsd.setName(ddfsdName);
             paoSubfieldDefns.add(ddfsd);
         }
 
@@ -378,8 +378,6 @@ public class DDFFieldDefinition implements DDFConstants {
      * turn does final parsing of the subfield formats.
      */
     protected boolean applyFormats(String _formatControls) {
-        String pszFormatList;
-        Vector papszFormatItems;
 
         /* -------------------------------------------------------------------- */
         /* Verify that the format string is contained within brackets. */
@@ -402,7 +400,7 @@ public class DDFFieldDefinition implements DDFConstants {
         /* Duplicate the string, and strip off the brackets. */
         /* -------------------------------------------------------------------- */
 
-        pszFormatList = expandFormat(_formatControls);
+        String pszFormatList = expandFormat(_formatControls);
 
         if (Debug.debugging("iso8211")) {
             Debug.output("DDFFieldDefinition.applyFormats{" + _formatControls
@@ -412,16 +410,14 @@ public class DDFFieldDefinition implements DDFConstants {
         /* -------------------------------------------------------------------- */
         /* Tokenize based on commas. */
         /* -------------------------------------------------------------------- */
-        papszFormatItems = PropUtils.parseMarkers(pszFormatList, ",");
+        List<String> papszFormatItems = PropUtils.parseMarkers(pszFormatList, ",");
 
         /* -------------------------------------------------------------------- */
         /* Apply the format items to subfields. */
         /* -------------------------------------------------------------------- */
 
         int iFormatItem = 0;
-        for (Iterator it = papszFormatItems.iterator(); it.hasNext(); iFormatItem++) {
-
-            String pszPastPrefix = (String) it.next();
+        for (String pszPastPrefix : papszFormatItems) {
 
             int pppIndex = 0;
             // Skip over digits...
@@ -443,11 +439,12 @@ public class DDFFieldDefinition implements DDFConstants {
                 break;
             }
 
-            if (!((DDFSubfieldDefinition) paoSubfieldDefns.elementAt(iFormatItem)).setFormat(pszPastPrefix)) {
-                Debug.output("DDFFieldDefinition had problem setting format for "
-                        + pszPastPrefix);
+            if (! paoSubfieldDefns.get(iFormatItem).setFormat(pszPastPrefix)) {
+                Debug.output("DDFFieldDefinition had problem setting format for " + pszPastPrefix);
                 return false;
             }
+            
+            iFormatItem++;
         }
 
         /* -------------------------------------------------------------------- */
@@ -469,7 +466,7 @@ public class DDFFieldDefinition implements DDFConstants {
         /* -------------------------------------------------------------------- */
         nFixedWidth = 0;
         for (int i = 0; i < paoSubfieldDefns.size(); i++) {
-            DDFSubfieldDefinition ddfsd = (DDFSubfieldDefinition) paoSubfieldDefns.elementAt(i);
+            DDFSubfieldDefinition ddfsd = paoSubfieldDefns.get(i);
             if (ddfsd.getWidth() == 0) {
                 nFixedWidth = 0;
                 break;
@@ -490,10 +487,8 @@ public class DDFFieldDefinition implements DDFConstants {
      *         subfield.
      */
     public DDFSubfieldDefinition findSubfieldDefn(String pszMnemonic) {
-        if (paoSubfieldDefns != null) {
-            for (Iterator it = paoSubfieldDefns.iterator(); pszMnemonic != null
-                    && it.hasNext();) {
-                DDFSubfieldDefinition ddfsd = (DDFSubfieldDefinition) it.next();
+        if (paoSubfieldDefns != null && pszMnemonic != null) {
+            for (DDFSubfieldDefinition ddfsd : paoSubfieldDefns) {
                 if (pszMnemonic.equalsIgnoreCase(ddfsd.getName())) {
                     return ddfsd;
                 }
@@ -516,7 +511,7 @@ public class DDFFieldDefinition implements DDFConstants {
             return null;
         }
 
-        return (DDFSubfieldDefinition) paoSubfieldDefns.elementAt(i);
+        return paoSubfieldDefns.get(i);
     }
 
     public static class DataStructCode {

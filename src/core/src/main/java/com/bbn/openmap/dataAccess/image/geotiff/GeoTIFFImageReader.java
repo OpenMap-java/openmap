@@ -40,7 +40,7 @@ import com.bbn.openmap.dataAccess.image.ImageTile;
  * @author dietrick
  */
 public class GeoTIFFImageReader implements ImageReader {
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageDecoder");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageReader");
     GeoTIFFFile gtfFile;
 
     public GeoTIFFImageReader(URL fileURL) {

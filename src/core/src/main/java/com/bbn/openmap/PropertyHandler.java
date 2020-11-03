@@ -30,15 +30,15 @@ import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.Vector;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -189,7 +189,7 @@ public class PropertyHandler
      * created by this PropertyHandler, and also prefixes that have been given
      * out on request.
      */
-    protected Set usedPrefixes = Collections.synchronizedSet(new HashSet());
+    protected Set<String> usedPrefixes = Collections.synchronizedSet(new HashSet<String>());
 
     protected ProgressSupport progressSupport;
 
@@ -203,7 +203,7 @@ public class PropertyHandler
      * A hashtable to keep track of property prefixes and the objects that were
      * created for them.
      */
-    protected Hashtable prefixLibrarian = new Hashtable();
+    protected Hashtable<String, Object> prefixLibrarian = new Hashtable<>();
 
     protected boolean DEBUG = false;
 
@@ -330,7 +330,6 @@ public class PropertyHandler
         }
 
         InputStream propsIn = getClass().getResourceAsStream(propsFileName);
-
         // Look in the codebase for applets...
         if (propsIn == null && Environment.isApplet()) {
             URL[] cba = new URL[1];
@@ -364,7 +363,7 @@ public class PropertyHandler
 
         // Seems like we can kick out here in event of Applet...
         if (Environment.isApplet()) {
-            Environment.init(getProperties());
+        	Environment.init(getProperties());
             return;
         }
 
@@ -381,7 +380,7 @@ public class PropertyHandler
         String openmapConfigDirectory = systemProperties.getProperty(configDirProperty);
 
         if (openmapConfigDirectory == null) {
-            Vector<String> cps = Environment.getClasspathDirs();
+            List<String> cps = Environment.getClasspathDirs();
             String defaultExtraDir = "share";
             for (String searchLoc : cps) {
                 File shareDir = new File(searchLoc, defaultExtraDir);
@@ -558,7 +557,7 @@ public class PropertyHandler
     protected Properties getIncludeProperties(String markerList, Properties props) {
         Properties newProps = new Properties();
         Properties tmpProps = new Properties();
-        Vector<String> includes = PropUtils.parseSpacedMarkers(markerList);
+        List<String> includes = PropUtils.parseSpacedMarkers(markerList);
         int size = includes.size();
         if (size > 0) {
 
@@ -566,8 +565,7 @@ public class PropertyHandler
                 logger.finer("handling include files: " + includes);
             }
 
-            for (int i = 0; i < size; i++) {
-                String includeName = (String) includes.elementAt(i);
+            for (String includeName : includes) {
                 String includeProperty = includeName + ".URL";
 
                 String include = props.getProperty(includeProperty);
@@ -715,8 +713,8 @@ public class PropertyHandler
         Properties props = getProperties();
         if (prefix != null) {
             String scopedPrefix = prefix + ".";
-            for (Enumeration e = props.keys(); e.hasMoreElements();) {
-                String key = (String) e.nextElement();
+            for (Enumeration<?> e = props.keys(); e.hasMoreElements();) {
+                String key = e.nextElement().toString();
                 if (key.startsWith(scopedPrefix)) {
                     prefixProperties.put(key, props.get(key));
                 }
@@ -745,7 +743,7 @@ public class PropertyHandler
      * Get the Hashtable being held that matches property prefix strings with
      * components.
      */
-    public Hashtable getPrefixLibrarian() {
+    public Hashtable<String, Object> getPrefixLibrarian() {
         return prefixLibrarian;
     }
 
@@ -783,7 +781,7 @@ public class PropertyHandler
             }
         }
 
-        Vector<String> debugList = PropUtils.parseSpacedMarkers(properties.getProperty(Environment.DebugList));
+        List<String> debugList = PropUtils.parseSpacedMarkers(properties.getProperty(Environment.DebugList));
         int size = debugList.size();
 
         for (String debugMarker : debugList) {
@@ -795,7 +793,7 @@ public class PropertyHandler
 
         String propPrefix = PropUtils.getScopedPropertyPrefix(getPropertyPrefix());
         String componentProperty = propPrefix + PropertyHandler.componentProperty;
-        Vector<String> componentList = PropUtils.parseSpacedMarkers(properties.getProperty(componentProperty));
+        List<String> componentList = PropUtils.parseSpacedMarkers(properties.getProperty(componentProperty));
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer("creating components from " + componentList);
@@ -806,13 +804,13 @@ public class PropertyHandler
                                i18n.get(this.getClass(), "creatingComponentsProgressMessage", "Creating Components"), 0, 100);
         }
 
-        Vector components =
+        List<?> components =
                 ComponentFactory.create(componentList, properties, (updateProgress ? getProgressSupport() : null), true);
 
         size = components.size();
 
         for (i = 0; i < size; i++) {
-            Object obj = (Object) components.elementAt(i);
+            Object obj = components.get(i);
             try {
                 if (obj instanceof String) {
                     logger.warning("finding out that the " + obj + " wasn't created");
@@ -827,7 +825,7 @@ public class PropertyHandler
                 // this list will be purged.
                 mapHandler.addLater(obj);
 
-                String markerName = ((String) componentList.elementAt(i)).intern();
+                String markerName = componentList.get(i).intern();
                 prefixLibrarian.put(markerName, obj);
                 addUsedPrefix(markerName);
 
@@ -888,19 +886,16 @@ public class PropertyHandler
             return null;
         }
 
-        Iterator it = mapHandler.iterator();
-        Object someObj;
-
         logger.fine("Looking for objects in MapHandler");
 
         MapBean mapBean = null;
         LayerHandler layerHandler = null;
         PropertyHandler propertyHandler = null;
         InformationDelegator infoDelegator = null;
-        Vector otherComponents = new Vector();
+        List<Object> otherComponents = new ArrayList<>();
 
-        while (it.hasNext()) {
-            someObj = it.next();
+        for (Object someObj : mapHandler) {
+            //someObj = it.next();
             logger.fine("found " + someObj.getClass().getName());
 
             if (someObj instanceof MapBean) {
@@ -1009,7 +1004,7 @@ public class PropertyHandler
      * @param createdProperties Properties object to store properties in, may be
      *        null.
      */
-    protected static void printComponentProperties(Vector components, PropertyHandler ph, PrintStream ps,
+    protected static void printComponentProperties(List<?> components, PropertyHandler ph, PrintStream ps,
                                                    Properties createdProperties) {
 
         // this section looks at the components and trys to create
@@ -1024,7 +1019,6 @@ public class PropertyHandler
 
         boolean buildConfiguredApplication = true;
         boolean componentListBuilt = false;
-        Object someObj;
         int numComponents = 0;
         String markerName;
         String componentProperty = PropertyHandler.componentProperty;
@@ -1044,11 +1038,10 @@ public class PropertyHandler
             // Let's build them from the current properties file.
             componentMarkerString.append(phProps.getProperty(componentProperty));
 
-            Vector componentList = PropUtils.parseSpacedMarkers(phProps.getProperty(componentProperty));
+            List<String> componentList = PropUtils.parseSpacedMarkers(phProps.getProperty(componentProperty));
 
-            for (int i = 0; i < componentList.size(); i++) {
-                String markerNameClass = (String) componentList.elementAt(i) + ".class";
-                componentPropsString.append(markerNameClass).append("=").append(phProps.get(markerNameClass)).append("\n");
+            for (String markerNameClass : componentList) {
+                componentPropsString.append(markerNameClass + ".class").append("=").append(phProps.get(markerNameClass)).append("\n");
                 if (createdProperties != null) {
                     createdProperties.put(markerNameClass, phProps.get(markerNameClass));
                 }
@@ -1064,16 +1057,13 @@ public class PropertyHandler
         // written to the file.
 
         Properties componentProperties = new Properties();
-        Enumeration comps = components.elements();
 
-        while (comps.hasMoreElements()) {
+        for (Object component : components) {
 
-            someObj = comps.nextElement();
+            if (component instanceof PropertyConsumer) {
+                logger.fine("Getting Property Info for" + component.getClass().getName());
 
-            if (someObj instanceof PropertyConsumer) {
-                logger.fine("Getting Property Info for" + someObj.getClass().getName());
-
-                PropertyConsumer pc = (PropertyConsumer) someObj;
+                PropertyConsumer pc = (PropertyConsumer) component;
                 componentProperties.clear();
                 markerName = pc.getPropertyPrefix();
 
@@ -1096,21 +1086,19 @@ public class PropertyHandler
                         pc.setPropertyPrefix(markerName);
                     }
 
-                    componentPropsString.append(markerName).append(".class=").append(someObj.getClass().getName()).append("\n");
+                    componentPropsString.append(markerName).append(".class=").append(component.getClass().getName()).append("\n");
 
                     if (createdProperties != null) {
-                        createdProperties.put(markerName, someObj.getClass().getName());
+                        createdProperties.put(markerName, component.getClass().getName());
                     }
                 }
 
                 pc.getProperties(componentProperties);
 
-                TreeMap orderedProperties = new TreeMap(componentProperties);
-
+				TreeSet<String> orderedProperties = new TreeSet<>(componentProperties.stringPropertyNames());
                 if (!componentProperties.isEmpty()) {
                     componentPropsString.append("####\n");
-                    for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
-                        String key = (String) keys.next();
+                    for (String key : orderedProperties) {
                         String value = componentProperties.getProperty(key);
 
                         if (value != null) {
@@ -1125,9 +1113,9 @@ public class PropertyHandler
             } else if (!componentListBuilt) {
                 markerName = "component" + (numComponents++);
                 componentMarkerString.append(" ").append(markerName);
-                componentPropsString.append(markerName).append(".class=").append(someObj.getClass().getName()).append("\n");
+                componentPropsString.append(markerName).append(".class=").append(component.getClass().getName()).append("\n");
                 if (createdProperties != null) {
-                    createdProperties.put(markerName, someObj.getClass().getName());
+                    createdProperties.put(markerName, component.getClass().getName());
                 }
             }
         }
@@ -1172,16 +1160,11 @@ public class PropertyHandler
         // openmap.startUpLayers property. Then, cycle through all
         // the layers to get their properties, since they all are
         // PropertyConsumers.
-        String markerName;
 
         String layerMarkerStringKey = Environment.OpenMapPrefix + "." + LayerHandler.layersProperty;
-
         StringBuffer layerMarkerString = new StringBuffer(layerMarkerStringKey).append("=");
-
         String startUpLayerMarkerStringKey = Environment.OpenMapPrefix + "." + LayerHandler.startUpLayersProperty;
-
         StringBuffer startUpLayerMarkerString = new StringBuffer(startUpLayerMarkerStringKey).append("=");
-
         StringBuffer layerPropertiesString = new StringBuffer();
 
         Properties layerProperties = new Properties();
@@ -1189,13 +1172,13 @@ public class PropertyHandler
         Layer[] layers = layerHandler.getLayers();
         int numLayers = 0;
 
-        for (int i = 0; i < layers.length; i++) {
+        for (Layer layer : layers) {
 
-            markerName = layers[i].getPropertyPrefix();
+            String markerName = layer.getPropertyPrefix();
 
             if (markerName == null) {
                 markerName = "layer" + (numLayers++);
-                layers[i].setPropertyPrefix(markerName);
+                layer.setPropertyPrefix(markerName);
             }
 
             if (ph != null) {
@@ -1210,16 +1193,16 @@ public class PropertyHandler
 
             layerMarkerString.append(" ").append(markerName);
 
-            if (layers[i].isVisible()) {
+            if (layer.isVisible()) {
                 startUpLayerMarkerString.append(" ").append(markerName);
             }
 
-            layers[i].getProperties(layerProperties);
+            layer.getProperties(layerProperties);
             layerPropertiesString.append("### -").append(markerName).append("- layer properties\n");
 
-            TreeMap orderedProperties = new TreeMap(layerProperties);
-            for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
-                String key = (String) keys.next();
+            TreeSet<String> orderedPropertyKeys = new TreeSet<>(layerProperties.stringPropertyNames());
+            for (String key : orderedPropertyKeys) {
+
                 // Could add .replace("\\", "/") to the end of this
                 // line to prevent \\ from appearing in the properties
                 // file.
@@ -1276,8 +1259,7 @@ public class PropertyHandler
         }
 
         if (mapBean != null) {
-            mapBean.setProjection(mapBean.getProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance(),
-                                                                                                     mapBean.getWidth(),
+            mapBean.setProjection(mapBean.getProjectionFactory().getDefaultProjectionFromEnvironment(mapBean.getWidth(),
                                                                                                      mapBean.getHeight()));
         } else {
             logger.warning("Can't load new projection - can't find MapBean");
@@ -1541,9 +1523,10 @@ public class PropertyHandler
      */
     public void findAndInit(Object obj) {
         if (obj instanceof PropertyConsumer) {
-            String prefix = ((PropertyConsumer) obj).getPropertyPrefix();
+        	PropertyConsumer pc = (PropertyConsumer) obj;
+            String prefix = pc.getPropertyPrefix();
             if (prefix != null) {
-                getPrefixLibrarian().put(prefix, obj);
+                getPrefixLibrarian().put(prefix, pc);
             }
         }
     }

@@ -84,7 +84,11 @@ import com.bbn.openmap.util.WebBrowser;
 public class InformationDelegator extends OMComponentPanel implements InfoDisplayListener,
         PropertyChangeListener, ProgressListener, MapPanelChild {
 
-    protected JLabel infoLineHolder;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected JLabel infoLineHolder;
     protected JLabel infoLineHolder2;
 
     protected WebBrowser browser;
@@ -125,7 +129,7 @@ public class InformationDelegator extends OMComponentPanel implements InfoDispla
     public final static int MAP_OBJECT_INFO_LINE = 0; // Default
     public final static int COORDINATE_INFO_LINE = 1;
 
-    protected ArrayList infoLineOrganizer = new ArrayList();
+    protected ArrayList<Object> infoLineOrganizer = new ArrayList<>();
 
     public InformationDelegator() {
         super();

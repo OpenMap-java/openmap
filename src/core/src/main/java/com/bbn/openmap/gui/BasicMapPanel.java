@@ -75,7 +75,12 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class BasicMapPanel extends MapPanel {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.MapPanel");
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.MapPanel");
 
     public final static String SET_NAME_PROPERTY = "setName";
 
@@ -213,7 +218,7 @@ public class BasicMapPanel extends MapPanel {
         // read.
         mb.setBckgrnd(Environment.getCustomBackgroundColor());
 
-        Projection proj = mb.getProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance());
+        Projection proj = mb.getProjectionFactory().getDefaultProjectionFromEnvironment();
 
         if (Debug.debugging("mappanel")) {
             Debug.output("MapPanel: creating MapBean with initial projection " + proj);

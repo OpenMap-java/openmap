@@ -33,7 +33,6 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.Projection;
 
 /**
@@ -51,6 +50,7 @@ import com.bbn.openmap.proj.Projection;
  */
 public class BufferedMapBean extends MapBean {
 
+	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger(BufferedMapBean.class
 			.getName());
 	protected boolean bufferDirty = true;
@@ -268,6 +268,10 @@ public class BufferedMapBean extends MapBean {
 	}
 
 	protected class PanHelper extends AffineTransform {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		protected Image buffer;
 
 		protected PanHelper(AffineTransform aft) {

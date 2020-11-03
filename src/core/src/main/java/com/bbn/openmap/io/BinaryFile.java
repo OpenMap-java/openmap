@@ -44,8 +44,6 @@ import com.bbn.openmap.util.MoreMath;
  * source of the data is isolated through the InputReader interface.
  */
 public class BinaryFile {
-	private static int openCount = 0;
-	private static int classCount = 0;
 
 	private InputReader inputReader = null;
 
@@ -67,8 +65,6 @@ public class BinaryFile {
 	 */
 	public BinaryFile(File f) throws IOException {
 		inputReader = new FileInputReader(f);
-		classCount++;
-		openCount++;
 	}
 
 	/**
@@ -78,8 +74,6 @@ public class BinaryFile {
 	 */
 	private BinaryFile(InputReader inputReader) {
 		this.inputReader = inputReader;
-		classCount++;
-		openCount++;
 	}
 
 	/**
@@ -215,9 +209,6 @@ public class BinaryFile {
 				throw new FileNotFoundException("BinaryFile can't find: " + name);
 			}
 
-			classCount++;
-			openCount++;
-
 		} catch (IOException ioe) {
 			throw ioe;
 		}
@@ -295,6 +286,7 @@ public class BinaryFile {
 	 */
 	public static boolean exists(String name) {
 		boolean exists = false;
+
 		try {
 			File file = null;
 			URL url = null;
@@ -483,7 +475,6 @@ public class BinaryFile {
 	public void close() throws IOException {
 		if (inputReader != null) {
 			inputReader.close();
-			openCount--;
 		}
 	}
 
@@ -783,7 +774,6 @@ public class BinaryFile {
 	 */
 	protected void finalize() throws Throwable {
 		close();
-		classCount--;
 	}
 
 	/**

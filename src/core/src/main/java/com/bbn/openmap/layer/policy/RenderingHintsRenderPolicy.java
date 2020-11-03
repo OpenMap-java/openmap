@@ -26,9 +26,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.RenderingHints.Key;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Level;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -166,7 +166,7 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
                     + renderingHintsString);
         }
 
-        Vector<String> renderingHintsVector = PropUtils.parseSpacedMarkers(renderingHintsString);
+        List<String> renderingHintsVector = PropUtils.parseSpacedMarkers(renderingHintsString);
 
         if (renderingHintsVector != null) {
             for (String renderingHintKeyString : renderingHintsVector) {

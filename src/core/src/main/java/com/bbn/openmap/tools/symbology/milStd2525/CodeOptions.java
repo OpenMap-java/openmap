@@ -22,33 +22,32 @@
 
 package com.bbn.openmap.tools.symbology.milStd2525;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
- * CodeOptions represent a set of CodePositions that can be chosen for
- * a particular SymbolPart. This class is a holder for affiliations,
- * order of battle, modifier settings, etc.
+ * CodeOptions represent a set of CodePositions that can be chosen for a
+ * particular SymbolPart. This class is a holder for affiliations, order of
+ * battle, modifier settings, etc.
  */
 public class CodeOptions {
-    protected List options;
+	protected List<CodePosition> options;
 
-    public CodeOptions(List opts) {
-        options = opts;
-    }
+	public CodeOptions(List<CodePosition> opts) {
+		options = opts;
+	}
 
-    public String toString() {
-        StringBuffer sb = new StringBuffer("CodeOptions:\n");
-        if (options != null) {
-            for (Iterator it = options.iterator(); it.hasNext();) {
-                sb.append(((CodePosition) it.next()).toString()).append("\n");
-            }
-        }
-        return sb.toString();
-    }
+	public String toString() {
+		StringBuffer sb = new StringBuffer("CodeOptions:\n");
+		if (options != null) {
+			for (CodePosition cp : options) {
+				sb.append(cp.toString()).append("\n");
+			}
+		}
+		return sb.toString();
+	}
 
-    public List getOptions() {
-        return options;
-    }
+	public List<CodePosition> getOptions() {
+		return options;
+	}
 
 }

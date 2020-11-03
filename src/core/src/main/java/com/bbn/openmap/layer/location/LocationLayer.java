@@ -30,7 +30,6 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Box;
@@ -357,7 +356,7 @@ public class LocationLayer extends OMGraphicHandlerLayer {
             return;
         }
 
-        Vector<String> handlerNames = PropUtils.parseSpacedMarkers(handlersValue);
+        List<String> handlerNames = PropUtils.parseSpacedMarkers(handlersValue);
 
         for (String handlerName : handlerNames) {
             String classProperty = handlerName + ".class";

@@ -32,8 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeSupport;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -55,7 +54,11 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class BasicStrokeEditor extends JDialog implements ActionListener {
 
-    protected BasicStroke basicStroke = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected BasicStroke basicStroke = null;
     protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     protected float width; // must be >= 0f
@@ -127,8 +130,8 @@ public class BasicStrokeEditor extends JDialog implements ActionListener {
     protected transient JPanel palette = null;
     protected transient JButton closebutton;
     protected transient JButton applybutton;
-    protected transient JComboBox capBox;
-    protected transient JComboBox joinBox;
+    protected transient JComboBox<String> capBox;
+    protected transient JComboBox<String> joinBox;
 
     public void setGUI() {
 
@@ -139,7 +142,7 @@ public class BasicStrokeEditor extends JDialog implements ActionListener {
 
             JPanel capPanel = PaletteHelper.createPaletteJPanel("Line Cap Decoration");
             String[] capStrings = { "Butt", "Round", "Square" };
-            capBox = new JComboBox(capStrings);
+            capBox = new JComboBox<>(capStrings);
             capBox.addActionListener(this);
             capPanel.add(capBox);
             palette.add(capPanel);
@@ -147,7 +150,7 @@ public class BasicStrokeEditor extends JDialog implements ActionListener {
             JPanel joinPanel = PaletteHelper.createPaletteJPanel("Line Joint Decoration");
 
             String[] joinStrings = { "Miter", "Round", "Bevel" };
-            joinBox = new JComboBox(joinStrings);
+            joinBox = new JComboBox<>(joinStrings);
             joinBox.addActionListener(this);
             joinPanel.add(joinBox);
             palette.add(joinPanel);
@@ -244,14 +247,12 @@ public class BasicStrokeEditor extends JDialog implements ActionListener {
             return null;
         }
 
-        Vector floats = PropUtils.parseSpacedMarkers(das);
+        List<String> floats = PropUtils.parseSpacedMarkers(das);
         float[] ret = new float[floats.size()];
         int index = 0;
-        Enumeration thing = floats.elements();
-        while (thing.hasMoreElements()) {
-            String f = (String) thing.nextElement();
+        for (String f : floats) {
             try {
-                ret[index++] = (new Float(f)).floatValue();
+                ret[index++] = Float.parseFloat(f);
             } catch (NumberFormatException nfe) {
                 return null;
             }

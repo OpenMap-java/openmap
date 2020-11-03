@@ -90,9 +90,6 @@ import com.bbn.openmap.util.PaletteHelper;
 
 public class GeoCrossDemoLayer extends EditorLayer {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	protected OMGraphicList lines = new OMGraphicList();
 

@@ -55,7 +55,7 @@ public class CodeFunctionID extends CodePosition {
 
     public void parseHierarchy(String hCode, Properties props, SymbolPart parent) {
 
-        List parentList = null;
+        List<SymbolPart> parentList = null;
         int subLevelNumber = 1;
 
         int pos = getStartIndex() + parent.positionShift;
@@ -85,7 +85,7 @@ public class CodeFunctionID extends CodePosition {
                 if (parentList == null) {
                     parentList = parent.getSubs();
                     if (parentList == null) {
-                        parentList = new ArrayList();
+                        parentList = new ArrayList<>();
                         parent.setSubs(parentList);
                     }
                 }

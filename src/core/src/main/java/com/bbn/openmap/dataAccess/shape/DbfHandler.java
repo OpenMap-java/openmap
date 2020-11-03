@@ -94,10 +94,10 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class DbfHandler extends RuleHandler<List> {
+public class DbfHandler extends RuleHandler<List<?>> {
 
     protected DbfFile dbf;
-    protected List<Rule> rules;
+    protected List<Rule<?>> rules;
     protected DrawingAttributes defaultDA;
 
     protected DbfHandler() {
@@ -124,7 +124,6 @@ public class DbfHandler extends RuleHandler<List> {
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
 
-        String prefix = PropUtils.getScopedPropertyPrefix(this);
         defaultDA.getProperties(props);
 
         return props;
@@ -162,7 +161,7 @@ public class DbfHandler extends RuleHandler<List> {
      * @see com.bbn.openmap.omGraphics.RuleHandler#createRule()
      */
     @Override
-    public Rule createRule() {
+    public Rule<List<?>> createRule() {
         return new DbfRule(dbf);
     }
 
@@ -174,9 +173,9 @@ public class DbfHandler extends RuleHandler<List> {
      * bbn.openmap.omGraphics.OMGraphic)
      */
     @Override
-    public List getRecordDataForOMGraphic(OMGraphic omg) {
+    public List<?> getRecordDataForOMGraphic(OMGraphic omg) {
         try {
-            return (List) dbf.getRecordData((Integer) omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE));
+            return (List<?>) dbf.getRecordData((Integer) omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE));
         } catch (IOException ioe) {
 
         } catch (FormatException fe) {

@@ -13,7 +13,6 @@
 
 package com.bbn.openmap.layer.image;
 
-import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +21,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +30,6 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.gui.MiniBrowser;
 import com.bbn.openmap.image.ImageServerConstants;
@@ -39,7 +37,6 @@ import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -48,7 +45,11 @@ import com.bbn.openmap.util.PropUtils;
  */
 public abstract class WebImageLayer extends OMGraphicHandlerLayer implements ImageServerConstants {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.image.WebImagePlugIn");
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.image.WebImageLayer");
 
     /**
      * Create the query to be sent to the server, based on current settings.
@@ -168,7 +169,7 @@ public abstract class WebImageLayer extends OMGraphicHandlerLayer implements Ima
             public void actionPerformed(ActionEvent ae) {
 
                 String query = createQueryString(getProjection());
-                Vector<String> queryStrings = PropUtils.parseMarkers(query, "&");
+                List<String> queryStrings = PropUtils.parseMarkers(query, "&");
                 StringBuffer updatedQuery = new StringBuffer();
                 Iterator<String> it = queryStrings.iterator();
                 if (it.hasNext()) {

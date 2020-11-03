@@ -25,8 +25,8 @@
 package com.bbn.openmap.layer;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.omGraphics.DrawingAttributes;
@@ -62,7 +62,12 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class AOILayer extends OMGraphicHandlerLayer {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.AOILayer");
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.AOILayer");
 
     public final static String AOIProperty = "aoi";
     public final static String AOICoordsProperty = "coords";
@@ -81,7 +86,7 @@ public class AOILayer extends OMGraphicHandlerLayer {
         DrawingAttributes attributes = new DrawingAttributes();
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        Vector<String> aois = PropUtils.parseSpacedMarkers(props.getProperty(prefix
+        List<String> aois = PropUtils.parseSpacedMarkers(props.getProperty(prefix
                 + AOIProperty));
 
         OMGraphicList list = new OMGraphicList();
@@ -90,7 +95,7 @@ public class AOILayer extends OMGraphicHandlerLayer {
             String aoi = it.next();
 
             String aoiPrefix = PropUtils.getScopedPropertyPrefix(prefix + aoi);
-            Vector<String> coordV = PropUtils.parseSpacedMarkers(props.getProperty(aoiPrefix
+            List<String> coordV = PropUtils.parseSpacedMarkers(props.getProperty(aoiPrefix
                     + AOICoordsProperty));
             double[] coords = new double[coordV.size()];
             int coordCount = 0;

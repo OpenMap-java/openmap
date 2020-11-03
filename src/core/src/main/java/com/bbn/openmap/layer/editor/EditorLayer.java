@@ -58,9 +58,6 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class EditorLayer extends DrawingToolLayer implements Tool {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

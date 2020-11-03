@@ -27,13 +27,15 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyEditor;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -153,35 +155,10 @@ public class Inspector implements ActionListener {
         windowSupport.displayInWindow();
     }
 
-    @SuppressWarnings("unchecked")
-    public Vector<String> sortKeys(Collection keySet) {
-        Vector<String> vector = new Vector<String>(keySet.size());
-
-        // OK, ok, this isn't the most efficient way to do this, but
-        // it's simple. Shouldn't matter for what we are using it
-        // for...
-        Iterator it = keySet.iterator();
-        while (it.hasNext()) {
-            String key = (String) it.next();
-            int size = vector.size();
-            for (int i = 0; i <= size; i++) {
-                if (i == size) {
-                    // System.out.println("Adding " + key + " at " +
-                    // i);
-                    vector.add(key);
-                    break;
-                } else {
-                    int compare = key.compareTo((String) vector.elementAt(i));
-                    if (compare < 0) {
-                        // System.out.println(key + " goes before " +
-                        // vector.elementAt(i) + " at " + i);
-                        vector.add(i, key);
-                        break;
-                    }
-                }
-            }
-        }
-        return vector;
+    public List<String> sortKeys(Collection<String> keySet) {
+    	List<String> ret = new ArrayList<>(keySet);
+    	Collections.sort(ret);
+    	return ret;
     }
 
     /**
@@ -237,17 +214,18 @@ public class Inspector implements ActionListener {
         // First, check the initPropertiesProperty for the PropertyConsumer
         // stating which properties it wants included.
         String propertyList = info.getProperty(PropertyConsumer.initPropertiesProperty);
-        Vector<String> sortedKeys;
+        List<String> sortedKeys;
 
         if (propertyList != null) {
-            Vector<String> propertiesToShow = PropUtils.parseSpacedMarkers(propertyList);
+            List<String> propertiesToShow = PropUtils.parseSpacedMarkers(propertyList);
             for (int i = 0; i < propertiesToShow.size(); i++) {
                 propertiesToShow.set(i, prefix + "." + propertiesToShow.get(i));
             }
             sortedKeys = propertiesToShow;
         } else {
             // otherwise, show them all, in alphabetical order
-            sortedKeys = sortKeys(props.keySet());
+        	sortedKeys = new ArrayList<>(props.stringPropertyNames());
+            Collections.sort(sortedKeys);
         }
 
         editors = new Hashtable<String, PropertyEditor>(sortedKeys.size());

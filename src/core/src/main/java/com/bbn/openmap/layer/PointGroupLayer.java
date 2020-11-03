@@ -25,8 +25,8 @@
 package com.bbn.openmap.layer;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.omGraphics.DrawingAttributes;
@@ -89,7 +89,7 @@ public class PointGroupLayer extends OMGraphicHandlerLayer {
 		DrawingAttributes attributes = new DrawingAttributes();
 		prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-		Vector<String> aois = PropUtils.parseSpacedMarkers(props.getProperty(prefix + GOIProperty));
+		List<String> aois = PropUtils.parseSpacedMarkers(props.getProperty(prefix + GOIProperty));
 
 		OMGraphicList list = new OMGraphicList();
 
@@ -97,7 +97,7 @@ public class PointGroupLayer extends OMGraphicHandlerLayer {
 			String aoi = it.next();
 
 			String aoiPrefix = PropUtils.getScopedPropertyPrefix(prefix + aoi);
-			Vector<String> coordV = PropUtils.parseSpacedMarkers(props.getProperty(aoiPrefix + GOICoordsProperty));
+			List<String> coordV = PropUtils.parseSpacedMarkers(props.getProperty(aoiPrefix + GOICoordsProperty));
 
 			attributes.setProperties(aoiPrefix, props);
 			String name = props.getProperty(aoiPrefix + GOINameProperty);

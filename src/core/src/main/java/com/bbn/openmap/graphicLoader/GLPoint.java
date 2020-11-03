@@ -56,7 +56,8 @@ import com.bbn.openmap.util.PaletteHelper;
  */
 public class GLPoint extends OMPoint implements ActionListener, FocusListener {
 
-    public static Color CONNECTED_COLOR = Color.green;
+	private static final long serialVersionUID = 1L;
+	public static Color CONNECTED_COLOR = Color.green;
     public static Color DISCONNECTED_COLOR = Color.red;
     protected boolean stationary = true;
     protected String name;

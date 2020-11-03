@@ -27,6 +27,7 @@ package com.bbn.openmap.tools.roads;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 
 public interface RoadObject {
+	
     public void render(OMGraphicList gl, boolean forceNew);
 
     public void moveTo(java.awt.Point loc);

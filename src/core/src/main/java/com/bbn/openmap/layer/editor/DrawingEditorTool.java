@@ -31,8 +31,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.beancontext.BeanContext;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -811,7 +811,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements ActionListe
         String loaderListString = props.getProperty(prefix + LoaderProperty);
 
         if (loaderListString != null) {
-            Vector<String> loaderVector = PropUtils.parseSpacedMarkers(loaderListString);
+            List<String> loaderVector = PropUtils.parseSpacedMarkers(loaderListString);
             for (String loaderPrefix : loaderVector) {
                 String loaderPropertyPrefix = PropUtils.getScopedPropertyPrefix(prefix
                         + loaderPrefix);

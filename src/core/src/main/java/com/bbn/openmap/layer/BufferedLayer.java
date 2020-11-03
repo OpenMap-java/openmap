@@ -39,8 +39,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.beans.beancontext.BeanContext;
+import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Level;
 
 import javax.swing.JCheckBox;
@@ -120,10 +120,8 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
 
         PropUtils.putDataPrefixToLayerList(this, props, prefix + LayersProperty);
 
-        Vector<String> layersValue = PropUtils.parseSpacedMarkers(props.getProperty(prefix
-                + LayersProperty));
-        Vector<String> startuplayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix
-                + VisibleLayersProperty));
+        List<String> layersValue = PropUtils.parseSpacedMarkers(props.getProperty(prefix + LayersProperty));
+        List<String> startuplayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix + VisibleLayersProperty));
 
         Layer[] layers = LayerHandler.getLayers(layersValue, startuplayers, props);
 

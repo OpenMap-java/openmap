@@ -24,7 +24,6 @@ package com.bbn.openmap.tools.symbology.milStd2525;
 
 import java.awt.Dimension;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -262,15 +261,14 @@ public class SymbolReferenceLibrary extends OMComponent {
 
     protected SymbolPart getSymbolPartForCodeStartingAt(SymbolPart node,
                                                         String code) {
-        List sublist = node.getSubs();
+        List<SymbolPart> sublist = node.getSubs();
 
         if (sublist == null || sublist.isEmpty()) {
             // Last on the line of the tree, this is the closest match...
             return node;
         }
         
-        for (Iterator it = sublist.iterator(); it.hasNext();) {
-            SymbolPart ssp = (SymbolPart) it.next();
+        for (SymbolPart ssp : sublist) {
 
             try {
                 char ch = code.charAt(ssp.getCodePosition().startIndex);

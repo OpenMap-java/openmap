@@ -25,7 +25,10 @@ package com.bbn.openmap.image;
 /** 
  */
 public class MapRequestFormatException extends RuntimeException {
-    /**
+
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Constructs a <code>MapRequestFormatException</code> with
      * <tt>null</tt> as its error message string.
      */

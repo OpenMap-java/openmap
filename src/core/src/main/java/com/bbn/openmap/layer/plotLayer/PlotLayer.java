@@ -30,7 +30,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -50,20 +51,19 @@ import com.bbn.openmap.util.PaletteHelper;
  */
 public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener {
 
-    private ScatterGraph graph = null;
+	private static final long serialVersionUID = 1L;
+	private ScatterGraph graph = null;
     private boolean show_plot_ = false;
 
     // The currently selected graphic.
     private OMGraphic selectedGraphic;
-    private Vector<GLOBESite> selectedGraphics = null;
+    private List<GLOBESite> selectedGraphics = null;
 
     // Where do we get the data from?
     // default to use GLOBE atmospheric temperature.
     private String datasource = "com/bbn/openmap/layer/plotLayer/AT.gst_small.txt";
 
     // "http://globe.ngdc.noaa.gov/sda/student_data/AT.gst.txt";
-
-    private GLOBETempData temperature_data = null;
 
     // The control palette
     private JPanel pal = null;
@@ -92,17 +92,15 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
      * Construct the PlotLayer.
      */
     public PlotLayer() {
-
-        // setList(plotDataSources());
     }
 
     public synchronized OMGraphicList prepare() {
         if (graph == null) {
-            GLOBETempData temperature_data = getDataSource();
-            if (temperature_data != null) {
-                graph = new ScatterGraph(678, 790, null, temperature_data.overall_min_year_, temperature_data.overall_max_year_, temperature_data.overall_min_temp_, temperature_data.overall_max_temp_);
+            GLOBETempData temperatureData = getDataSource();
+            if (temperatureData != null) {
+                graph = new ScatterGraph(678, 790, null, temperatureData.overall_min_year_, temperatureData.overall_max_year_, temperatureData.overall_min_temp_, temperatureData.overall_max_temp_);
 
-                setList(plotDataSources(temperature_data));
+                setList(plotDataSources(temperatureData));
 
             }
         }
@@ -123,7 +121,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
     private GLOBETempData getDataSource() {
 
         // load the data from the CLASSPATH
-        Vector<String> dirs = Environment.getClasspathDirs();
+        List<String> dirs = Environment.getClasspathDirs();
         FileInputStream is = null;
         int nDirs = dirs.size();
         if (nDirs > 0) {
@@ -168,9 +166,8 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
         OMGraphicList graphics = new OMGraphicList();
         graphics.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
 
-        Enumeration site_enum = temperature_data.getAllSites();
-        while (site_enum.hasMoreElements()) {
-            GLOBESite site = (GLOBESite) site_enum.nextElement();
+        Map<String, GLOBESite> site_enum = temperature_data.getAllSites();
+        for (GLOBESite site : site_enum.values()) {
             // Debug.message("basic", "PlotLayer adds " + site.getName());
             graphics.add(site.getGraphic());
             num_graphics++;
@@ -240,11 +237,11 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
                 GLOBESite site = (GLOBESite) app_obj;
                 if (!selectedGraphics.contains(app_obj)) {
                     Debug.message("basic", "Adding to plot list...");
-                    selectedGraphics.addElement(site);
+                    selectedGraphics.add(site);
                     selectedGraphic.setFillPaint(Color.yellow);
                 } else {
                     Debug.message("basic", "Removing from plot list...");
-                    selectedGraphics.removeElement(site);
+                    selectedGraphics.remove(site);
                     selectedGraphic.setFillPaint(Color.red);
                     selectedGraphic.setLinePaint(Color.red);
                 }

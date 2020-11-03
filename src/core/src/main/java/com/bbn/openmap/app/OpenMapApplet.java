@@ -60,7 +60,12 @@ public class OpenMapApplet
         extends JApplet
         implements BeanContextMembershipListener, BeanContextChild {
 
-    public final static String PropertiesProperty = "PROPERTIES";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public final static String PropertiesProperty = "PROPERTIES";
 
     /**
      * BeanContextChildSupport object provides helper functions for
@@ -264,7 +269,8 @@ public class OpenMapApplet
      * The method called by BeanContextMembershipListener methods to find
      * components in the MapHandler.
      */
-    public void findAndInit(Iterator it) {
+    @SuppressWarnings("rawtypes")
+	public void findAndInit(Iterator it) {
         while (it.hasNext()) {
             findAndInit(it.next());
         }
@@ -312,7 +318,8 @@ public class OpenMapApplet
      *        removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-        for (Iterator it = bcme.iterator(); it.hasNext();) {
+        for (@SuppressWarnings("rawtypes")
+		Iterator it = bcme.iterator(); it.hasNext();) {
             findAndUndo(it.next());
         }
     }

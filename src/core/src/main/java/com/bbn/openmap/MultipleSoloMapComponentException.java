@@ -29,6 +29,11 @@ package com.bbn.openmap;
 public class MultipleSoloMapComponentException extends RuntimeException {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Construct an exception without a reason.
      */
     public MultipleSoloMapComponentException() {
@@ -51,7 +56,7 @@ public class MultipleSoloMapComponentException extends RuntimeException {
      * @param c1 the class that was being added
      * @param c2 the class that already exists in the BeanContext
      */
-    public MultipleSoloMapComponentException(Class c1, Class c2) {
+    public MultipleSoloMapComponentException(Class<?> c1, Class<?> c2) {
         super("Class " + c1 + " conflicts with Class " + c2);
     }
 }

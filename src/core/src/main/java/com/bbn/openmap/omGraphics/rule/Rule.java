@@ -233,7 +233,7 @@ public abstract class Rule<T> extends OMComponent {
             if (getLogger().isLoggable(Level.FINE)) {
                 getLogger().fine(this.getPropertyPrefix() + " being assigned to "
                         + op.getClass().getName() + " " + keyField + " " + val + " vs "
-                        + ((Map) record).get(keyField));
+                        + ((Map<?,?>) record).get(keyField));
 
                 omg.putAttribute("RULE", getPropertyPrefix());
             }

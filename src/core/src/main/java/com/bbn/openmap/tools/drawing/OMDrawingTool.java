@@ -33,11 +33,12 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -144,7 +145,8 @@ import com.bbn.openmap.util.PropUtils;
 public class OMDrawingTool extends OMToolComponent implements DrawingTool, Serializable,
         PropertyChangeListener, ProjectionListener, EOMGListener, PaintListener, SelectionProvider {
 
-    /**
+	private static final long serialVersionUID = 1L;
+	/**
      * A GraphicAttributes object that describes the current coloring parameters
      * for the current graphic.
      */
@@ -171,12 +173,12 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
      * The objects that know how to create a EditableOMGraphic for a particular
      * class name or OMGraphic.
      */
-    protected Hashtable loaders = new Hashtable();
+    protected Map<String, EditToolLoader> loaders = new HashMap<>();
     /**
      * The ordered list of EditToolLoaders, for notification. Preservers order,
      * no duplicates.
      */
-    protected Vector rawLoaders = new Vector();
+    protected List<EditToolLoader> rawLoaders = new ArrayList<>();
     /**
      * The MouseMode used for the drawing tool.
      */
@@ -281,7 +283,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
      * the first time canEdit() is called after an EditToolLoader is added or
      * removed.
      */
-    protected Vector possibleEditableClasses = null;
+    protected List<Class<?>> possibleEditableClasses = null;
     /**
      * Just a helper flag to reduce work caused by unnecessary deactivate calls.
      * Set internally in activate() and deactivate().
@@ -777,8 +779,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
 
             // The loaders may be able to instantiate objects they
             // don't want in the GUI - check to see if they can..
-            for (Iterator things = loaders.values().iterator(); things.hasNext();) {
-                EditToolLoader ldr = (EditToolLoader) things.next();
+            for (EditToolLoader ldr : loaders.values()) {
                 eomg = ldr.getEditableGraphic(classname, ga);
                 if (eomg != null) {
                     break;
@@ -817,18 +818,16 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
         // return eomgl;
         // }
 
-        Set keys = loaders.keySet();
-        Iterator iterator = keys.iterator();
-        while (iterator.hasNext()) {
-            String key = (String) iterator.next();
-            if (DEBUG) {
+        for (String key : loaders.keySet()) {
+
+        	if (DEBUG) {
                 Debug.output("OMDrawingTool.getEditableGraphic(" + g.getClass().getName()
                         + "): looking at (" + key + ") loader.");
             }
 
             try {
-                Class kc = Class.forName(key);
-                Class gc = g.getClass();
+                Class<?> kc = Class.forName(key);
+                Class<?> gc = g.getClass();
                 if (kc == gc || kc.isAssignableFrom(gc)) {
                     EditToolLoader loader = (EditToolLoader) loaders.get(key);
 
@@ -866,14 +865,12 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
      * Return true if the OMDrawingTool can edit the OMGraphic. Meant to be a
      * low-cost check, with a minimal allocation of memory.
      */
-    public boolean canEdit(Class omgc) {
-        Iterator iterator;
+    public boolean canEdit(Class<?> omgc) {
         if (possibleEditableClasses == null) {
-            Set keys = loaders.keySet();
-            possibleEditableClasses = new Vector(keys.size());
-            iterator = keys.iterator();
-            while (iterator.hasNext()) {
-                String key = (String) iterator.next();
+            Set<String> keys = loaders.keySet();
+            possibleEditableClasses = new ArrayList<>(keys.size());
+
+            for (String key : keys) {
                 try {
                     possibleEditableClasses.add(Class.forName(key));
                 } catch (ClassNotFoundException cnfe) {
@@ -882,9 +879,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
             }
         }
 
-        iterator = possibleEditableClasses.iterator();
-        while (iterator.hasNext()) {
-            Class kc = (Class) iterator.next();
+        for (Class<?> kc : possibleEditableClasses) {
             if (kc == omgc || kc.isAssignableFrom(omgc)) {
                 return true;
             }
@@ -1007,19 +1002,10 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
     }
 
     /**
-     * Get all the loaders the OMDrawingTool has access to.
+     * Get an array of all the loaders the OMDrawingTool has access to.
      */
     public EditToolLoader[] getLoaders() {
-
-        Set keys = loaders.keySet();
-        EditToolLoader[] etls = new EditToolLoader[keys.size()];
-
-        Iterator iterator = keys.iterator();
-        int count = 0;
-        while (iterator.hasNext()) {
-            etls[count++] = (EditToolLoader) loaders.get(iterator.next());
-        }
-        return etls;
+    	return loaders.values().toArray(new EditToolLoader[loaders.size()]);
     }
 
     /**
@@ -1761,7 +1747,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
                     java.awt.Shape shape = eomg.getGraphic().getShape();
                     Rectangle rect = shape.getBounds();
 
-                    Vector vec = new Vector();
+                    List<Component> vec = new ArrayList<>();
                     vec.add(new JSeparator());
 
                     JMenuItem done = new JMenuItem("Done");
@@ -1791,7 +1777,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
         allowDrawingToolToDeactivateItself = allow;
     }
 
-    protected boolean doPopup(int x, int y, java.util.List additionalOptions) {
+    protected boolean doPopup(int x, int y, List<Component> additionalOptions) {
         // TODO This prevents piggybacking and updating of menu. Eliminate the
         // test, always create a new popup. Also, popup should be protected, not
         // visible from subclasses.
@@ -1813,11 +1799,8 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
             popup = createPopupMenu();
 
             if (additionalOptions != null && !additionalOptions.isEmpty() && popup != null) {
-                for (Iterator it = additionalOptions.iterator(); it.hasNext();) {
-                    Object obj = it.next();
-                    if (obj instanceof JMenuItem) {
-                        popup.add((JMenuItem) obj);
-                    }
+                for (Component comp : additionalOptions) {
+                	popup.add(comp);
                 }
             }
 
@@ -1965,10 +1948,9 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
         String behaviorList = props.getProperty(prefix + BehaviorProperty);
 
         if (behaviorList != null) {
-            Vector behaviorStrings = PropUtils.parseSpacedMarkers(behaviorList);
+            List<String> behaviorStrings = PropUtils.parseSpacedMarkers(behaviorList);
             int behavior = 0;
-            for (Iterator it = behaviorStrings.iterator(); it.hasNext();) {
-                String behaviorString = (String) it.next();
+            for (String behaviorString : behaviorStrings) {
                 try {
                     int val = OMDrawingTool.class.getField(behaviorString).getInt(null);
                     behavior |= val;

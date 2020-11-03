@@ -35,7 +35,9 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public abstract class Waypoint extends Visual implements Serializable {
 
-    /**
+	private static final long serialVersionUID = 1L;
+
+	/**
      * The location of this waypoint.
      */
     protected LatLonPoint location;
@@ -55,10 +57,6 @@ public abstract class Waypoint extends Visual implements Serializable {
     public Waypoint(LatLonPoint loc, RoadLayer layer) {
         location = loc;
         this.layer = layer;
-    }
-
-    public static Class getGraphicClass() {
-        return Graphic.class;
     }
 
     /**
@@ -155,7 +153,8 @@ public abstract class Waypoint extends Visual implements Serializable {
     public abstract void render(OMGraphicList gl, boolean projectionIsNew);
 
     public abstract class Graphic extends OMRect implements RoadGraphic {
-        Logger logger = Logger.getLogger(this.getClass().getName());
+		private static final long serialVersionUID = 1L;
+		Logger logger = Logger.getLogger(this.getClass().getName());
         private boolean blinkState = false;
 
         protected Graphic(int radius) {

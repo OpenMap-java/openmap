@@ -125,7 +125,7 @@ public class DefaultOverviewMouseMode
 
                // allow for crossing dateline
                if (lon1 > lon2) {
-                  dlon = (180 - lon1) + (180 + lon2);
+                  dlon = (180f - lon1) + (180f + lon2);
                } else {
                   dlon = lon2 - lon1;
                }
@@ -135,7 +135,7 @@ public class DefaultOverviewMouseMode
             }
 
             if (projection instanceof GeoProj) {
-               double pixPerDegree = ((GeoProj) projection).getPlanetPixelCircumference() / 360;
+               double pixPerDegree = ((GeoProj) projection).getPlanetPixelCircumference() / 360.0;
                double newScale = pixPerDegree / (deltaPix / deltaDegrees);
                overviewMapHandler.getControlledMapListeners().setScale((float) newScale);
             } // else what??? TODO

@@ -25,213 +25,225 @@
 package com.bbn.openmap.tools.roads;
 
 import java.awt.Color;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class Intersection extends Waypoint implements RoadObject {
-    /**
-     * The list of roads at this intersection.
-     */
-    Vector roads = new Vector(4);
 
-    /**
-     * The "name" of this intersection. Intersections are named after
-     * their coordinates. Coordinates (in degrees) are multiplied by
-     * 10000000 and truncated to integers.
-     */
-    private String name;
+	private static final long serialVersionUID = 1L;
+	public final static Intersection INTEGRITY_CHECK_BOTH_INTERSECTIONS = new Intersection("BOTH_INTERSECTIONS");
+	public final static Intersection INTEGRITY_CHECK_INROADS = new Intersection("INROADS");	
+	
+	/**
+	 * The list of roads at this intersection.
+	 */
+	List<Road> roads = new ArrayList<>(4);
 
-    private boolean displayAsTerminal = false;
+	/**
+	 * The "name" of this intersection. Intersections are named after their
+	 * coordinates. Coordinates (in degrees) are multiplied by 10000000 and
+	 * truncated to integers.
+	 */
+	private String name;
 
-    public static int GRID = 100000;//was 100000
+	private boolean displayAsTerminal = false;
 
-    /**
-     * Create an Intersection at a given location.
-     * 
-     * @param loc the location of the intersection.
-     */
-    public Intersection(LatLonPoint loc, RoadLayer layer) {
-        this(loc, getLatLonPointName(loc), layer);
-    }
+	public static int GRID = 100000;// was 100000
 
-    public Intersection(LatLonPoint loc, String name, RoadLayer layer) {
-        super(loc, layer);
-        this.name = name;
-    }
+	private Intersection(String name) {
+		// NOOP, used for integrity checks
+		super(null, null);
+		this.name = name;
+	}
+	
+	/**
+	 * Create an Intersection at a given location.
+	 * 
+	 * @param loc the location of the intersection.
+	 */
+	public Intersection(LatLonPoint loc, RoadLayer layer) {
+		this(loc, getLatLonPointName(loc), layer);
+	}
 
-    public static Class getGraphicClass() {
-        return Graphic.class;
-    }
+	public Intersection(LatLonPoint loc, String name, RoadLayer layer) {
+		super(loc, layer);
+		this.name = name;
+	}
 
-    public static String getLatLonPointName(LatLonPoint loc) {
-        StringBuffer buf = new StringBuffer(24);
-        buf.append((int) (loc.getY() * GRID));
-        buf.append(",");
-        buf.append((int) (loc.getX() * GRID));
-        return new String(buf.toString());
-    }
+	public static Class<Graphic> getGraphicClass() {
+		return Graphic.class;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public static String getLatLonPointName(LatLonPoint loc) {
+		StringBuffer buf = new StringBuffer(24);
+		buf.append((int) (loc.getY() * GRID));
+		buf.append(",");
+		buf.append((int) (loc.getX() * GRID));
+		return new String(buf.toString());
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Add a road to this intersection.
-     * 
-     * @param road The road to be added.
-     */
-    public void addRoad(Road road) {
-        roads.addElement(road);
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void removeRoad(Road road) {
-        roads.removeElement(road);
-    }
+	/**
+	 * Add a road to this intersection.
+	 * 
+	 * @param road The road to be added.
+	 */
+	public void addRoad(Road road) {
+		roads.add(road);
+	}
 
-    public int getRoadCount() {
-        return roads.size();
-    }
+	public void removeRoad(Road road) {
+		roads.remove(road);
+	}
 
-    /**
-     * Merge another intersection with this one. All the roads of the
-     * other intersection are removed and added onto this.
-     */
-    public void merge(Intersection other) {
-        for (Enumeration e = other.getRoads(); e.hasMoreElements();) {
-            Road road = (Road) e.nextElement();
-            road.changeIntersection(other, this);
-            addRoad(road);
-        }
-        other.clear();
-        setModified(true);
-    }
+	public int getRoadCount() {
+		return roads.size();
+	}
 
-    public void clear() {
-        roads.setSize(0);
-    }
+	/**
+	 * Merge another intersection with this one. All the roads of the other
+	 * intersection are removed and added onto this.
+	 */
+	public void merge(Intersection other) {
+		for (Road road : other.getRoads()) {
+			road.changeIntersection(other, this);
+			addRoad(road);
+		}
+		other.clear();
+		setModified(true);
+	}
 
-    /**
-     * Get an enumeration of the roads at this intersection.
-     */
-    public Enumeration getRoads() {
-        return roads.elements();
-    }
+	public void clear() {
+		roads.clear();
+	}
 
-    public Road getRoad(int ix) {
-        return (Road) roads.elementAt(ix);
-    }
+	/**
+	 * Get the List of Roads
+	 * @return roads
+	 */
+	public List<Road> getRoads() {
+		return roads;
+	}
 
-    public void setTerminalStatus(boolean yes) {
-        displayAsTerminal = yes;
-        update();
-    }
+	public Road getRoad(int ix) {
+		return roads.get(ix);
+	}
 
-    public boolean getTerminalStatus() {
-        return displayAsTerminal;
-    }
+	public void setTerminalStatus(boolean yes) {
+		displayAsTerminal = yes;
+		update();
+	}
 
-    /**
-     * Render the graphics for this intersection.
-     */
-    public void render(OMGraphicList gl, boolean forceNew) {
-        RoadGraphic visual = getVisual();
-        if (visual == null || forceNew) {
-            visual = new Graphic(displayAsTerminal);
-            setVisual(visual);
-        }
-        gl.add((Graphic) visual);
-    }
+	public boolean getTerminalStatus() {
+		return displayAsTerminal;
+	}
 
-    /**
-     * Render the graphics for the roads leaving this intersection.
-     */
-    public void renderRoads(OMGraphicList gl, boolean forceNew) {
-        for (Enumeration e = roads.elements(); e.hasMoreElements();) {
-            Road road = (Road) e.nextElement();
-            if (road.getFirstIntersection() == this)
-                road.render(gl, forceNew);
-        }
-    }
+	/**
+	 * Render the graphics for this intersection.
+	 */
+	public void render(OMGraphicList gl, boolean forceNew) {
+		RoadGraphic visual = getVisual();
+		if (visual == null || forceNew) {
+			visual = new Graphic(displayAsTerminal);
+			setVisual(visual);
+		}
+		gl.add((Graphic) visual);
+	}
 
-    /**
-     * Override equals so that two Intersections at the same location
-     * are the same Intersection.
-     */
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Intersection other = (Intersection)obj;
-        return other.getLocation().equals(getLocation());
-    }
+	/**
+	 * Render the graphics for the roads leaving this intersection.
+	 */
+	public void renderRoads(OMGraphicList gl, boolean forceNew) {
+		for (Road road : roads) {
+			if (road.getFirstIntersection() == this) {
+				road.render(gl, forceNew);
+			}
+		}
+	}
 
-    /**
-     * Override hashCode so that two Intersections at the same
-     * location have the same hashcode.
-     */
-    public int hashCode() {
-        LatLonPoint llp = getLocation();
-        int hc1 = Float.floatToIntBits(llp.getLatitude());
-        int hc2 = Float.floatToIntBits(llp.getLongitude());
-        return hc1 ^ (hc2 << 5) ^ (hc2 >>> 27);
-    }
+	/**
+	 * Override equals so that two Intersections at the same location are the same
+	 * Intersection.
+	 */
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Intersection other = (Intersection) obj;
+		return other.getLocation().equals(getLocation());
+	}
 
-    public Intersection startMove(boolean shifted) {
-        if (shifted) {
-            RoadLayer layer = getRoadLayer();
-            Road road = layer.createRoad(this);
-            return road.getOtherIntersection(this);
-        } else {
-            return this;
-        }
-    }
+	/**
+	 * Override hashCode so that two Intersections at the same location have the
+	 * same hashcode.
+	 */
+	public int hashCode() {
+		LatLonPoint llp = getLocation();
+		int hc1 = Float.floatToIntBits(llp.getLatitude());
+		int hc2 = Float.floatToIntBits(llp.getLongitude());
+		return hc1 ^ (hc2 << 5) ^ (hc2 >>> 27);
+	}
 
-    public void update() {
-        super.update();
-        for (Enumeration e = roads.elements(); e.hasMoreElements();) {
-            ((Road) e.nextElement()).updateLines();
-        }
-    }
+	public Intersection startMove(boolean shifted) {
+		if (shifted) {
+			RoadLayer layer = getRoadLayer();
+			Road road = layer.createRoad(this);
+			return road.getOtherIntersection(this);
+		} else {
+			return this;
+		}
+	}
 
-    public String toString() {
-        return super.toString() + "[" + getName() + ","
-                + getLocation().toString() + "] " + getRoadCount() + " roads";
-    }
+	public void update() {
+		super.update();
+		for (Road road : roads) {
+			road.updateLines();
+		}
+	}
 
-    /**
-     * Inner class for the visual representation of an Intersection.
-     * The visual representation of the the Waypoint base class is
-     * extended so that the move method can also update the roads
-     * connected to the intersection.
-     */
+	public String toString() {
+		return super.toString() + "[" + getName() + "," + getLocation().toString() + "] " + getRoadCount() + " roads";
+	}
 
-    public class Graphic extends Waypoint.Graphic implements RoadGraphic {
-        Graphic(boolean displayAsTerminal) {
-            super(displayAsTerminal ? 5 : 3);
-            if (displayAsTerminal)
-                setLinePaint(Color.red);
-        }
+	/**
+	 * Inner class for the visual representation of an Intersection. The visual
+	 * representation of the the Waypoint base class is extended so that the move
+	 * method can also update the roads connected to the intersection.
+	 */
 
-        public RoadObject getRoadObject() {
-            return Intersection.this;
-        }
+	public class Graphic extends Waypoint.Graphic implements RoadGraphic {
 
-        public Intersection getIntersection() {
-            return Intersection.this;
-        }
+		private static final long serialVersionUID = 1L;
 
-        public String toString() {
-            return super.toString() + "[" + Intersection.this.toString() + "]";
-        }
-    }
+		Graphic(boolean displayAsTerminal) {
+			super(displayAsTerminal ? 5 : 3);
+			if (displayAsTerminal)
+				setLinePaint(Color.red);
+		}
+
+		public RoadObject getRoadObject() {
+			return Intersection.this;
+		}
+
+		public Intersection getIntersection() {
+			return Intersection.this;
+		}
+
+		public String toString() {
+			return super.toString() + "[" + Intersection.this.toString() + "]";
+		}
+	}
 }

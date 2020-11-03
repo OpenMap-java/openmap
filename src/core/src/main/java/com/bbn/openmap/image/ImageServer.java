@@ -869,8 +869,8 @@ public class ImageServer implements/* ImageReadyListener, ImageReceiver, */Prope
 		// First, look at the formatters string to get a marker list
 		// of available formatters.
 		if (formattersString != null) {
-			Vector<String> markerNames = PropUtils.parseSpacedMarkers(formattersString);
-			Vector<?> formatters = ComponentFactory.create(markerNames, p);
+			List<String> markerNames = PropUtils.parseSpacedMarkers(formattersString);
+			List<?> formatters = ComponentFactory.create(markerNames, p);
 
 			int size = formatters.size();
 
@@ -928,7 +928,7 @@ public class ImageServer implements/* ImageReadyListener, ImageReceiver, */Prope
 			}
 		}
 
-		Vector<String> layerNames = PropUtils.parseSpacedMarkers(layersValue);
+		List<String> layerNames = PropUtils.parseSpacedMarkers(layersValue);
 
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("OpenMap.getLayers(): " + layerNames);

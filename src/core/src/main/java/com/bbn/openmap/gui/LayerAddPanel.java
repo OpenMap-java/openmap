@@ -29,10 +29,11 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
@@ -62,6 +63,9 @@ import com.bbn.openmap.util.propertyEditor.Inspector;
  * interface.
  */
 public class LayerAddPanel extends OMComponentPanel implements Serializable, ActionListener {
+	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Constant field containing markers used in properties file for layers that
 	 * can be created using the LayerAddPanel.
@@ -79,7 +83,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable, Act
 	/**
 	 * The list of available Layer classes. Is initiated with pretty names.
 	 */
-	protected JComboBox list = null;
+	protected JComboBox<String> availableLayerClassNames = null;
 	/**
 	 * Text field used to define new Layer class to create.
 	 */
@@ -89,7 +93,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable, Act
 	/** Action command String for JButton. */
 	protected final String configureActionCommand = "configureActionCommand";
 	/** Contains Layer classes to be instantiated. */
-	protected Hashtable<String, String> layerClasses = null;
+	protected Map<String, String> layerClasses = null;
 	/** The Inspector to handle the configuration of the new Layer. */
 	protected Inspector inspector = null;
 	/** The layer to configure and add. */
@@ -220,14 +224,14 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable, Act
 			});
 
 		} else {
-			list = new JComboBox(layerTypes);
-			gridbag.setConstraints(list, c);
-			add(list);
+			availableLayerClassNames = new JComboBox<>(layerTypes);
+			gridbag.setConstraints(availableLayerClassNames, c);
+			add(availableLayerClassNames);
 
 			configureButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent e) {
-					String prettyName = (String) list.getSelectedItem();
+					String prettyName = (String) availableLayerClassNames.getSelectedItem();
 					String prefix = prefixTextField.getText().trim();
 
 					if (prettyName == null) {
@@ -256,9 +260,9 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable, Act
 		invalidate();
 	}
 
-	public Hashtable<String, String> getLayerClasses() {
+	public Map<String, String> getLayerClasses() {
 		if (layerClasses == null) {
-			layerClasses = new Hashtable<String, String>();
+			layerClasses = new HashMap<String, String>();
 		}
 		return layerClasses;
 	}
@@ -299,10 +303,10 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable, Act
 	 * Gets Layer information from PropertyHandler. These layers are defined in
 	 * the application properties under the openmap.layerTypes property.
 	 * 
-	 * @return Hashtable of prettyName String keys with classname values. Empty
-	 *         Hashtable if no layers are available.
+	 * @return Map of prettyName String keys with classname values. Empty
+	 *         Map if no layers are available.
 	 */
-	protected Hashtable<String, String> getLayerTypes() {
+	protected Map<String, String> getLayerTypes() {
 		return getLayerTypes(null);
 	}
 
@@ -312,11 +316,11 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable, Act
 	 * property. If the given properties are null, then the property handler, if
 	 * found, will be consulted directly.
 	 * 
-	 * @return Hashtable of prettyName String keys with classname values. Empty
-	 *         Hashtable if no layers are available.
+	 * @return Map of prettyName String keys with classname values. Empty
+	 *         Map if no layers are available.
 	 */
-	protected Hashtable<String, String> getLayerTypes(Properties props) {
-		Hashtable<String, String> layerHash = getLayerClasses();
+	protected Map<String, String> getLayerTypes(Properties props) {
+		Map<String, String> layerHash = getLayerClasses();
 		layerHash.clear();
 
 		if (props == null) {
@@ -334,7 +338,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable, Act
 			Debug.output("LayerAddPanel: " + addableList);
 		}
 
-		Vector<String> layerClassList = PropUtils.parseSpacedMarkers(addableList);
+		List<String> layerClassList = PropUtils.parseSpacedMarkers(addableList);
 
 		if (layerClassList == null) {
 			return layerHash;

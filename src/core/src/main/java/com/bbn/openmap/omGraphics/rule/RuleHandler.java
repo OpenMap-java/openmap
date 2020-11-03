@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -66,13 +65,13 @@ import com.bbn.openmap.util.PropUtils;
  */
 public abstract class RuleHandler<T> extends OMComponent {
 
-    List<Rule> rules;
+    List<Rule<T>> rules;
 
     /**
      * Create a Rule object that knows how to interpret properties to create the
      * proper indices into the record List.
      */
-    public abstract Rule createRule();
+    public abstract Rule<T> createRule();
 
     /**
      * Return a record Map for a particular OMGraphic, like a properties table.
@@ -87,13 +86,13 @@ public abstract class RuleHandler<T> extends OMComponent {
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         String rulesString = props.getProperty(prefix + Rule.RuleListProperty);
-        Vector<String> keysV = PropUtils.parseSpacedMarkers(rulesString);
+        List<String> keysV = PropUtils.parseSpacedMarkers(rulesString);
 
         if (keysV != null && !keysV.isEmpty()) {
-            List<Rule> rules = Collections.synchronizedList(new LinkedList<Rule>());
+            List<Rule<T>> rules = Collections.synchronizedList(new LinkedList<Rule<T>>());
 
             for (String ruleMarker : keysV) {
-                Rule rule = createRule();
+                Rule<T> rule = createRule();
                 rule.setProperties(prefix + ruleMarker, props);
                 rules.add(rule);
             }
@@ -109,7 +108,7 @@ public abstract class RuleHandler<T> extends OMComponent {
         StringBuffer ruleList = new StringBuffer();
         int createdRuleNum = 1;
 
-        for (Rule rule : getRules()) {
+        for (Rule<?> rule : getRules()) {
             String rulePrefix = rule.getPropertyPrefix();
 
             // For rules created programmatically without a prefix, need to
@@ -138,17 +137,17 @@ public abstract class RuleHandler<T> extends OMComponent {
         return props;
     }
 
-    public void setRules(List<Rule> rules) {
+    public void setRules(List<Rule<T>> rules) {
         this.rules = rules;
     }
 
-    public void addRule(Rule rule) {
+    public void addRule(Rule<T> rule) {
         if (rule != null) {
             getRules().add(rule);
         }
     }
 
-    public boolean removeRule(Rule rule) {
+    public boolean removeRule(Rule<T> rule) {
         if (rule != null) {
             return getRules().remove(rule);
         }
@@ -160,9 +159,9 @@ public abstract class RuleHandler<T> extends OMComponent {
         getRules().clear();
     }
 
-    public List<Rule> getRules() {
+    public List<Rule<T>> getRules() {
         if (rules == null) {
-            rules = Collections.synchronizedList(new LinkedList<Rule>());
+            rules = Collections.synchronizedList(new LinkedList<Rule<T>>());
         }
         return rules;
     }
@@ -189,7 +188,7 @@ public abstract class RuleHandler<T> extends OMComponent {
 
         // Just check for rules first - if no rules defined, don't bother
         // reading the attributes.
-        List<Rule> rules = getRules();
+        List<Rule<T>> rules = getRules();
         if (rules.isEmpty()) {
             return omg;
         }
@@ -201,7 +200,7 @@ public abstract class RuleHandler<T> extends OMComponent {
 
         OMGraphic passedEval = null;
 
-        for (Rule rule : rules) {
+        for (Rule<T> rule : rules) {
 
             passedEval = rule.evaluate(record, omg, proj);
 

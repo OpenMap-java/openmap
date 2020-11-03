@@ -106,9 +106,6 @@ import com.bbn.openmap.util.propertyEditor.Inspector;
  */
 public class DrawingToolLayer extends OMGraphicHandlerLayer implements DrawingToolRequestor {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/** Get a handle on the DrawingTool. */

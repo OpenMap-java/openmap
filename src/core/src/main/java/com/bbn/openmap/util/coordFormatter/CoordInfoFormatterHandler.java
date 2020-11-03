@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.util.ComponentFactory;
@@ -63,73 +62,69 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class CoordInfoFormatterHandler extends OMComponent {
 
-    protected List<CoordInfoFormatter> formatters = new ArrayList<CoordInfoFormatter>();
-    protected CoordInfoFormatter activeFormatter = null;
-    public final static String FORMATTER_PROPERTY = "formatters";
+	protected List<CoordInfoFormatter> formatters = new ArrayList<CoordInfoFormatter>();
+	protected CoordInfoFormatter activeFormatter = null;
+	public final static String FORMATTER_PROPERTY = "formatters";
 
-    public CoordInfoFormatterHandler() {
+	public CoordInfoFormatterHandler() {
 
-    }
+	}
 
-    public void setProperties(String prefix, Properties props) {
-        super.setProperties(prefix, props);
-        // Create the formatters from the property settings.
-        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-        String markerList = props.getProperty(realPrefix + FORMATTER_PROPERTY);
-        if (markerList != null) {
-            Vector<String> formatterV = PropUtils.parseSpacedMarkers(markerList);
-            Vector<?> formatters = ComponentFactory.create(formatterV,
-                    prefix,
-                    props);
+	public void setProperties(String prefix, Properties props) {
+		super.setProperties(prefix, props);
+		// Create the formatters from the property settings.
+		String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+		String markerList = props.getProperty(realPrefix + FORMATTER_PROPERTY);
+		if (markerList != null) {
+			List<String> formatterV = PropUtils.parseSpacedMarkers(markerList);
+			List<?> formatters = ComponentFactory.create(formatterV, prefix, props);
 
-            for (Object obj : formatters) {
-                if (obj instanceof CoordInfoFormatter) {
-                    CoordInfoFormatter cif = (CoordInfoFormatter) obj;
-                    if (activeFormatter == null) {
-                        activeFormatter = cif;
-                    }
-                    this.formatters.add(cif);
-                }
-            }
-        }
-    }
+			for (Object obj : formatters) {
+				if (obj instanceof CoordInfoFormatter) {
+					CoordInfoFormatter cif = (CoordInfoFormatter) obj;
+					if (activeFormatter == null) {
+						activeFormatter = cif;
+					}
+					this.formatters.add(cif);
+				}
+			}
+		}
+	}
 
-    public Properties getProperties(Properties props) {
-        props = super.getProperties(props);
-        String prefix = PropUtils.getScopedPropertyPrefix(this);
-        StringBuffer markerList = new StringBuffer();
-        for (Iterator<CoordInfoFormatter> it = formatters.iterator(); it.hasNext();) {
-            CoordInfoFormatter cif = it.next();
-            cif.getProperties(props);
-            markerList.append(cif.getPropertyPrefix()).append(" ");
-            props.put(PropUtils.getScopedPropertyPrefix(cif), cif.getClass()
-                    .getName());
-        }
+	public Properties getProperties(Properties props) {
+		props = super.getProperties(props);
+		String prefix = PropUtils.getScopedPropertyPrefix(this);
+		StringBuffer markerList = new StringBuffer();
+		for (Iterator<CoordInfoFormatter> it = formatters.iterator(); it.hasNext();) {
+			CoordInfoFormatter cif = it.next();
+			cif.getProperties(props);
+			markerList.append(cif.getPropertyPrefix()).append(" ");
+			props.put(PropUtils.getScopedPropertyPrefix(cif), cif.getClass().getName());
+		}
 
-        props.put(prefix + FORMATTER_PROPERTY, markerList.toString().trim());
-        return props;
-    }
+		props.put(prefix + FORMATTER_PROPERTY, markerList.toString().trim());
+		return props;
+	}
 
-    public Properties getPropertyInfo(Properties props) {
-        props = super.getPropertyInfo(props);
+	public Properties getPropertyInfo(Properties props) {
+		props = super.getPropertyInfo(props);
 
-        return props;
-    }
+		return props;
+	}
 
-    public void setActiveFormatter(CoordInfoFormatter formatter) {
-        CoordInfoFormatter oldFormatter = activeFormatter;
-        if (oldFormatter == formatter) {
-            return;
-        }
+	public void setActiveFormatter(CoordInfoFormatter formatter) {
+		CoordInfoFormatter oldFormatter = activeFormatter;
+		if (oldFormatter == formatter) {
+			return;
+		}
 
-        activeFormatter = formatter;
-        firePropertyChange(FORMATTER_PROPERTY, oldFormatter, activeFormatter);
-    }
+		activeFormatter = formatter;
+		firePropertyChange(FORMATTER_PROPERTY, oldFormatter, activeFormatter);
+	}
 
-    public void addPropertyChangeListener(String property,
-                                          PropertyChangeListener pcl) {
-        super.addPropertyChangeListener(property, pcl);
-        pcl.propertyChange(new PropertyChangeEvent(this, FORMATTER_PROPERTY, null, activeFormatter));
-    }
+	public void addPropertyChangeListener(String property, PropertyChangeListener pcl) {
+		super.addPropertyChangeListener(property, pcl);
+		pcl.propertyChange(new PropertyChangeEvent(this, FORMATTER_PROPERTY, null, activeFormatter));
+	}
 
 }

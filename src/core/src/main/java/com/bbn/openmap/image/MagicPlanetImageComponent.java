@@ -175,6 +175,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
     public final static String REPLACE_FILENAME_WOEXT_MARKER = "%FILENAME_WITHOUT_EXTENSION%";
 
     protected boolean DEBUG = false;
+    protected boolean DEBUG_DETAIL = false;    
 
     // Kept in case replacements are added to the application, so we
     // remember who to disconnect from.
@@ -317,7 +318,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
-        if (false && DEBUG) {
+        if (DEBUG) {
             Debug.output("MPIC.actionPerformed("
                     + e.getSource().getClass().getName() + ")");
         }
@@ -774,7 +775,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
             int minute = Integer.parseInt(fileName.substring(10, 12));
             int sec = Integer.parseInt(fileName.substring(12));
 
-            if (false && DEBUG) {
+            if (DEBUG) {
                 Debug.output(year + " " + month + " " + day + " " + hour + " "
                         + minute + " " + sec);
             }

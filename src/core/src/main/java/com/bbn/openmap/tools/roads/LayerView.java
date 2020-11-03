@@ -22,8 +22,7 @@
 
 package com.bbn.openmap.tools.roads;
 
-import java.util.List;
-
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 
 /**
@@ -41,12 +40,12 @@ public interface LayerView {
      * Should return a flattened list of road OMGraphics. No embedded
      * OMGraphicLists.
      */
-    List getGraphicList();
+    OMGraphicList getOMGraphicsFromSource();
 
     /**
      * Draw extra OMGraphics (intersections, to debug the road layer),
      * a callback method to the LayerView to let it know what the
      * RoadFinder is doing.
      */
-    void setExtraGraphics(List toDraw);
+    void setExtraGraphics(OMGraphicList toDraw);
 }

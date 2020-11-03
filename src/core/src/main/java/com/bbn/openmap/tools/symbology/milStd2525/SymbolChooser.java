@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -68,7 +67,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import com.bbn.openmap.event.ListenerSupport;
 import com.bbn.openmap.gui.DimensionQueryPanel;
 import com.bbn.openmap.image.AcmeGifFormatter;
 import com.bbn.openmap.image.BufferedImageHelper;
@@ -85,12 +83,17 @@ import com.bbn.openmap.util.PaletteHelper;
  * to create image files, or be integrated into a java application to create
  * ImageIcons.
  * <P>
- * To bring up this chooser, run this class as a standalone application, or call
+ * To bring up this chooser, run this class as a stand-alone application, or call
  * showDialog(..)
  */
 public class SymbolChooser extends JPanel implements ActionListener {
 
-    public final static String CREATE_IMAGE_CMD = "CREATE_IMAGE_CMD";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	public final static String CREATE_IMAGE_CMD = "CREATE_IMAGE_CMD";
     public final static String NAMEFIELD_CMD = "NAMEFIELD_CMD";
     public final static String EMPTY_FEATURE_LIST = null;
     public final static int DEFAULT_ICON_DIMENSION = 100;
@@ -102,7 +105,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
     protected DefaultMutableTreeNode currentSymbol = null;
     protected SymbolTreeHolder currentSymbolTreeHolder;
     protected SymbolReferenceLibrary library;
-    protected List trees;
+    protected List<SymbolTreeHolder> trees;
     protected DimensionQueryPanel dqp;
 
     protected JButton clearFeaturesButton;
@@ -167,7 +170,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
      * @param srl
      * @param trees
      */
-    protected void init(SymbolReferenceLibrary srl, List trees) {
+    protected void init(SymbolReferenceLibrary srl, List<SymbolTreeHolder> trees) {
 
         // ///////////////////
         // Create the tree window by creating the scroll pane and add
@@ -177,10 +180,11 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
         JPanel setChoicePanel = new JPanel();
         JLabel setChoiceLabel = new JLabel("Symbol Set:");
-        JComboBox setChoices = new JComboBox(trees.toArray());
+        JComboBox<SymbolTreeHolder> setChoices = new JComboBox<>(trees.toArray(new SymbolTreeHolder[trees.size()]));
         setChoices.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JComboBox jcb = (JComboBox) e.getSource();
+                @SuppressWarnings("unchecked")
+				JComboBox<SymbolTreeHolder> jcb = (JComboBox<SymbolTreeHolder>) e.getSource();
                 setSelectedTreeHolder((SymbolTreeHolder) jcb.getSelectedItem());
             }
         });
@@ -336,8 +340,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
         }
         text = text.toUpperCase().replace('*', '-');
 
-        for (Iterator it = trees.iterator(); it.hasNext();) {
-            SymbolTreeHolder sth = (SymbolTreeHolder) it.next();
+        for (SymbolTreeHolder sth : trees) {
 
             if (sth != null) {
                 DefaultMutableTreeNode node = sth.getNodeForCode(text);
@@ -362,18 +365,15 @@ public class SymbolChooser extends JPanel implements ActionListener {
      * @return List of nodes of the symbol part tree.
      * @throws FormatException
      */
-    protected List createNodes(SymbolReferenceLibrary srl)
+    protected List<SymbolTreeHolder> createNodes(SymbolReferenceLibrary srl)
             throws FormatException {
 
-        List treeList = new LinkedList();
-        List subs = srl.getHead().getSubs();
+        List<SymbolTreeHolder> treeList = new LinkedList<>();
+        List<SymbolPart> subs = srl.getHead().getSubs();
         int count = 1;
         if (subs != null) {
-            for (Iterator it = subs.iterator(); it.hasNext();) {
-                SymbolPart schemeSymbolPart = (SymbolPart) it.next();
-
+            for (SymbolPart schemeSymbolPart : subs) {
                 CodeOptions options = ((CodeScheme) srl.positionTree.getFromChoices(count++)).getCodeOptions(null);
-
                 treeList.add(new SymbolTreeHolder(schemeSymbolPart, options));
             }
         }
@@ -559,9 +559,10 @@ public class SymbolChooser extends JPanel implements ActionListener {
         System.exit(0);
     }
 
-    public class SymbolTreeHolder extends ListenerSupport implements
+    public class SymbolTreeHolder /*extends ListenerSupport<Object>*/ implements
             TreeSelectionListener {
-        // Optionally play with line styles. Possible values are
+		
+		// Optionally play with line styles. Possible values are
         // "Angled", "Horizontal", and "None" (the default).
         protected boolean playWithTreeLineStyle = false;
         protected String treeLineStyle = "Angled";
@@ -570,10 +571,11 @@ public class SymbolChooser extends JPanel implements ActionListener {
         protected JPanel optionPanel;
         protected CodeOptions options;
         protected Character[] optionChars = new Character[15];
-        protected Hashtable optionMenuHashtable;
+        protected Hashtable<CodePosition, JComboBox<CodePosition>> optionMenuHashtable;
+        protected SymbolPart symbolPart;
 
         public SymbolTreeHolder(SymbolPart schemeSymbolPart, CodeOptions opts) {
-            super(schemeSymbolPart);
+        	this.symbolPart = schemeSymbolPart;
             DefaultMutableTreeNode top = new DefaultMutableTreeNode(schemeSymbolPart);
             addNodes(top, schemeSymbolPart);
 
@@ -599,13 +601,12 @@ public class SymbolChooser extends JPanel implements ActionListener {
         protected void addNodes(DefaultMutableTreeNode node, SymbolPart sp) {
 
             DefaultMutableTreeNode newNode = null;
-            List subs = sp.getSubs();
+            List<SymbolPart> subs = sp.getSubs();
             if (subs != null) {
-                for (Iterator it = subs.iterator(); it.hasNext();) {
-                    sp = (SymbolPart) it.next();
-                    newNode = new DefaultMutableTreeNode(sp);
+                for (SymbolPart symPart : subs) {
+                	newNode = new DefaultMutableTreeNode(symPart);
                     node.add(newNode);
-                    addNodes(newNode, sp);
+                    addNodes(newNode, symPart);
                 }
             }
         }
@@ -634,7 +635,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
         protected DefaultMutableTreeNode getNodeForCodeStartingAt(
                                                                   DefaultMutableTreeNode node,
                                                                   String code) {
-            Enumeration enumeration = node.children();
+            @SuppressWarnings("rawtypes")
+			Enumeration enumeration = node.children();
             while (enumeration.hasMoreElements()) {
                 DefaultMutableTreeNode kid = (DefaultMutableTreeNode) enumeration.nextElement();
                 SymbolPart ssp = (SymbolPart) kid.getUserObject();
@@ -661,13 +663,12 @@ public class SymbolChooser extends JPanel implements ActionListener {
          * @param text
          */
         protected void updateOptionsForCode(String text) {
-            for (Iterator it = options.getOptions().iterator(); it.hasNext();) {
-                CodePosition cp = (CodePosition) it.next();
-                JComboBox jcb = (JComboBox) optionMenuHashtable.get(cp);
+            for (CodePosition cp : options.getOptions()) {
+                JComboBox<CodePosition> jcb = optionMenuHashtable.get(cp);
                 if (jcb != null) {
                     int numComps = jcb.getItemCount();
                     for (int i = 0; i < numComps; i++) {
-                        if (((CodePosition) jcb.getItemAt(i)).codeMatches(text)) {
+                        if (jcb.getItemAt(i).codeMatches(text)) {
                             jcb.setSelectedIndex(i);
                             break;
                         }
@@ -715,7 +716,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
         public JPanel getOptionPanel() {
             if (optionPanel == null) {
-                optionMenuHashtable = new Hashtable();
+                optionMenuHashtable = new Hashtable<CodePosition, JComboBox<CodePosition>> ();
                 optionPanel = new JPanel();
                 GridBagLayout gridbag = new GridBagLayout();
                 GridBagConstraints c = new GridBagConstraints();
@@ -723,9 +724,9 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
                 if (options != null) {
                     int i = 0;
-                    for (Iterator it = options.getOptions().iterator(); it.hasNext();) {
-                        CodePosition cp = (CodePosition) it.next();
-                        List lt = cp.getPositionChoices();
+                    for (CodePosition cp : options.getOptions()) {
+
+                        List<CodePosition> lt = cp.getPositionChoices();
 
                         if (lt != null) {
                             JLabel label = new JLabel(cp.getPrettyName() + ": ");
@@ -739,9 +740,10 @@ public class SymbolChooser extends JPanel implements ActionListener {
                             gridbag.setConstraints(label, c);
                             optionPanel.add(label);
 
-                            JComboBox jcb = new JComboBox(lt.toArray());
+                            JComboBox<CodePosition> jcb = new JComboBox<>(lt.toArray(new CodePosition[lt.size()]));
                             jcb.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent ae) {
+                                @SuppressWarnings("rawtypes")
+								public void actionPerformed(ActionEvent ae) {
                                     setPositionSetting((CodePosition) ((JComboBox) ae.getSource()).getSelectedItem());
                                     updateInterfaceToLastSelectedNode();
                                 }
@@ -802,7 +804,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
         }
 
         public String toString() {
-            return ((SymbolPart) getSource()).getCodePosition().getPrettyName();
+            return symbolPart.getCodePosition().getPrettyName();
         }
 
     }
@@ -816,7 +818,11 @@ public class SymbolChooser extends JPanel implements ActionListener {
  */
 
 class SymbolChooserDialog extends JDialog {
-    private String initialCode;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String initialCode;
     private SymbolChooser chooserPane;
 
     public SymbolChooserDialog(Component c, String title, boolean modal,
@@ -894,7 +900,12 @@ class SymbolChooserDialog extends JDialog {
     }
 
     static class Closer extends WindowAdapter implements Serializable {
-        public void windowClosing(WindowEvent e) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public void windowClosing(WindowEvent e) {
             Window w = e.getWindow();
             w.setVisible(false);
         }
@@ -902,7 +913,12 @@ class SymbolChooserDialog extends JDialog {
 
     static class DisposeOnClose extends ComponentAdapter implements
             Serializable {
-        public void componentHidden(ComponentEvent e) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public void componentHidden(ComponentEvent e) {
             Window w = (Window) e.getComponent();
             w.dispose();
         }
@@ -911,7 +927,11 @@ class SymbolChooserDialog extends JDialog {
 }
 
 class SymbolTracker implements ActionListener, Serializable {
-    SymbolChooser chooser;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	SymbolChooser chooser;
     ImageIcon icon;
 
     public SymbolTracker(SymbolChooser c) {

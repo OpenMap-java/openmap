@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -131,7 +132,7 @@ public class MultiShapeLayer
             logger.fine(getName() + "| list = \"" + shapeFileList + "\"");
         }
 
-        Vector<String> shapeFileStrings = PropUtils.parseSpacedMarkers(shapeFileList);
+        List<String> shapeFileStrings = PropUtils.parseSpacedMarkers(shapeFileList);
 
         if (shapeFileStrings != null) {
 

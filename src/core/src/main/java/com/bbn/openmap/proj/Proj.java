@@ -75,6 +75,8 @@ import com.bbn.openmap.util.Debug;
  */
 public abstract class Proj implements Projection, Cloneable, Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Minimum width of projection.
 	 */
@@ -239,6 +241,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 	 * 
 	 * @return Point2D center of projection, created just for you.
 	 */
+	@SuppressWarnings("unchecked")
 	public Point2D getCenter() {
 		return getCenter(new Point2D.Double());
 	}
@@ -493,6 +496,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 	 * @param point x,y Point2D
 	 * @return LatLonPoint (new)
 	 */
+	@SuppressWarnings("unchecked")
 	public Point2D inverse(Point2D point) {
 		return inverse(point.getX(), point.getY(), new Point2D.Double());
 	}
@@ -505,6 +509,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 	 * @return LatLonPoint (new)
 	 * @see #inverse(Point2D)
 	 */
+	@SuppressWarnings("unchecked")
 	public Point2D inverse(double x, double y) {
 		return inverse(x, y, new Point2D.Double());
 	}
@@ -980,6 +985,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 	/**
 	 * Get the world coordinate of the upper left corner of the map.
 	 */
+	@SuppressWarnings("unchecked")
 	public Point2D getUpperLeft() {
 		return inverse(0, 0, new Point2D.Double());
 	}
@@ -987,6 +993,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 	/**
 	 * Get the world coordinate of the lower right corner of the map.
 	 */
+	@SuppressWarnings("unchecked")
 	public Point2D getLowerRight() {
 		return inverse(width, height, new Point2D.Double());
 	}

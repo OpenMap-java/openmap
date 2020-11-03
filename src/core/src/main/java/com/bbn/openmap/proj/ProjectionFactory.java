@@ -122,11 +122,10 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
 
         String loaderPrefixesString = props.getProperty(prefix + ProjectionLoadersProperty);
         if (loaderPrefixesString != null) {
-            Vector<String> loaderPrefixes = PropUtils.parseSpacedMarkers(loaderPrefixesString);
-            Vector<?> loaders = ComponentFactory.create(loaderPrefixes, prefix, props);
+            List<String> loaderPrefixes = PropUtils.parseSpacedMarkers(loaderPrefixesString);
+            List<?> loaders = ComponentFactory.create(loaderPrefixes, prefix, props);
 
-            for (Iterator<?> it = loaders.iterator(); it.hasNext();) {
-                Object obj = it.next();
+            for (Object obj : loaders) {
                 if (obj instanceof ProjectionLoader) {
                     projLoaders.add((ProjectionLoader) obj);
                 }
@@ -205,7 +204,8 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
      *        ProjectionLoader.
      * @return Class of Projection, or null if not found.
      */
-    public Class<? extends Projection> getProjClassForName(String name) {
+    @SuppressWarnings("unchecked")
+	public Class<? extends Projection> getProjClassForName(String name) {
         if (name != null) {
             for (Iterator<ProjectionLoader> it = getProjectionLoaders().iterator(); it.hasNext();) {
                 ProjectionLoader loader = it.next();
@@ -219,7 +219,11 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
             // return null. We just want to do this in case people
             // start using class names for pretty names.
             try {
-                return (Class<? extends Projection>) Class.forName(name);
+            	Class<?> clss = Class.forName(name);
+            	if (clss.isAssignableFrom(Projection.class)) {
+                    return (Class<? extends Projection>) clss;
+            	}
+
             } catch (ClassNotFoundException cnfe) {
             }
 
@@ -294,8 +298,8 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
      * 
      * @return Projection from Environment settings.
      */
-    public Projection getDefaultProjectionFromEnvironment(Environment e) {
-        return getDefaultProjectionFromEnvironment(e, 0, 0);
+    public Projection getDefaultProjectionFromEnvironment() {
+        return getDefaultProjectionFromEnvironment(0, 0);
     }
 
     /**
@@ -313,8 +317,7 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
      * @return Projection from Environment settings, fit for the pixel height
      *         and width provided.
      */
-    public Projection getDefaultProjectionFromEnvironment(Environment environment, int width,
-                                                          int height) {
+    public Projection getDefaultProjectionFromEnvironment(int width, int height) {
         // Initialize the map projection, scale, center
         // with user prefs or defaults
         Projection proj = null;
@@ -325,7 +328,7 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
                 : height;
 
         try {
-            proj = makeProjection(Environment.get(Environment.Projection), new LatLonPoint.Float(environment.getFloat(Environment.Latitude, 0f), environment.getFloat(Environment.Longitude, 0f)), environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY), w, h);
+            proj = makeProjection(Environment.get(Environment.Projection), new LatLonPoint.Float(Environment.getFloat(Environment.Latitude, 0f), Environment.getFloat(Environment.Longitude, 0f)), Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY), w, h);
 
         } catch (com.bbn.openmap.proj.ProjectionException pe) {
             if (getLogger().isLoggable(Level.FINE)) {
@@ -335,7 +338,7 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
                         + Environment.get(Environment.Projection)
                         + ") property as a projection class, need a class name instead.  Using default of com.bbn.openmap.proj.Mercator.");
             }
-            proj = makeProjection(Mercator.class, new LatLonPoint.Float(environment.getFloat(Environment.Latitude, 0f), environment.getFloat(Environment.Longitude, 0f)), environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY), w, h);
+            proj = makeProjection(Mercator.class, new LatLonPoint.Float(Environment.getFloat(Environment.Latitude, 0f), Environment.getFloat(Environment.Longitude, 0f)), Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY), w, h);
         }
 
         return proj;

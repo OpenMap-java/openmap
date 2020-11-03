@@ -47,7 +47,7 @@ public interface RoadServices {
      *        a list of points in screen coordinates.
      * @return a list of points between start and end points in screen coordinates.
      */
-    List getPathOnRoad(Point start, Point end, List segments);
+    List<Point> getPathOnRoad(Point start, Point end, List<Segment> segments);
     
     /**
      * Returns the best Route between a start point and end point.
@@ -74,6 +74,5 @@ public interface RoadServices {
      *        between returned WayPoints
      * @return List of WayPoints
      */    
-    List displayPathOnRoad(Point start, Point end, Route route,
-        List segments);
+    List<Point> displayPathOnRoad(Point start, Point end, Route route, List<Segment> segments);
 }

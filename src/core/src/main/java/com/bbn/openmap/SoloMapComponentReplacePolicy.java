@@ -47,11 +47,11 @@ public class SoloMapComponentReplacePolicy implements SoloMapComponentPolicy {
         // At first we just added the new item, but we should remove
         // the previous one, too.
         if (obj instanceof SoloMapComponent) {
-            Class firstClass = obj.getClass();
-            for (Iterator it = bc.iterator(); it.hasNext();) {
+            Class<?> firstClass = obj.getClass();
+            for (Iterator<?> it = bc.iterator(); it.hasNext();) {
                 Object someObj = it.next();
                 if (someObj instanceof SoloMapComponent) {
-                    Class secondClass = someObj.getClass();
+                    Class<?> secondClass = someObj.getClass();
 
                     if (firstClass == secondClass
                             || firstClass.isAssignableFrom(secondClass)

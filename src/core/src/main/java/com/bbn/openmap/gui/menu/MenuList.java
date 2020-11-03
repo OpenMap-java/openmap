@@ -27,7 +27,6 @@ import java.beans.beancontext.BeanContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -123,7 +122,7 @@ public class MenuList extends OMComponent {
 		String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 		name = props.getProperty(prefix + MenuNameProperty, name);
 
-		Vector<String> menuItems = PropUtils.parseSpacedMarkers(props.getProperty(realPrefix + MenusProperty));
+		List<String> menuItems = PropUtils.parseSpacedMarkers(props.getProperty(realPrefix + MenusProperty));
 		if (!menuItems.isEmpty()) {
 
 			for (String itemPrefix : menuItems) {

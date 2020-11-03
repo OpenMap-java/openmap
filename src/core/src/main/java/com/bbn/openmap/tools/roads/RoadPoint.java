@@ -29,7 +29,8 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class RoadPoint extends Waypoint implements RoadObject {
 
-    private Road road;
+	private static final long serialVersionUID = 1L;
+	private Road road;
 
     public RoadPoint(Road road, LatLonPoint loc, RoadLayer layer) {
         super(loc, layer);
@@ -39,10 +40,6 @@ public class RoadPoint extends Waypoint implements RoadObject {
     public RoadPoint(Road road, Intersection intersection) {
         super(intersection.location, intersection.layer);
         this.road = road;
-    }
-
-    public static Class getGraphicClass() {
-        return Graphic.class;
     }
 
     public Road getRoad() {
@@ -68,7 +65,9 @@ public class RoadPoint extends Waypoint implements RoadObject {
     }
 
     public class Graphic extends Waypoint.Graphic {
-        public Graphic() {
+		private static final long serialVersionUID = 1L;
+
+		public Graphic() {
             super(2);
         }
 

@@ -28,7 +28,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.Layer;
@@ -119,7 +118,7 @@ public class ZoomLevelMaker extends ZoomLevelInfo {
 
         String boundsPropertyStrings = props.getProperty(prefix + BOUNDS_PROPERTY);
         if (boundsPropertyStrings != null) {
-            Vector<String> boundsStrings = PropUtils.parseSpacedMarkers(boundsPropertyStrings);
+            List<String> boundsStrings = PropUtils.parseSpacedMarkers(boundsPropertyStrings);
             int count = 0;
             while (boundsStrings != null && !boundsStrings.isEmpty()
                     && boundsStrings.size() >= count + 4) {
@@ -135,7 +134,7 @@ public class ZoomLevelMaker extends ZoomLevelInfo {
 
         String layerPropertyStrings = props.getProperty(prefix + LAYERS_PROPERTY);
         if (layerPropertyStrings != null) {
-            Vector<String> layerStrings = PropUtils.parseSpacedMarkers(layerPropertyStrings);
+            List<String> layerStrings = PropUtils.parseSpacedMarkers(layerPropertyStrings);
             if (layerStrings != null && !layerStrings.isEmpty()) {
                 getLayers().addAll(layerStrings);
             }

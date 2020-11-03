@@ -130,6 +130,8 @@ import com.bbn.openmap.util.Debug;
 public class MapBean extends JComponent implements ComponentListener, ContainerListener, ProjectionListener,
 		PanListener, ZoomListener, LayerListener, CenterListener, SoloMapComponent {
 
+	private static final long serialVersionUID = 1L;
+
 	private static Logger logger = Logger.getLogger(MapBean.class.getName());
 
 	public static final String LayersProperty = "MapBean.layers";
@@ -256,6 +258,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
 		this(true);
 	}
 
+	@SuppressWarnings("serial")
 	public MapBean(boolean useThreadedNotification) {
 		if (logger.isLoggable(Level.FINE)) {
 			debugmsg("MapBean()");

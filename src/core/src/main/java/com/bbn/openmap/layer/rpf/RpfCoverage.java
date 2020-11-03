@@ -91,9 +91,6 @@ public class RpfCoverage extends OMGraphicList implements RpfConstants, Property
 	/** Property to use to fill rectangles. */
 	public static final String FillProperty = "coverageFill";
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	protected RpfCoverageManager coverageManager = null;
 	protected RpfFrameProvider frameProvider = null;

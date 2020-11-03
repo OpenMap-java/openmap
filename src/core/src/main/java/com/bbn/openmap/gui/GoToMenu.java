@@ -29,11 +29,11 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -98,12 +98,14 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class GoToMenu extends AbstractOpenMapMenu {
 
-    private String defaultText = "Views";
+	private static final long serialVersionUID = 1L;
+	private String defaultText = "Views";
     private String defaultMnemonic = "V";
 
-    protected Hashtable dataBoundsProviders = new Hashtable();
+    protected Map<DataBoundsProvider, DataBoundsViewMenuItem> dataBoundsProviders = new HashMap<>();
     protected OMBasicMenu dataBoundsMenu;
     protected MapBean map;
+    protected List<GoToButton> customViews;    
 
     /**
      * A space separated list of marker names for the views to be loaded from
@@ -206,9 +208,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
         String locationList = props.getProperty(prefix + ViewListProperty);
 
         if (locationList != null) {
-            Vector views = PropUtils.parseSpacedMarkers(locationList);
-            for (Iterator it = views.iterator(); it.hasNext();) {
-                String viewPrefix = (String) it.next();
+            for (String viewPrefix : PropUtils.parseSpacedMarkers(locationList)) {
                 addLocationItem(viewPrefix, props);
             }
         }
@@ -227,9 +227,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
         StringBuffer viewList = new StringBuffer();
 
-        for (Iterator it = ensureCustomViews().iterator(); it.hasNext();) {
-            GoToButton gtb = (GoToButton) it.next();
-
+        for (GoToButton gtb : ensureCustomViews()) {
             String sanitizedName = gtb.getText().replace(' ', '_');
             viewList.append(" ").append(sanitizedName);
 
@@ -279,8 +277,6 @@ public class GoToMenu extends AbstractOpenMapMenu {
         add(new GoToButton(i18n.get(this, "world", "World"), 0, 0, Float.MAX_VALUE, Mercator.MercatorName));
     }
 
-    protected List customViews;
-
     /**
      * An internal callback method that creates the custom views List object.
      * Override to change what kind of object gets created (it's a Vector by
@@ -288,11 +284,11 @@ public class GoToMenu extends AbstractOpenMapMenu {
      * 
      * @return List
      */
-    protected List createCustomViews() {
-        return new Vector();
+    protected List<GoToButton> createCustomViews() {
+        return new ArrayList<GoToButton>();
     }
 
-    public List getCustomViews() {
+    public List<GoToButton> getCustomViews() {
         return customViews;
     }
 
@@ -302,14 +298,14 @@ public class GoToMenu extends AbstractOpenMapMenu {
      * 
      * @return List
      */
-    public List ensureCustomViews() {
+    public List<GoToButton> ensureCustomViews() {
         if (customViews == null) {
             customViews = createCustomViews();
         }
         return customViews;
     }
 
-    public void setCustomViews(List views) {
+    public void setCustomViews(List<GoToButton> views) {
         customViews = views;
     }
 
@@ -375,7 +371,9 @@ public class GoToMenu extends AbstractOpenMapMenu {
      */
     public class AddNewViewButton extends JMenuItem implements ActionListener {
 
-        public AddNewViewButton(String title) {
+		private static final long serialVersionUID = 1L;
+
+		public AddNewViewButton(String title) {
             super(title);
             this.addActionListener(this);
         }
@@ -394,7 +392,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
      */
     public class GoToButton extends JMenuItem implements ActionListener {
 
-        public float latitude;
+		private static final long serialVersionUID = 1L;
+		public float latitude;
         public float longitude;
         public float scale;
         public String projectionID;
@@ -467,7 +466,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
      */
     public class NameFetcher extends JDialog implements ActionListener {
 
-        JTextField nameField;
+		private static final long serialVersionUID = 1L;
+		JTextField nameField;
         JLabel label;
         JButton closebutton, applybutton;
         GoToButton notifyThis;

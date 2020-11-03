@@ -31,10 +31,10 @@ import java.beans.beancontext.BeanContextChild;
 import java.beans.beancontext.BeanContextChildSupport;
 import java.beans.beancontext.BeanContextMembershipEvent;
 import java.beans.beancontext.BeanContextMembershipListener;
-import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -102,7 +102,9 @@ import com.bbn.openmap.util.PropUtils;
 abstract public class AbstractOpenMapMenu extends JMenu implements BeanContextChild,
         BeanContextMembershipListener, PropertyConsumer, MenuBarMenu, LightMapHandlerChild {
 
-    /**
+	private static final long serialVersionUID = 1L;
+
+	/**
      * All AbstractOpenMapMenus have access to an I18n object, which is provided
      * by the Environment.
      */
@@ -119,7 +121,7 @@ abstract public class AbstractOpenMapMenu extends JMenu implements BeanContextCh
      * restructuring properties later. Only created if menu uses properties to
      * create items.
      */
-    protected Hashtable items = null;
+    protected Map<String, Object> items = null;
 
     public final static String ItemsProperty = "items";
     public final static String SeparatorProperty = "sep";
@@ -127,7 +129,7 @@ abstract public class AbstractOpenMapMenu extends JMenu implements BeanContextCh
     public final static String MnemonicProperty = "mnemonic";
 
     protected String itemsPropertyContents = null;
-    protected Hashtable itemsProperties = null;
+    protected Properties itemsProperties = null;
 
     public AbstractOpenMapMenu() {
         super();
@@ -173,7 +175,7 @@ abstract public class AbstractOpenMapMenu extends JMenu implements BeanContextCh
      * findAndUndo(Object) instead, so subclasses and superclasses can be given
      * the opportunity to use the object, too.
      */
-    public void findAndUndo(Iterator it) {
+    public void findAndUndo(Iterator<?> it) {
         while (it.hasNext()) {
             findAndUndo(it.next());
         }
@@ -199,7 +201,7 @@ abstract public class AbstractOpenMapMenu extends JMenu implements BeanContextCh
      * findAndInit(Object) instead, so subclasses and superclasses can be given
      * the opportunity to use the object, too.
      */
-    public void findAndInit(Iterator it) {
+    public void findAndInit(Iterator<?> it) {
         while (it.hasNext()) {
             findAndInit(it.next());
         }
@@ -282,7 +284,7 @@ abstract public class AbstractOpenMapMenu extends JMenu implements BeanContextCh
         // }
 
         itemsPropertyContents = props.getProperty(realPrefix + ItemsProperty);
-        Vector menuItems = PropUtils.parseSpacedMarkers(itemsPropertyContents);
+        List<String> menuItems = PropUtils.parseSpacedMarkers(itemsPropertyContents);
 
         if (!menuItems.isEmpty()) {
 
@@ -293,8 +295,7 @@ abstract public class AbstractOpenMapMenu extends JMenu implements BeanContextCh
                         + (nMenuItems == 1 ? "" : "s") + " in properties");
             }
 
-            for (int i = 0; i < nMenuItems; i++) {
-                String itemPrefix = (String) menuItems.elementAt(i);
+            for (String itemPrefix : menuItems) {
                 if (itemPrefix.equals(SeparatorProperty)) {
                     add(new JSeparator());
                     continue;

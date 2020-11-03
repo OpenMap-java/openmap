@@ -191,7 +191,7 @@ public interface DrawingTool {
      * Check to see if the class type can be created/edited by the
      * DrawingTool.
      */
-    public boolean canEdit(Class clas);
+    public boolean canEdit(Class<?> clas);
 
     /**
      * Add an EditToolLoader to the DrawingTool, expanding the

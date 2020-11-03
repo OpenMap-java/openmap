@@ -59,7 +59,12 @@ import com.bbn.openmap.util.PropUtils;
 public class CacheLayer extends Layer implements ActionListener,
         MapMouseListener {
 
-    public static final String CacheFileProperty = "cacheFile";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static final String CacheFileProperty = "cacheFile";
 
     /** Used by the gui */
     private static final String READ_DATA_COMMAND = "ReadData";

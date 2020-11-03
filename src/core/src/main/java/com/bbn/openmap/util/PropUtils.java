@@ -32,14 +32,13 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,7 +60,7 @@ public class PropUtils {
      *        names.
      * @return Vector of marker names.
      */
-    public static Vector<String> parseSpacedMarkers(String markerList) {
+    public static List<String> parseSpacedMarkers(String markerList) {
         return parseMarkers(markerList, " ");
     }
 
@@ -74,12 +73,12 @@ public class PropUtils {
      *        elements.
      * @return Vector of marker names.
      */
-    public static Vector<String> parseMarkers(String markerList, String delim) {
-        Vector<String> vector = null;
+    public static List<String> parseMarkers(String markerList, String delim) {
+        List<String> markers = null;
 
         if (markerList == null) {
             logger.fine("marker list null!");
-            return new Vector<String>(0);
+            return new ArrayList<>(0);
         }
 
         if (logger.isLoggable(Level.FINE)) {
@@ -90,12 +89,12 @@ public class PropUtils {
         markerList = markerList.replace('\"', '\0');
         // Next, tokenize the space delimited string
         StringTokenizer tokens = new StringTokenizer(markerList, delim);
-        vector = new Vector<String>(tokens.countTokens());
+        markers = new ArrayList<>(tokens.countTokens());
         while (tokens.hasMoreTokens()) {
             String name = tokens.nextToken().trim();
-            vector.addElement(name);
+            markers.add(name);
         }
-        return vector;
+        return markers;
     }
 
     /**
@@ -147,10 +146,10 @@ public class PropUtils {
 
         Properties props = new Properties();
 
-        Vector<String> keyValuePairs = parseMarkers(list, propertySeparators);
+        List<String> keyValuePairs = parseMarkers(list, propertySeparators);
         for (int i = 0; i < keyValuePairs.size(); i++) {
             // Next, tokenize the space delimited string
-            StringTokenizer tokens = new StringTokenizer(keyValuePairs.elementAt(i), keyValueSeparators);
+            StringTokenizer tokens = new StringTokenizer(keyValuePairs.get(i), keyValueSeparators);
 
             try {
                 String key = tokens.nextToken().trim();
@@ -905,11 +904,10 @@ public class PropUtils {
      */
     public static void putDataPrefixToLayerList(String dataPrefix, Properties props,
                                                 String layerListProperty) {
-        Vector<String> layersValue = parseSpacedMarkers(props.getProperty(layerListProperty));
+        List<String> layersValue = parseSpacedMarkers(props.getProperty(layerListProperty));
 
-        for (Iterator<String> it = layersValue.iterator(); it.hasNext();) {
-            String markerName = getScopedPropertyPrefix(it.next());
-            props.setProperty(markerName + Layer.DataPathPrefixProperty, dataPrefix);
+        for (String markerName : layersValue) {
+            props.setProperty(getScopedPropertyPrefix(markerName) + Layer.DataPathPrefixProperty, dataPrefix);
         }
     }
 
@@ -994,7 +992,7 @@ public class PropUtils {
         parentMarker = PropUtils.getScopedPropertyPrefix(parentMarker);
 
         if (markerList != null) {
-            Vector<String> markerNames = parseSpacedMarkers(markerList);
+            List<String> markerNames = parseSpacedMarkers(markerList);
             for (String markerName : markerNames) {
                 String classname = p.getProperty(parentMarker + markerName + "."
                         + definingProperty);

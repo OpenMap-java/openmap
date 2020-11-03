@@ -33,7 +33,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -225,7 +224,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements DTEDConstants
             cards.add(glGui, prettyName);
         }
 
-        JComboBox cb = new JComboBox(comboBoxItems);
+        JComboBox<String> cb = new JComboBox<>(comboBoxItems);
         cb.setEditable(false);
         cb.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent evt) {
@@ -583,7 +582,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements DTEDConstants
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
         String generatorList = props.getProperty(realPrefix + GeneratorLoadersProperty);
         if (generatorList != null) {
-            Vector<String> generatorMarkers = PropUtils.parseSpacedMarkers(generatorList);
+            List<String> generatorMarkers = PropUtils.parseSpacedMarkers(generatorList);
             for (String gmString : generatorMarkers) {
                 String loaderPrefix = realPrefix + gmString;
                 String loaderClassnameProperty = loaderPrefix + ".class";

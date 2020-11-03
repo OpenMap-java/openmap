@@ -30,8 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeSupport;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -49,7 +48,11 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class BasicStrokeEditorMenu extends JPopupMenu {
 
-    protected BasicStroke basicStroke = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected BasicStroke basicStroke = null;
     protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     protected float width; // must be >= 0f
@@ -276,14 +279,12 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
             return null;
         }
 
-        Vector floats = PropUtils.parseSpacedMarkers(das);
+        List<String> floats = PropUtils.parseSpacedMarkers(das);
         float[] ret = new float[floats.size()];
         int index = 0;
-        Enumeration thing = floats.elements();
-        while (thing.hasMoreElements()) {
-            String f = (String) thing.nextElement();
+        for (String f : floats) {
             try {
-                ret[index++] = (new Float(f)).floatValue();
+                ret[index++] = Float.parseFloat(f);
             } catch (NumberFormatException nfe) {
                 return null;
             }

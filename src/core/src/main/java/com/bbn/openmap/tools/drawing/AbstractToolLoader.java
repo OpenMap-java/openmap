@@ -23,6 +23,7 @@
 package com.bbn.openmap.tools.drawing;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 
@@ -42,7 +43,7 @@ import com.bbn.openmap.util.I18n;
  */
 public abstract class AbstractToolLoader implements EditToolLoader {
 
-    protected HashMap graphicInfo;
+    protected Map<String, EditClassWrapper> graphicInfo;
     protected I18n i18n = Environment.getI18n();
 
     /**
@@ -53,7 +54,7 @@ public abstract class AbstractToolLoader implements EditToolLoader {
 
     public void addEditClassWrapper(EditClassWrapper ecw) {
         if (graphicInfo == null) {
-            graphicInfo = new HashMap();
+            graphicInfo = new HashMap<>();
         }
 
         if (ecw != null) {
@@ -68,30 +69,26 @@ public abstract class AbstractToolLoader implements EditToolLoader {
     }
 
     /**
-     * Get the classnames that the loader is able to create
+     * Get the Class names that the loader is able to create
      * EditableOMGraphics for.
      */
     public String[] getEditableClasses() {
         String[] strings = null;
         if (graphicInfo != null) {
-            Object[] keys = graphicInfo.keySet().toArray();
-            strings = new String[keys.length];
-            for (int i = 0; i < keys.length; i++) {
-                strings[i] = (String) keys[i];
-            }
+            strings = graphicInfo.keySet().toArray(new String[graphicInfo.size()]);
         }
         return strings;
     }
 
     /**
-     * Give the classname of a graphic to create, returning an
+     * Give the Class name of a graphic to create, returning an
      * EditableOMGraphic for that graphic.
      */
     public EditableOMGraphic getEditableGraphic(String classname) {
         EditableOMGraphic eomg = null;
 
         if (graphicInfo != null) {
-            EditClassWrapper ecw = (EditClassWrapper) graphicInfo.get(classname.intern());
+            EditClassWrapper ecw = graphicInfo.get(classname.intern());
             if (ecw != null) {
                 String ecn = ecw.getEditableClassName();
                 try {

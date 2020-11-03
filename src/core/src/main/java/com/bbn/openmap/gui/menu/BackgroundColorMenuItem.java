@@ -38,7 +38,8 @@ import com.bbn.openmap.omGraphics.OMColorChooser;
 public class BackgroundColorMenuItem extends JMenuItem implements
         ActionListener, LightMapHandlerChild {
 
-    protected MapBean map = null;
+	private static final long serialVersionUID = 1L;
+	protected MapBean map = null;
 
     public BackgroundColorMenuItem() {
         this("Set Map Background Color");

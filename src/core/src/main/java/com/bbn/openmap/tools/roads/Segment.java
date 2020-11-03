@@ -30,9 +30,9 @@ import java.util.List;
  */
 public class Segment {
 
-    protected List allTravelPoints;
+    protected List<Point> allTravelPoints;
 
-    public Segment(List points) {
+    public Segment(List<Point> points) {
         this.allTravelPoints = points;
     }
 

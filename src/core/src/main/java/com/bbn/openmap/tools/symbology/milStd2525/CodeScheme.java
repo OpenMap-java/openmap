@@ -23,7 +23,6 @@
 package com.bbn.openmap.tools.symbology.milStd2525;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -155,7 +154,7 @@ public class CodeScheme extends CodePosition {
      */
     public void parseHierarchy(String hCode, Properties props, SymbolPart parent) {
 
-        List codePositionList = null;
+        List<CodePosition> codePositionList = null;
 
         if (nextPosition != null) {
             codePositionList = nextPosition.getPositionChoices();
@@ -167,10 +166,10 @@ public class CodeScheme extends CodePosition {
             return;
         }
 
-        List parentList = null;
+        List<SymbolPart> parentList = null;
 
-        for (Iterator it = codePositionList.iterator(); it.hasNext();) {
-            CodePosition cp = (CodePosition) it.next();
+        for (CodePosition cp : codePositionList) {
+
             String newHCode = hCode + "." + cp.getHierarchyNumber();
             if (DEBUG) {
                 Debug.output("CodeScheme.parse: " + newHCode + " with "
@@ -184,7 +183,7 @@ public class CodeScheme extends CodePosition {
                 if (parentList == null) {
                     parentList = parent.getSubs();
                     if (parentList == null) {
-                        parentList = new ArrayList();
+                        parentList = new ArrayList<>();
                         parent.setSubs(parentList);
                     }
                 }

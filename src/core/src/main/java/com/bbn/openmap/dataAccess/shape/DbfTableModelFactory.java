@@ -1,9 +1,9 @@
 package com.bbn.openmap.dataAccess.shape;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.OMComponent;
@@ -119,7 +119,7 @@ public class DbfTableModelFactory extends OMComponent implements ShapeConstants 
         logger.fine("parsing properties");
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
         String markerList = props.getProperty(prefix + ColumnsProperty);
-        Vector<String> colStrings = PropUtils.parseSpacedMarkers(markerList);
+        List<String> colStrings = PropUtils.parseSpacedMarkers(markerList);
         columns = new ArrayList<Column>(colStrings.size());
         for (String colString : colStrings) {
             String colDef = props.getProperty(prefix + colString + "."

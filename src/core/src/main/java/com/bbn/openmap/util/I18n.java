@@ -197,7 +197,7 @@ public interface I18n {
      * uses the String (like a button or a label).
      * @param defaultString what to use if the resource can't be found.
      */
-    public String get(Class requestor, String field, String defaultString);
+    public String get(Class<?> requestor, String field, String defaultString);
 
     /**
      * Get the string associated with the given class/field/type.
@@ -211,7 +211,7 @@ public interface I18n {
      * pertains to.  One of TEXT, TOOLTIP or MNEMONIC.
      * @param defaultString what to use if the resource can't be found.
      */
-    public String get(Class requestor, String field, int type,
+    public String get(Class<?> requestor, String field, int type,
                       String defaultString);
 
     //Methods making it easier to use MessageFormat:
@@ -238,7 +238,7 @@ public interface I18n {
      * 
      * @see java.text.MessageFormat
      */
-    public String get(Class requestor, String field, String defaultString,
+    public String get(Class<?> requestor, String field, String defaultString,
                       Object param1);
 
     /**
@@ -246,7 +246,7 @@ public interface I18n {
      * 
      * @see java.text.MessageFormat
      */
-    public String get(Class requestor, String field, int type,
+    public String get(Class<?> requestor, String field, int type,
                       String defaultString, Object param1);
 
     /**
@@ -270,7 +270,7 @@ public interface I18n {
      * 
      * @see java.text.MessageFormat
      */
-    public String get(Class requestor, String field, String defaultString,
+    public String get(Class<?> requestor, String field, String defaultString,
                       Object param1, Object param2);
 
     /**
@@ -278,7 +278,7 @@ public interface I18n {
      * 
      * @see java.text.MessageFormat
      */
-    public String get(Class requestor, String field, int type,
+    public String get(Class<?> requestor, String field, int type,
                       String defaultString, Object param1, Object param2);
 
     /**
@@ -302,7 +302,7 @@ public interface I18n {
      * 
      * @see java.text.MessageFormat
      */
-    public String get(Class requestor, String field, String defaultString,
+    public String get(Class<?> requestor, String field, String defaultString,
                       Object[] params);
 
     /**
@@ -310,7 +310,7 @@ public interface I18n {
      * 
      * @see java.text.MessageFormat
      */
-    public String get(Class requestor, String field, int type,
+    public String get(Class<?> requestor, String field, int type,
                       String defaultString, Object[] params);
 
     //Methods fill setting the textual properties of common Swing

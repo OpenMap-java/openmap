@@ -70,9 +70,6 @@ import com.bbn.openmap.util.PropUtils;
 public class EventLayer extends OMGraphicHandlerLayer
 		implements DataBoundsProvider, TimeBoundsProvider, TimeEventListener, OMEventHandler {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.event.EventLayer");

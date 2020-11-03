@@ -26,6 +26,11 @@ package com.bbn.openmap.util;
  */
 public class PropertyStringFormatException extends RuntimeException {
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Constructs a <code>MapRequestFormatException</code> with
      * <tt>null</tt> as its error message string.
      */

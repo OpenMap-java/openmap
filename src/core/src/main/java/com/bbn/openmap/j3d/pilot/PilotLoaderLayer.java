@@ -41,9 +41,6 @@ import com.bbn.openmap.util.Debug;
  */
 public class PilotLoaderLayer extends GraphicLoaderLayer {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	protected OMDrawingTool dt = null;

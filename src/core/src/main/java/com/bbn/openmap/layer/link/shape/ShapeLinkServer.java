@@ -26,7 +26,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Vector;
+import java.util.List;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.layer.link.Link;
@@ -250,7 +250,7 @@ public class ShapeLinkServer extends LinkServer implements
             }
         } else {
             // System.out.println("Relative!");
-            Vector<String> dirs = Environment.getClasspathDirs();
+            List<String> dirs = Environment.getClasspathDirs();
             int nDirs = dirs.size();
             if (nDirs > 0) {
                 for (String dir : dirs) {

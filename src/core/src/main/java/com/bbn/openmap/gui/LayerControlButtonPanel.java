@@ -93,7 +93,11 @@ import com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor;
 public class LayerControlButtonPanel extends OMComponentPanel implements
         ActionListener, PropertyChangeListener {
 
-    // Images
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	// Images
     protected static transient URL urlup;
     protected static transient ImageIcon upgif;
     protected static transient URL urlupc;

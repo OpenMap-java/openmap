@@ -24,15 +24,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -250,7 +247,7 @@ public abstract class AbstractLocationHandler extends OMComponent implements Loc
         forceGlobal = PropUtils.booleanFromProperties(properties, prefix + ForceGlobalProperty, forceGlobal);
         setPrettyName(properties.getProperty(prefix + Layer.PrettyNameProperty, getPrettyName()));
 
-        Vector<String> renAttKeys = PropUtils.parseSpacedMarkers(properties.getProperty(prefix
+        List<String> renAttKeys = PropUtils.parseSpacedMarkers(properties.getProperty(prefix
                 + RenderAttributesListProperty));
         if (renAttKeys != null) {
             for (String renAttKey : renAttKeys) {

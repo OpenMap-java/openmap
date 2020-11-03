@@ -23,9 +23,9 @@
 package com.bbn.openmap.dataAccess.dted;
 
 import java.awt.geom.Point2D;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.io.BinaryFile;
@@ -80,7 +80,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
 
     protected String propertyPrefix = null;
 
-    protected Vector directories = new Vector();
+    protected List<DTEDDirectoryHandler> directories = new ArrayList<>();
 
     protected int highestResLevel = 2;
 
@@ -116,7 +116,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     /**
      * Get the Vector of DTEDDirectoryHandlers used by the DTEDFrameCache.
      */
-    public Vector getDTEDDirectoryHandlers() {
+    public List<DTEDDirectoryHandler> getDTEDDirectoryHandlers() {
         return directories;
     }
 
@@ -125,7 +125,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      * might want to use this to set the order of directories that are searched
      * for a DTED frame.
      */
-    public void setDTEDDirectoryHandlers(Vector handlers) {
+    public void setDTEDDirectoryHandlers(List<DTEDDirectoryHandler> handlers) {
         directories = handlers;
     }
 
@@ -142,8 +142,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     public String findFileName(double lat, double lon, int level) {
 
         if (directories != null) {
-            for (Iterator it = directories.iterator(); it.hasNext();) {
-                DTEDDirectoryHandler ddh = (DTEDDirectoryHandler) it.next();
+            for (DTEDDirectoryHandler ddh : directories) {
                 DTEDNameTranslator dnt = ddh.getTranslator();
                 dnt.set(lat, lon, level);
                 String dtedFileName = dnt.getName();
@@ -607,11 +606,10 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
 
         // Space-separated list of marker names for different
         // DTEDDirectoryHandlers
-        Vector directoryHandlerList = PropUtils.parseSpacedMarkers(props.getProperty(prefix
+        List<String> directoryHandlerList = PropUtils.parseSpacedMarkers(props.getProperty(prefix
                 + DTEDDirectoryHandlerProperty));
 
-        for (Iterator it = directoryHandlerList.iterator(); it.hasNext();) {
-            String handlerPrefix = (String) it.next();
+        for (String handlerPrefix : directoryHandlerList) {
             DTEDDirectoryHandler handler = new DTEDDirectoryHandler();
             handler.setProperties(prefix + handlerPrefix, props);
             addDTEDDirectoryHandler(handler);
@@ -637,8 +635,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
         if (directories != null) {
             StringBuffer dhPrefixes = new StringBuffer();
 
-            for (Iterator it = directories.iterator(); it.hasNext();) {
-                DTEDDirectoryHandler ddh = (DTEDDirectoryHandler) it.next();
+            for (DTEDDirectoryHandler ddh : directories) {
                 String dhPrefix = ddh.getPropertyPrefix();
                 if (dhPrefix != null) {
                     int index = dhPrefix.indexOf(prefix);

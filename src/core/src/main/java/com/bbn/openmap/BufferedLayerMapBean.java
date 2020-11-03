@@ -50,6 +50,7 @@ import com.bbn.openmap.layer.BufferedLayer;
  */
 public class BufferedLayerMapBean extends BufferedMapBean {
 
+	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger(BufferedLayerMapBean.class.getName());
 	protected BufferedLayer bufferedLayer;
 

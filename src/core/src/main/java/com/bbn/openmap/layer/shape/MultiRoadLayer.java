@@ -28,9 +28,7 @@ package com.bbn.openmap.layer.shape;
 
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -46,6 +44,7 @@ import com.bbn.openmap.tools.roads.LayerView;
 import com.bbn.openmap.tools.roads.RoadFinder;
 import com.bbn.openmap.tools.roads.RoadServices;
 import com.bbn.openmap.tools.roads.Route;
+import com.bbn.openmap.tools.roads.Segment;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -66,14 +65,15 @@ import com.bbn.openmap.util.PropUtils;
 public class MultiRoadLayer extends MultiShapeLayer implements RoadServices,
         ProjectionListener, LayerView {
 
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	private static final long serialVersionUID = 1L;
+	Logger logger = Logger.getLogger(this.getClass().getName());
     RoadFinder helper;
 
     /**
      * list of extra OMGraphics that represent intersections or
      * results
      */
-    List toDraw = new ArrayList();
+    OMGraphicList toDraw = new OMGraphicList();
     boolean drawIntersections = false;
     boolean drawResults = false;
 
@@ -123,7 +123,7 @@ public class MultiRoadLayer extends MultiShapeLayer implements RoadServices,
      * @param segments populated with road segments
      * @return list of points on path
      */
-    public List getPathOnRoad(Point start, Point end, List segments) {
+    public List<Point> getPathOnRoad(Point start, Point end, List<Segment> segments) {
         return helper.getPathOnRoad(start, end, segments);
     }
 
@@ -137,7 +137,7 @@ public class MultiRoadLayer extends MultiShapeLayer implements RoadServices,
     /**
      * @see RoadServices#displayPathOnRoad(Point, Point, Route, List)
      */
-    public List displayPathOnRoad(Point start, Point end, Route route, List segments) {
+    public List<Point> displayPathOnRoad(Point start, Point end, Route route, List<Segment> segments) {
       return helper.displayPathOnRoad(start, end, route, segments);
     }
     
@@ -173,11 +173,11 @@ public class MultiRoadLayer extends MultiShapeLayer implements RoadServices,
      * @return List of OMGraphic items that will be used to create
      *         roads
      */
-    public List getGraphicList() {
+    public OMGraphicList getOMGraphicsFromSource() {
         OMGraphicList list = getList();
-        List out = new ArrayList();
+        OMGraphicList out = new OMGraphicList();
 
-        Set seen = new HashSet();
+        Set<OMGraphic> seen = new HashSet<>();
 
         if (list != null) {
             if (logger.isLoggable(Level.INFO))
@@ -198,15 +198,14 @@ public class MultiRoadLayer extends MultiShapeLayer implements RoadServices,
                         logger.info("size of " + graphic + " is "
                                 + ((OMGraphicList) graphic).size());
 
-                    for (Iterator iter = ((OMGraphicList) graphic).iterator(); iter.hasNext();) {
-                        Object inner = iter.next();
+                    for (OMGraphic inner : ((OMGraphicList) graphic)) {
+
                         if (inner instanceof OMGraphicList) {
                             if (logger.isLoggable(Level.INFO))
                                 logger.info("size of " + inner + " is "
                                         + ((OMGraphicList) inner).size());
 
-                            for (Iterator iter2 = ((OMGraphicList) inner).iterator(); iter2.hasNext();) {
-                                Object inner2 = iter2.next();
+                            for (OMGraphic inner2 : ((OMGraphicList) inner)) {
 
                                 if (logger.isLoggable(Level.INFO))
                                     logger.info("1) adding - " + inner2);
@@ -236,7 +235,7 @@ public class MultiRoadLayer extends MultiShapeLayer implements RoadServices,
      * Called from RoadFinder to tell it what extra to render (e.g.
      * intersections, roads).
      */
-    public void setExtraGraphics(List toDraw) {
+    public void setExtraGraphics(OMGraphicList toDraw) {
         if (logger.isLoggable(Level.INFO)) {
             logger.info("setting to draw " + toDraw.size() + " new graphics.");
         }

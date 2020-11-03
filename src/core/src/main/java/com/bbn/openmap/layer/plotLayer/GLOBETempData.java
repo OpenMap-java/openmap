@@ -26,16 +26,16 @@ package com.bbn.openmap.layer.plotLayer;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 public class GLOBETempData extends GLOBEData {
 
-    private static float NO_VALUE = -99;
+    protected static float NO_VALUE = -99;
 
-    private Hashtable site_table = new Hashtable();
+    private Map<String, GLOBESite> siteTable = new HashMap<>();
 
     public float overall_min_year_ = Float.NaN;
     public float overall_max_year_ = Float.NaN;
@@ -148,19 +148,19 @@ public class GLOBETempData extends GLOBEData {
 
     private GLOBESite findSite(float latitude, float longitude) {
         GLOBESite site = new GLOBESite(latitude, longitude);
-        GLOBESite hashed_site = (GLOBESite) site_table.get(site.hash());
+        GLOBESite hashed_site = siteTable.get(site.hash());
 
         if (hashed_site == null) {
             //      System.out.println("hash_miss: " + latitude + " " +
             // longitude);
-            site_table.put(site.hash(), site);
+            siteTable.put(site.hash(), site);
             hashed_site = site;
         }
         return hashed_site;
     }
 
-    public Enumeration getAllSites() {
-        return site_table.elements();
+    public Map<String, GLOBESite> getAllSites() {
+        return siteTable;
     }
 
     /*

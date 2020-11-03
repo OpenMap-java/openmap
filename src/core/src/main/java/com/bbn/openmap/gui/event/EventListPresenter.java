@@ -109,9 +109,6 @@ import com.bbn.openmap.util.PropUtils;
 public class EventListPresenter extends AbstractEventPresenter implements EventPresenter, ListSelectionListener,
 		PropertyChangeListener, MouseListener, MouseMotionListener, TimeBoundsListener, TimeEventListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.event.EventListPresenter");

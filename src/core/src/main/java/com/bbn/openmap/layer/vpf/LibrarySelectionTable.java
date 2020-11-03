@@ -100,17 +100,15 @@ public class LibrarySelectionTable {
 	/**
 	 * Construct a LibrarySelectionTable with a path to data.
 	 * 
-	 * @param vpfpaths
+	 * @param vpfPaths
 	 *            the paths to the data directories; the file opened is
 	 *            <code>vpfpath</code> /lat.
 	 * @exception FormatException
 	 *                some error was encountered while trying to handle the
 	 *                file.
 	 */
-	public LibrarySelectionTable(String vpfpaths[]) throws FormatException {
-		for (int i = 0; i < vpfpaths.length; i++) {
-			addDataPath(vpfpaths[i]);
-		}
+	public LibrarySelectionTable(String vpfPaths[]) throws FormatException {
+		withDataPath(vpfPaths);
 	}
 
 	/**
@@ -130,6 +128,31 @@ public class LibrarySelectionTable {
 		return BROWSE_CUTOFF;
 	}
 
+	/**
+	 * Add a path to a vpf library and return this LST.
+	 * @param vpfPath path
+	 * @return this LST
+	 * @throws FormatException if there is a problem with the path.
+	 */
+	public LibrarySelectionTable withDataPath(String vpfPath) throws FormatException {
+		addDataPath(vpfPath);
+		return this;
+	}
+
+	/**
+	 * Add a set of vpf library paths and return this LST.
+	 * @param vpfPaths array of paths
+	 * @return this LST
+	 * @throws FormatException if there is a problem with any one of the paths.
+	 */
+	public LibrarySelectionTable withDataPath(String[] vpfPaths) throws FormatException {
+		for (String p: vpfPaths) {
+			addDataPath(p);
+		}
+			
+		return this;
+	}
+	
 	/**
 	 * add a path to LibrarySelectionTable. Adding different types of VPF
 	 * libraries to the same LST is likely to cause trouble. (e.g. it would be
@@ -181,7 +204,7 @@ public class LibrarySelectionTable {
 		final List<String> libDirectories = searchLibraryDirectories(vpfpath);
 
 		VPFLayer.logger.fine("lst.adp: looked up schema");
-		for (final List l = new ArrayList(latrf.getColumnCount()); latrf.parseRow(l);) {
+		for (final List<Object> l = new ArrayList<>(latrf.getColumnCount()); latrf.parseRow(l);) {
 			final String lname = ((String) l.get(latcols[0])).toLowerCase();
 			
 			if (!libDirectories.contains(lname.toUpperCase())) {
@@ -396,7 +419,7 @@ public class LibrarySelectionTable {
 		float dpplat = Math.abs((ll1.getLatitude() - ll2.getLatitude()) / screenheight);
 		float dpplon = Math.abs((ll1.getLongitude() - ll2.getLongitude()) / screenwidth);
 
-		int inArea = 0;
+//		int inArea = 0;
 		CoverageTable redrawUntiled = null;
 
 		for (CoverageAttributeTable cat : CATs.values()) {
@@ -421,7 +444,7 @@ public class LibrarySelectionTable {
 				}
 
 				c.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
-				inArea++;
+//				inArea++;
 			} else {
 				// Set up to draw browse coverage, or non-tiled coverage
 				if (VPFLayer.logger.isLoggable(Level.FINE)) {

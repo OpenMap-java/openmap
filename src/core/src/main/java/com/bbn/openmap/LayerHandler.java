@@ -98,6 +98,8 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class LayerHandler extends OMComponent implements SoloMapComponent, Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	public static Logger logger = Logger.getLogger("com.bbn.openmap.LayerHandler");
 
 	/**
@@ -352,8 +354,8 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
 					.getProperty(PropUtils.getScopedPropertyPrefix(Environment.OpenMapPrefix) + startUpLayersProperty);
 		}
 
-		Vector<String> startuplayers = PropUtils.parseSpacedMarkers(startupLayersValueString);
-		Vector<String> layersValue = PropUtils.parseSpacedMarkers(layersValueString);
+		List<String> startuplayers = PropUtils.parseSpacedMarkers(startupLayersValueString);
+		List<String> layersValue = PropUtils.parseSpacedMarkers(layersValueString);
 
 		if (startuplayers.isEmpty()) {
 			logger.info("No layers on startup list");
@@ -400,7 +402,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
 	 * @param p Properties object containing the layers properties.
 	 * @return Layer[]
 	 */
-	public static Layer[] getLayers(Vector<String> layerList, Vector<String> visibleLayerList, Properties p) {
+	public static Layer[] getLayers(List<String> layerList, List<String> visibleLayerList, Properties p) {
 
 		int nLayerNames = layerList.size();
 		Vector<Layer> layers = new Vector<Layer>(nLayerNames);
@@ -737,6 +739,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
 	 * @param layer the layer to add.
 	 * @param position the array index to place it.
 	 */
+	@SuppressWarnings("unchecked")
 	public void addLayer(Layer layer, int position) {
 		// Working copy
 		List<Layer> currentLayers = getLayerList();
@@ -1025,6 +1028,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
 	 * 
 	 * @param layers layers to add, if they want to be.
 	 */
+	@SuppressWarnings("unchecked")
 	public void addLayersToBeanContext(List<Layer> layers) {
 		BeanContext bc = getBeanContext();
 		if (bc == null || layers == null) {

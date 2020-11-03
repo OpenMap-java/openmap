@@ -24,7 +24,6 @@ package com.bbn.openmap.tools.symbology.milStd2525;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -86,7 +85,7 @@ public class SymbolPart {
     /**
      * A list of children SymbolParts relative to this one.
      */
-    protected List subs;
+    protected List<SymbolPart> subs;
     /**
      * The parent SymbolPart to this one.
      */
@@ -243,7 +242,7 @@ public class SymbolPart {
      * Sets a list of SymbolPart tree for more specific
      * representations of what this SymbolPart represents.
      */
-    public void setSubs(List set) {
+    public void setSubs(List<SymbolPart> set) {
         subs = set;
     }
 
@@ -251,7 +250,7 @@ public class SymbolPart {
      * Gets a list of SymbolPart tree for more specific
      * representations of what this SymbolPart represents.
      */
-    public List getSubs() {
+    public List<SymbolPart> getSubs() {
         return subs;
     }
 
@@ -275,7 +274,7 @@ public class SymbolPart {
             sb.append(indicator);
         }
 
-        List subs = getSubs();
+        List<SymbolPart> subs = getSubs();
         int subSize = 0;
         if (subs != null) {
             subSize = subs.size();
@@ -299,9 +298,8 @@ public class SymbolPart {
 
                 String spacer = sb1.toString();
 
-                for (Iterator it = subs.iterator(); it.hasNext();) {
-                    sb.append(spacer)
-                            .append(((SymbolPart) it.next()).getDescription(level + 1));
+                for (SymbolPart sp : subs) {
+                    sb.append(spacer).append(sp.getDescription(level + 1));
                 }
             }
         }

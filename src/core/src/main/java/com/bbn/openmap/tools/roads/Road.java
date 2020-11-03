@@ -34,412 +34,415 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class Road implements RoadObject, Serializable {
 
-    transient Logger logger = Logger.getLogger(this.getClass().getName());
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * The points along the road. The first and last points are always
-     * Intersections.
-     */
-    private Waypoint[] points;
+	transient Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * The lines between the points.
-     */
-    private RoadLine[] lines;
+	/**
+	 * The points along the road. The first and last points are always
+	 * Intersections.
+	 */
+	private Waypoint[] points;
 
-    /**
-     * The class of this road. A Road's class implies what kind of road it is.
-     * For now this governs its visual appearance of color and width.
-     */
-    private RoadClass roadClass;
+	/**
+	 * The lines between the points.
+	 */
+	private RoadLine[] lines;
 
-    private boolean isRoute = false;
+	/**
+	 * The class of this road. A Road's class implies what kind of road it is. For
+	 * now this governs its visual appearance of color and width.
+	 */
+	private RoadClass roadClass;
 
-    private boolean blocked = false;
+	private boolean isRoute = false;
 
-    /**
-     * The id of this road.
-     */
-    private int id;
+	private boolean blocked = false;
 
-    /**
-     * The name of this road.
-     */
-    private String name;
+	/**
+	 * The id of this road.
+	 */
+	private int id;
 
-    /**
-     * True if this road has been modified (points added or removed).
-     */
-    private boolean modified = false;
+	/**
+	 * The name of this road.
+	 */
+	private String name;
 
-    /**
-     * The RoadLayer we belong to so we can invoke its services.
-     */
-    private transient RoadLayer roadLayer;
+	/**
+	 * True if this road has been modified (points added or removed).
+	 */
+	private boolean modified = false;
 
-    /**
-     * Selection flag for this road.
-     */
-    private boolean selected = false;
+	/**
+	 * The RoadLayer we belong to so we can invoke its services.
+	 */
+	private transient RoadLayer roadLayer;
 
-    /**
-     * Blink flag for this road.
-     */
-    private boolean blinkState = false;
+	/**
+	 * Selection flag for this road.
+	 */
+	private boolean selected = false;
 
-    /**
-     * Create a road between two Intersections. The detailed segments between
-     * the intersections may be filled in later.
-     * 
-     * @param id a unique, integer identifier of this road.
-     * @param name a name for this road.
-     * @param from the intersection from which this road leaves.
-     * @param to the intersection to which this road goes.
-     * @param roadClass the class of this road.
-     * @param roadLayer the RoadLayer we belong to.
-     */
-    public Road(int id, String name, Intersection from, Intersection to, RoadClass roadClass,
-            RoadLayer roadLayer) {
-        this.id = id;
-        this.name = name;
-        this.roadLayer = roadLayer;
-        points = new Waypoint[2];
-        setIntersections(from, to);
-        this.roadClass = roadClass;
-        createLines();
-        modified = false;
-    }
+	/**
+	 * Blink flag for this road.
+	 */
+	private boolean blinkState = false;
 
-    public double getLengthInKilometers() {
-        double kilometers = 0.0;
-        LatLonPoint prevPoint = points[0].getLocation();
-        // logger.warning ("" + this + " pt 0 " + points[0] + " pt 1 "
-        // + points[1] + " getSecondInter " + getSecondIntersection
-        // ());
-        for (int i = 1; i < points.length; i++) {
-            LatLonPoint thisPoint = points[i].getLocation();
-            kilometers += GreatCircle.sphericalDistance(prevPoint.getY(), prevPoint.getX(), thisPoint.getY(), thisPoint.getX());
-            prevPoint = thisPoint;
-        }
-        return kilometers;
-    }
+	/**
+	 * Create a road between two Intersections. The detailed segments between the
+	 * intersections may be filled in later.
+	 * 
+	 * @param id        a unique, integer identifier of this road.
+	 * @param name      a name for this road.
+	 * @param from      the intersection from which this road leaves.
+	 * @param to        the intersection to which this road goes.
+	 * @param roadClass the class of this road.
+	 * @param roadLayer the RoadLayer we belong to.
+	 */
+	public Road(int id, String name, Intersection from, Intersection to, RoadClass roadClass, RoadLayer roadLayer) {
+		this.id = id;
+		this.name = name;
+		this.roadLayer = roadLayer;
+		points = new Waypoint[2];
+		setIntersections(from, to);
+		this.roadClass = roadClass;
+		createLines();
+		modified = false;
+	}
 
-    public double getTraverseHours() {
-        if (isBlocked())
-            return Float.MAX_VALUE;
-        return getLengthInKilometers() / getRoadClass().getConvoySpeed();
-    }
+	public double getLengthInKilometers() {
+		double kilometers = 0.0;
+		LatLonPoint prevPoint = points[0].getLocation();
+		// logger.warning ("" + this + " pt 0 " + points[0] + " pt 1 "
+		// + points[1] + " getSecondInter " + getSecondIntersection
+		// ());
+		for (int i = 1; i < points.length; i++) {
+			LatLonPoint thisPoint = points[i].getLocation();
+			kilometers += GreatCircle.sphericalDistance(prevPoint.getY(), prevPoint.getX(), thisPoint.getY(),
+					thisPoint.getX());
+			prevPoint = thisPoint;
+		}
+		return kilometers;
+	}
 
-    public LatLonPoint getLocationAtKilometer(double kilometers) {
-        LatLonPoint prevPoint = points[0].getLocation();
-        double prevLat = prevPoint.getY();
-        double prevLon = prevPoint.getX();
-        for (int i = 1; i < points.length; i++) {
-            LatLonPoint thisPoint = points[i].getLocation();
-            double thisLat = thisPoint.getY();
-            double thisLon = thisPoint.getX();
-            double thisLength = GreatCircle.sphericalDistance(prevLat, prevLon, thisLat, thisLon);
-            if (thisLength >= kilometers) {
-                double fraction = kilometers / thisLength;
-                double deltaLat = thisLat - prevLat;
-                double deltaLon = thisLon - prevLon;
-                if (deltaLon < -180f)
-                    deltaLon += 360f;
-                else if (deltaLon > 180f)
-                    deltaLon -= 360f;
-                return new LatLonPoint.Double(prevLat + fraction * deltaLat, prevLon + fraction
-                        * deltaLon);
-            }
-            kilometers -= thisLength;
-            prevPoint = thisPoint;
-            prevLat = thisLat;
-            prevLon = thisLon;
-        }
-        return prevPoint;
-    }
+	public double getTraverseHours() {
+		if (isBlocked())
+			return Float.MAX_VALUE;
+		return getLengthInKilometers() / getRoadClass().getConvoySpeed();
+	}
 
-    private void createLines() {
-        lines = new RoadLine[points.length - 1];
-        for (int i = 0; i < lines.length; i++) {
-            lines[i] = new RoadLine(this, i);
-        }
-        blinkLines();
-    }
+	public LatLonPoint getLocationAtKilometer(double kilometers) {
+		LatLonPoint prevPoint = points[0].getLocation();
+		double prevLat = prevPoint.getY();
+		double prevLon = prevPoint.getX();
+		for (int i = 1; i < points.length; i++) {
+			LatLonPoint thisPoint = points[i].getLocation();
+			double thisLat = thisPoint.getY();
+			double thisLon = thisPoint.getX();
+			double thisLength = GreatCircle.sphericalDistance(prevLat, prevLon, thisLat, thisLon);
+			if (thisLength >= kilometers) {
+				double fraction = kilometers / thisLength;
+				double deltaLat = thisLat - prevLat;
+				double deltaLon = thisLon - prevLon;
+				if (deltaLon < -180f)
+					deltaLon += 360f;
+				else if (deltaLon > 180f)
+					deltaLon -= 360f;
+				return new LatLonPoint.Double(prevLat + fraction * deltaLat, prevLon + fraction * deltaLon);
+			}
+			kilometers -= thisLength;
+			prevPoint = thisPoint;
+			prevLat = thisLat;
+			prevLon = thisLon;
+		}
+		return prevPoint;
+	}
 
-    private void blinkLines() {
-        for (int i = 0; i < lines.length; i++)
-            lines[i].blink(blinkState);
-    }
+	private void createLines() {
+		lines = new RoadLine[points.length - 1];
+		for (int i = 0; i < lines.length; i++) {
+			lines[i] = new RoadLine(this, i);
+		}
+		blinkLines();
+	}
 
-    /**
-     * Set the state of the modified flag. Setting the modified flag to false
-     * also sets the modified flag of all the points to false as well.
-     * 
-     * @param newValue the new setting.
-     */
-    public void setModified(boolean newValue) {
-        modified = newValue;
-        if (newValue == false) {
-            for (int i = 0; i < points.length; i++)
-                points[i].setModified(false);
-        }
-    }
+	private void blinkLines() {
+		for (int i = 0; i < lines.length; i++)
+			lines[i].blink(blinkState);
+	}
 
-    /**
-     * Get the state of the modified flag.
-     * 
-     * @return true if the road or its points have been modified.
-     */
-    public boolean getModified() {
-        if (modified)
-            return true;
-        for (int i = 0; i < points.length; i++)
-            if (points[i].getModified())
-                return true;
-        return false;
-    }
+	/**
+	 * Set the state of the modified flag. Setting the modified flag to false also
+	 * sets the modified flag of all the points to false as well.
+	 * 
+	 * @param newValue the new setting.
+	 */
+	public void setModified(boolean newValue) {
+		modified = newValue;
+		if (newValue == false) {
+			for (int i = 0; i < points.length; i++)
+				points[i].setModified(false);
+		}
+	}
 
-    public void block() {
-        blocked = true;
-        updateLines();
-    }
+	/**
+	 * Get the state of the modified flag.
+	 * 
+	 * @return true if the road or its points have been modified.
+	 */
+	public boolean getModified() {
+		if (modified)
+			return true;
+		for (int i = 0; i < points.length; i++)
+			if (points[i].getModified())
+				return true;
+		return false;
+	}
 
-    public void unblock() {
-        blocked = false;
-        updateLines();
-    }
+	public void block() {
+		blocked = true;
+		updateLines();
+	}
 
-    public boolean isBlocked() {
-        return blocked;
-    }
+	public void unblock() {
+		blocked = false;
+		updateLines();
+	}
 
-    public void blink(boolean newState) {
-        blinkState = newState;
-        if (lines != null)
-            blinkLines();
-        blinkPoints();
-    }
+	public boolean isBlocked() {
+		return blocked;
+	}
 
-    /**
-     * Accessor for the ID property.
-     * 
-     * @return the road ID.
-     */
-    public int getID() {
-        return id;
-    }
+	public void blink(boolean newState) {
+		blinkState = newState;
+		if (lines != null)
+			blinkLines();
+		blinkPoints();
+	}
 
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Accessor for the ID property.
+	 * 
+	 * @return the road ID.
+	 */
+	public int getID() {
+		return id;
+	}
 
-    public void setName(String newName) {
-        name = newName;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public RoadClass getRoadClass() {
-        return roadClass;
-    }
+	public void setName(String newName) {
+		name = newName;
+	}
 
-    public void setRoadClass(RoadClass newClass) {
-        roadClass = newClass;
-        setModified(true);
-        updateLines();
-    }
+	public RoadClass getRoadClass() {
+		return roadClass;
+	}
 
-    public String getRoadClassName() {
-        return roadClass.getName().toString();
-    }
+	public void setRoadClass(RoadClass newClass) {
+		roadClass = newClass;
+		setModified(true);
+		updateLines();
+	}
 
-    public void isRoute(boolean yes) {
-        isRoute = yes;
-        updateLines();
-    }
+	public String getRoadClassName() {
+		return roadClass.getName().toString();
+	}
 
-    public boolean isRoute() {
-        return isRoute;
-    }
+	public void isRoute(boolean yes) {
+		isRoute = yes;
+		updateLines();
+	}
 
-    public RoadLayer getRoadLayer() {
-        return roadLayer;
-    }
+	public boolean isRoute() {
+		return isRoute;
+	}
 
-    public void setIntersections(Intersection from, Intersection to) {
-        if (from == null) {
-            logger.warning("from is null.");
-            Thread.dumpStack();
-        }
-        if (to == null) {
-            logger.warning("to is null.");
-            Thread.dumpStack();
-        }
+	public RoadLayer getRoadLayer() {
+		return roadLayer;
+	}
 
-        points[0] = from;
-        points[points.length - 1] = to;
-        checkPoints();
-        createLines();
-        setModified(true);
-    }
+	public void setIntersections(Intersection from, Intersection to) {
+		if (from == null) {
+			logger.warning("from is null.");
+			Thread.dumpStack();
+		}
+		if (to == null) {
+			logger.warning("to is null.");
+			Thread.dumpStack();
+		}
 
-    public void setRoadPoints(RoadPoint[] innerPoints) {
-        Waypoint[] oldPoints = points;
-        points = new Waypoint[2 + innerPoints.length];
-        points[0] = oldPoints[0];
-        System.arraycopy(innerPoints, 0, points, 1, innerPoints.length);
-        points[points.length - 1] = oldPoints[oldPoints.length - 1];
+		points[0] = from;
+		points[points.length - 1] = to;
+		checkPoints();
+		createLines();
+		setModified(true);
+	}
 
-        if (points[points.length - 1] == null) {
-            logger.warning("to is null.");
-            Thread.dumpStack();
-        }
+	public void setRoadPoints(RoadPoint[] innerPoints) {
+		Waypoint[] oldPoints = points;
+		points = new Waypoint[2 + innerPoints.length];
+		points[0] = oldPoints[0];
+		System.arraycopy(innerPoints, 0, points, 1, innerPoints.length);
+		points[points.length - 1] = oldPoints[oldPoints.length - 1];
 
-        checkPoints();
+		if (points[points.length - 1] == null) {
+			logger.warning("to is null.");
+			Thread.dumpStack();
+		}
 
-        createLines();
-        // blinkPoints();
-        setModified(true);
-    }
+		checkPoints();
 
-    public void checkPoints() {
-        for (int i = 0; i < points.length; i++) {
-            if (points[i] == null) {
-                logger.warning("found null point at " + i);
-                Thread.dumpStack();
-            }
-        }
-    }
+		createLines();
+		// blinkPoints();
+		setModified(true);
+	}
 
-    public RoadPoint[] getRoadPoints() {
-        RoadPoint[] innerPoints = new RoadPoint[points.length - 2];
-        System.arraycopy(points, 1, innerPoints, 0, innerPoints.length);
-        return innerPoints;
-    }
+	public void checkPoints() {
+		for (int i = 0; i < points.length; i++) {
+			if (points[i] == null) {
+				logger.warning("found null point at " + i);
+				Thread.dumpStack();
+			}
+		}
+	}
 
-    public void insertRoadPointAt(RoadPoint wp, int ix) {
-        Waypoint[] oldPoints = points;
-        points = new Waypoint[1 + oldPoints.length];
-        System.arraycopy(oldPoints, 0, points, 0, ix);
-        points[ix] = wp;
-        if (wp == null) {
-            logger.warning("wp is null.");
-            Thread.dumpStack();
-        }
-        checkPoints();
-        System.arraycopy(oldPoints, ix, points, ix + 1, oldPoints.length - ix);
-        createLines();
-        // blinkPoints();
-        setModified(true);
-    }
+	public RoadPoint[] getRoadPoints() {
+		RoadPoint[] innerPoints = new RoadPoint[points.length - 2];
+		System.arraycopy(points, 1, innerPoints, 0, innerPoints.length);
+		return innerPoints;
+	}
 
-    public void deleteRoadPoint(RoadPoint rp) {
-        for (int ix = 1; ix < points.length - 1; ix++) {
-            if (points[ix] == rp) {
-                Waypoint[] oldPoints = points;
-                points = new Waypoint[oldPoints.length - 1];
-                System.arraycopy(oldPoints, 0, points, 0, ix);
-                System.arraycopy(oldPoints, ix + 1, points, ix, oldPoints.length - ix - 1);
-                createLines();
-                setModified(true);
-                return;
-            }
-        }
-        checkPoints();
+	public void insertRoadPointAt(RoadPoint wp, int ix) {
+		Waypoint[] oldPoints = points;
+		points = new Waypoint[1 + oldPoints.length];
+		System.arraycopy(oldPoints, 0, points, 0, ix);
+		points[ix] = wp;
+		if (wp == null) {
+			logger.warning("wp is null.");
+			Thread.dumpStack();
+		}
+		checkPoints();
+		System.arraycopy(oldPoints, ix, points, ix + 1, oldPoints.length - ix);
+		createLines();
+		// blinkPoints();
+		setModified(true);
+	}
 
-    }
+	public void deleteRoadPoint(RoadPoint rp) {
+		for (int ix = 1; ix < points.length - 1; ix++) {
+			if (points[ix] == rp) {
+				Waypoint[] oldPoints = points;
+				points = new Waypoint[oldPoints.length - 1];
+				System.arraycopy(oldPoints, 0, points, 0, ix);
+				System.arraycopy(oldPoints, ix + 1, points, ix, oldPoints.length - ix - 1);
+				createLines();
+				setModified(true);
+				return;
+			}
+		}
+		checkPoints();
 
-    public Intersection getFirstIntersection() {
-        return (Intersection) points[0];
-    }
+	}
 
-    public Intersection getSecondIntersection() {
-        return (Intersection) points[points.length - 1];
-    }
+	public Intersection getFirstIntersection() {
+		return (Intersection) points[0];
+	}
 
-    public Intersection getOtherIntersection(Intersection intersection) {
-        if (intersection == points[0])
-            return (Intersection) points[points.length - 1];
-        return (Intersection) points[0];
-    }
+	public Intersection getSecondIntersection() {
+		return (Intersection) points[points.length - 1];
+	}
 
-    public void changeIntersection(Intersection oldIntersection, Intersection newIntersection) {
-        if (oldIntersection == points[0]) {
-            setIntersections(newIntersection, getSecondIntersection());
-        } else if (oldIntersection == points[points.length - 1]) {
-            setIntersections(getFirstIntersection(), newIntersection);
-        }
-        checkPoints();
+	public Intersection getOtherIntersection(Intersection intersection) {
+		if (intersection == points[0])
+			return (Intersection) points[points.length - 1];
+		return (Intersection) points[0];
+	}
 
-    }
+	public void changeIntersection(Intersection oldIntersection, Intersection newIntersection) {
+		if (oldIntersection == points[0]) {
+			setIntersections(newIntersection, getSecondIntersection());
+		} else if (oldIntersection == points[points.length - 1]) {
+			setIntersections(getFirstIntersection(), newIntersection);
+		}
+		checkPoints();
 
-    public Waypoint getWaypoint(int ix) {
-        return points[ix];
-    }
+	}
 
-    public Waypoint[] getPoints() {
-        return points;
-    }
+	public Waypoint getWaypoint(int ix) {
+		return points[ix];
+	}
 
-    public RoadPoint[] getPointsBefore(RoadPoint wp) {
-        for (int i = 1; i < points.length - 1; i++) {
-            if (points[i] == wp) {
-                RoadPoint[] answer = new RoadPoint[i - 1];
-                System.arraycopy(points, 1, answer, 0, answer.length);
-                return answer;
-            }
-        }
-        return new RoadPoint[0];
-    }
+	public Waypoint[] getPoints() {
+		return points;
+	}
 
-    public RoadPoint[] getPointsAfter(RoadPoint wp) {
-        for (int i = 1; i < points.length - 1; i++) {
-            if (points[i] == wp) {
-                RoadPoint[] answer = new RoadPoint[points.length - i - 2];
-                System.arraycopy(points, i + 1, answer, 0, answer.length);
-                return answer;
-            }
-        }
-        RoadPoint[] answer = new RoadPoint[points.length - 2];
-        System.arraycopy(points, 1, answer, 0, answer.length);
-        return answer;
-    }
+	public RoadPoint[] getPointsBefore(RoadPoint wp) {
+		for (int i = 1; i < points.length - 1; i++) {
+			if (points[i] == wp) {
+				RoadPoint[] answer = new RoadPoint[i - 1];
+				System.arraycopy(points, 1, answer, 0, answer.length);
+				return answer;
+			}
+		}
+		return new RoadPoint[0];
+	}
 
-    private void blinkPoints() {
-        for (int i = 1; i < points.length - 1; i++) {
-            points[i].blink(blinkState);
-        }
-    }
+	public RoadPoint[] getPointsAfter(RoadPoint wp) {
+		for (int i = 1; i < points.length - 1; i++) {
+			if (points[i] == wp) {
+				RoadPoint[] answer = new RoadPoint[points.length - i - 2];
+				System.arraycopy(points, i + 1, answer, 0, answer.length);
+				return answer;
+			}
+		}
+		RoadPoint[] answer = new RoadPoint[points.length - 2];
+		System.arraycopy(points, 1, answer, 0, answer.length);
+		return answer;
+	}
 
-    /**
-     * Mark this Road as needing a new visual representation.
-     */
-    public synchronized void updateLines() {
-        for (int i = 0; i < lines.length; i++)
-            lines[i].update();
-    }
+	private void blinkPoints() {
+		for (int i = 1; i < points.length - 1; i++) {
+			points[i].blink(blinkState);
+		}
+	}
 
-    public void moveTo(Point loc) {
-    }
+	/**
+	 * Mark this Road as needing a new visual representation.
+	 */
+	public synchronized void updateLines() {
+		for (int i = 0; i < lines.length; i++) {
+			lines[i].update();
+		}
+	}
 
-    public synchronized void render(OMGraphicList gl, boolean projectionIsNew) {
-        if (roadLayer.isEditing()) {
-            for (int i = 1; i < points.length - 1; i++) {
-                points[i].render(gl, projectionIsNew);
-            }
-        }
-        for (int i = 0; i < lines.length; i++)
-            lines[i].render(gl, projectionIsNew);
-    }
+	public void moveTo(Point loc) {
+	}
 
-    public String toString() {
-        return name + " from " + getFirstIntersection() + " to " + getSecondIntersection() + " "
-                + points.length + " points.";
-    }
+	public synchronized void render(OMGraphicList gl, boolean projectionIsNew) {
+		if (roadLayer.isEditing()) {
+			for (int i = 1; i < points.length - 1; i++) {
+				points[i].render(gl, projectionIsNew);
+			}
+		}
+		for (int i = 0; i < lines.length; i++) {
+			lines[i].render(gl, projectionIsNew);
+		}
+	}
 
-    public boolean isSelected() {
-        return selected;
-    }
+	public String toString() {
+		return name + " from " + getFirstIntersection() + " to " + getSecondIntersection() + " " + points.length
+				+ " points.";
+	}
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 }

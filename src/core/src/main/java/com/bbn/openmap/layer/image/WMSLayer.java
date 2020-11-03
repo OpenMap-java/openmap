@@ -36,16 +36,16 @@ import com.bbn.openmap.util.PropUtils;
  * <pre>
  * 
  *     #For the WMSLayer
- *     wms_plugin=com.bbn.openmap.plugin.wms.WMSPlugIn
- *     wms_plugin.wmsserver=A URL for the WMS server (eg. http://host.domain.name/servlet/com.esri.wms.Esrimap)
- *     wms_plugin.wmsversion=OpenGIS WMS version number (eg. 1.1.1)
- *     wms_plugin.format=image format (eg. image/jpeg, image/png)
- *     wms_plugin.transparent=true or false, depends on imageformat
- *     wms_plugin.backgroundcolor=RGB hex string (RRGGBB)
- *     wms_plugin.layers=comma separated list of map layer names (eg. SDE.SASAUS_BND_COASTL,SDE.SASAUS_BND_POLBNDL)
- *     wms_plugin.styles=comma separated list of layer rendering styles corresponding to the layers listed
- *     wms_plugin.vendorspecificnames=comma separated list of vendor specific parameter names in order (eg. SERVICENAME)
- *     wms_plugin.vendorspecificvalues=comma separated list of vendor specific parameter values in order (eg. default)
+ *     wmsLayer=com.bbn.openmap.layer.image.WMSLayer
+ *     wmsLayer.wmsserver=A URL for the WMS server (eg. http://host.domain.name/servlet/com.esri.wms.Esrimap)
+ *     wmsLayer.wmsversion=OpenGIS WMS version number (eg. 1.1.1)
+ *     wmsLayer.format=image format (eg. image/jpeg, image/png)
+ *     wmsLayer.transparent=true or false, depends on imageformat
+ *     wmsLayer.backgroundcolor=RGB hex string (RRGGBB)
+ *     wmsLayer.layers=comma separated list of map layer names (eg. SDE.SASAUS_BND_COASTL,SDE.SASAUS_BND_POLBNDL)
+ *     wmsLayer.styles=comma separated list of layer rendering styles corresponding to the layers listed
+ *     wmsLayer.vendorspecificnames=comma separated list of vendor specific parameter names in order (eg. SERVICENAME)
+ *     wmsLayer.vendorspecificvalues=comma separated list of vendor specific parameter values in order (eg. default)
  * 
  * </pre>
  * 

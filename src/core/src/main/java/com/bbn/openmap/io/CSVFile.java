@@ -26,8 +26,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import com.bbn.openmap.util.CSVTokenizer;
 import com.bbn.openmap.util.Debug;
@@ -41,16 +42,16 @@ import com.bbn.openmap.util.PropUtils;
  * using the fields later as the key in a Hashtable.
  */
 public class CSVFile
-      implements Iterable<Vector<Object>> {
+      implements Iterable<List<Object>> {
 
    /** The location of the CSV file */
    public URL infoUrl;
 
    /** The records of the CSV file */
-   protected Vector<Vector<Object>> infoRecords = null;
+   protected List<List<Object>> infoRecords = null;
 
    /** The header record, if there is one */
-   protected Vector<Object> headerRecord = null;
+   protected List<Object> headerRecord = null;
 
    /** Whether file has a line of column headers. */
    protected boolean headersExist = true;
@@ -98,7 +99,7 @@ public class CSVFile
     */
    public void loadData(boolean readNumbersAsStrings) {
       BufferedReader streamReader = null;
-      Vector<Vector<Object>> records = new Vector<Vector<Object>>();
+      List<List<Object>> records = new ArrayList<List<Object>>();
 
       try {
          Object token = null;
@@ -106,7 +107,7 @@ public class CSVFile
 
          if (!headersExist) {
             header_read = true;
-            headerRecord = new Vector<Object>();
+            headerRecord = new ArrayList<>();
          }
 
          // This lets the property be specified as a file name
@@ -115,14 +116,11 @@ public class CSVFile
          URL csvURL = infoUrl;
          streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
          CSVTokenizer csvt = new CSVTokenizer(streamReader, readNumbersAsStrings);
-         int count = 0;
          token = csvt.token();
          while (!csvt.isEOF(token)) {
-            count++;
-
-            Vector<Object> rec_line = new Vector<Object>();
+            List<Object> rec_line = new ArrayList<>();
             while (!csvt.isNewline(token)) {
-               rec_line.addElement(token);
+               rec_line.add(token);
                token = csvt.token();
                if (csvt.isEOF(token))
                   break;
@@ -131,7 +129,7 @@ public class CSVFile
             // Don't add the header record, because we don't care
             // about it.
             if (header_read) {
-               records.addElement(rec_line);
+               records.add(rec_line);
             } else if (headersExist) {
                headerRecord = rec_line;
                header_read = true;
@@ -183,15 +181,15 @@ public class CSVFile
     * @param recordnumber the number of the record in the csv file.
     * @return Vector Vector of contents of record line.
     */
-   public Vector<Object> getRecord(int recordnumber) {
-      Vector<Object> vector;
+   public List<Object> getRecord(int recordnumber) {
+      List<Object> list;
       try {
-         vector = infoRecords.elementAt(recordnumber);
+         list = infoRecords.get(recordnumber);
       } catch (ArrayIndexOutOfBoundsException e) {
          Debug.error(infoUrl.toString() + ": Don't have information for shape record " + recordnumber);
          return null;
       }
-      return vector;
+      return list;
    }
 
    /**
@@ -199,11 +197,11 @@ public class CSVFile
     * 
     * @return Iterator
     */
-   public Iterator<Vector<Object>> iterator() {
+   public Iterator<List<Object>> iterator() {
       if (infoRecords != null) {
          return infoRecords.iterator();
       } else {
-         return new Vector<Vector<Object>>().iterator();
+         return new ArrayList<List<Object>>().iterator();
       }
    }
 }

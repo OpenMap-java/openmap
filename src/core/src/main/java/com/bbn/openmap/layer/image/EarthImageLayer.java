@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.layer.image;
 
-import java.awt.Component;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;

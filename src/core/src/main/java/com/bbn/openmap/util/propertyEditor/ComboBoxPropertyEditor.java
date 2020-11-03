@@ -34,12 +34,12 @@ import com.bbn.openmap.util.Debug;
  */
 public class ComboBoxPropertyEditor extends OptionPropertyEditor {
 
-    protected JComboBox combo;
+    protected JComboBox<String> combo;
 
     public ComboBoxPropertyEditor() {}
 
     public void setOptions(String[] options) {
-        combo = new JComboBox(options);
+        combo = new JComboBox<>(options);
         setCustomEditor(combo);
     }
 

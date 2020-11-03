@@ -39,7 +39,8 @@ import com.bbn.openmap.proj.Projection;
  */
 public class AreaShapeLayer extends ShapeLayer {
 
-    protected AreaHandler areas;
+	private static final long serialVersionUID = 1L;
+	protected AreaHandler areas;
 
     /**
      */

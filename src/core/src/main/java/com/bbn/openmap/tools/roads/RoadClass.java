@@ -29,19 +29,20 @@ import java.io.Serializable;
 
 public class RoadClass implements Serializable {
 
-    private Serializable name;
+	private static final long serialVersionUID = 1L;
+	private String name;
     private Color color;
     private int width;
     private float convoySpeed;
 
-    public RoadClass(Serializable name, Color color, int width, float convoySpeed) {
+    public RoadClass(String name, Color color, int width, float convoySpeed) {
         this.name = name;
         this.color = color;
         this.width = width;
         this.convoySpeed = convoySpeed;
     }
 
-    public Serializable getName() {
+    public String getName() {
         return name;
     }
 

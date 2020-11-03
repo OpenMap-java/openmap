@@ -15,7 +15,7 @@ import com.bbn.openmap.util.PropUtils;
  *
  * @author dietrick
  */
-public class MapRule extends Rule<Map> {
+public class MapRule extends Rule<Map<?,?>> {
 
     /**
      * Asks the Op class to evaluate the provided value against the Rules value.
@@ -23,7 +23,7 @@ public class MapRule extends Rule<Map> {
      * @param record
      * @return true of the operation passed
      */
-    public boolean evaluate(Map record) {
+    public boolean evaluate(Map<?,?> record) {
         Object recVal = record.get(keyField);
         return op.evaluate(this.val, recVal);
     }
@@ -35,7 +35,7 @@ public class MapRule extends Rule<Map> {
      * @param record Map to use to fetch values
      * @return String of content
      */
-    public String getContent(List<String> fieldNames, Map record) {
+    public String getContent(List<String> fieldNames, Map<?,?> record) {
         StringBuffer buf = new StringBuffer();
         if (fieldNames != null) {
             for (String field : fieldNames) {

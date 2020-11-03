@@ -28,7 +28,9 @@ import java.io.Serializable;
 
 public class Visual implements Serializable {
 
-    /**
+	private static final long serialVersionUID = 1L;
+
+	/**
      * The visual representation of this Waypoint.
      */
     private transient RoadGraphic visual;
@@ -59,7 +61,8 @@ public class Visual implements Serializable {
 
     public void blink(boolean newState) {
         blinkState = newState;
-        if (visual != null)
+        if (visual != null) {
             visual.blink(newState);
+        }
     }
 }

@@ -28,9 +28,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.List;
+import java.util.Map;
 
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -64,21 +66,16 @@ public class ScatterGraph {
     private float max_temp_ = Float.NaN;
     private float min_temp_ = Float.NaN;
 
-    // A Vector of the GLOBESites that are currently displayed on the
-    // map.
-    private Vector sites_displayed_ = null;
+    /** List of the GLOBESites that are currently displayed on the map. */
+    private List<GLOBESite> sites_displayed_ = null;
 
     // the size and position of the available drawing area
     private int frame_x, frame_y;
     private int frame_height_, frame_width_;
     private int plot_height_, plot_width_;
-//    private int frame_xoffset_, frame_yoffset_;
-
-//    private static final byte[] datapoint_bits_ = { (byte) 0x0e, (byte) 0x1f,
-//            (byte) 0x1b, (byte) 0x1f, (byte) 0x0e };
 
     private void initialize(int height, int width, int xoffset, int yoffset,
-                            Vector sites, float minyear, float maxyear,
+                            List<GLOBESite> sites, float minyear, float maxyear,
                             float mintemp, float maxtemp) {
         plot_graphics_ = new OMGraphicList();
         plot_points_ = new OMGraphicList();
@@ -87,8 +84,6 @@ public class ScatterGraph {
         plot_graphics_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
         plot_points_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
         plot_background_.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
-
-//
 
         max_year_ = maxyear;
         min_year_ = minyear;
@@ -106,7 +101,7 @@ public class ScatterGraph {
     /**
      * Set up the size of the graph, and scale all the axes correctly.
      */
-    public ScatterGraph(int height, int width, Vector sites, float minyear,
+    public ScatterGraph(int height, int width, List<GLOBESite> sites, float minyear,
             float maxyear, float mintemp, float maxtemp) {
         initialize(height,
                 width,
@@ -120,7 +115,7 @@ public class ScatterGraph {
     }
 
     public ScatterGraph(int height, int width, int xoffset, int yoffset,
-            Vector sites, float minyear, float maxyear, float mintemp,
+            List<GLOBESite> sites, float minyear, float maxyear, float mintemp,
             float maxtemp) {
         initialize(height,
                 width,
@@ -187,11 +182,11 @@ public class ScatterGraph {
      * 
      * @param sites the sites
      */
-    public void setDataPoints(Vector sites) {
+    public void setDataPoints(List<GLOBESite> sites) {
         if (sites != null) {
             sites_displayed_ = sites;
         } else {
-            sites_displayed_ = new Vector();
+            sites_displayed_ = new ArrayList<>();
         }
     }
 
@@ -388,29 +383,10 @@ public class ScatterGraph {
         return graphic;
     }
 
-    private Enumeration sortEnumerationOfFloats(Enumeration enumeration) {
-        Vector vec = new Vector();
-        while (enumeration.hasMoreElements()) {
-            vec.addElement(enumeration.nextElement());
-        }
-
-        Float[] result = new Float[vec.size()];
-        vec.copyInto(result);
-        Vector resultvec = new Vector(vec.size());
-
-        for (int i = 0; i < vec.size(); i++) {
-            for (int j = i + 1; j < vec.size(); j++) {
-                if (result[i].floatValue() > result[j].floatValue()) {
-                    Float t = result[i];
-                    result[i] = result[j];
-                    result[j] = t;
-                }
-            }
-            // We now know that i contains the smallest element
-            // in the remaining vector.
-            resultvec.addElement(result[i]);
-        }
-        return resultvec.elements();
+    private List<Float> sortYears(Map<Float, Float> yearData) {
+    	List<Float> years = new ArrayList<>(yearData.keySet());
+    	Collections.sort(years);
+    	return years;
     }
 
     /**
@@ -418,9 +394,6 @@ public class ScatterGraph {
      */
     public void plotData() {
         Debug.message("basic", "ScatterGraph.plotData()");
-        Enumeration all_sites = sites_displayed_.elements();
-        int num_elements = 0;
-        int num_sites = 0;
 
         plot_points_.clear();
 
@@ -429,17 +402,14 @@ public class ScatterGraph {
             drawGraphAxes();
         }
 
-        while (all_sites.hasMoreElements()) {
-            GLOBESite site = (GLOBESite) all_sites.nextElement();
-            Enumeration years = sortEnumerationOfFloats(site.getAllYears());
+        for (GLOBESite site : sites_displayed_) {
+
+            List<Float> sortedYears = sortYears(site.getAllYears());
 
             float last_year = Float.NaN;
             float last_temp = Float.NaN;
 
-            num_sites++;
-
-            while (years.hasMoreElements()) {
-                float year = ((Float) years.nextElement()).floatValue();
+            for (Float year : sortedYears) {
                 float temp = site.getValueForYear(year);
                 OMGraphic point = plotPoint(year, temp);
 
@@ -457,16 +427,10 @@ public class ScatterGraph {
                 // remember the last point we looked at.
                 last_year = year;
                 last_temp = temp;
-
-                // plot a data point
-                num_elements++;
             }
         }
+        
         plot_graphics_.add(plot_points_);
-
-        //              System.out.println("Data plotted: " +
-        //                         num_sites + " sites, " +
-        //                         num_elements + " datapoints");
 
     }
 

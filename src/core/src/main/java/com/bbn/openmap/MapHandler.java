@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -214,9 +213,9 @@ public class MapHandler extends BeanContextServicesSupport {
      * not a SoloMapComponent and there are more than one of them in the
      * MapHandler, you will get the first one found.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Object get(String classname) {
-        Class someClass = null;
+		Class someClass = null;
         try {
             someClass = Class.forName(classname);
         } catch (ClassNotFoundException cnfe) {
@@ -245,7 +244,7 @@ public class MapHandler extends BeanContextServicesSupport {
      * assignment-compatible object of that Class. A Collection is always
      * returned, although it may be empty.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Collection getAll(String classname) {
         Class someClass = null;
         try {
@@ -309,15 +308,14 @@ public class MapHandler extends BeanContextServicesSupport {
      * MapHandler is set as the BeanContext on them.
      */
     @SuppressWarnings("unchecked")
-    public Iterator iterator() {
-        return new ArrayList(this).iterator();
+    public Iterator<Object> iterator() {
+        return new ArrayList<>(this).iterator();
     }
 
     /**
      * Calls dispose() on the contained MapBean and removes all objects from
      * BeanContext.
      */
-    @SuppressWarnings("unchecked")
     public void dispose() {
         addLaterVector = null;
 

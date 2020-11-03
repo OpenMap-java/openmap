@@ -35,17 +35,15 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class RoadLine extends Visual implements RoadObject {
 
-    private Road road;
+	private static final long serialVersionUID = 1L;
+
+	private Road road;
 
     private int index;
 
     public RoadLine(Road road, int index) {
         this.road = road;
         this.index = index;
-    }
-
-    public static Class getGraphicClass() {
-        return Graphic.class;
     }
 
     public void moveTo(Point loc) {}
@@ -74,7 +72,9 @@ public class RoadLine extends Visual implements RoadObject {
     }
 
     public class Graphic extends OMLine implements RoadGraphic {
-        Graphic(LatLonPoint p1, LatLonPoint p2) {
+		private static final long serialVersionUID = 1L;
+
+		Graphic(LatLonPoint p1, LatLonPoint p2) {
             super(p1.getY(), p1.getX(), p2.getY(), p2.getX(),
                   OMLine.LINETYPE_STRAIGHT);
             if (road.isBlocked()) {

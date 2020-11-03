@@ -39,9 +39,6 @@ import com.bbn.openmap.util.Debug;
  */
 public class SaveAsImageMenuItem extends MapHandlerMenuItem implements ActionListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	AbstractImageFormatter formatter = null;
 

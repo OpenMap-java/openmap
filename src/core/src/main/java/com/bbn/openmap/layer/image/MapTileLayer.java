@@ -134,7 +134,7 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 
 	private static final long serialVersionUID = 1L;
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.imageTile.TileLayer");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.image.MapTileLayer");
 
     /**
      * Property that sets the class name of the MapTileFactory to use for this
