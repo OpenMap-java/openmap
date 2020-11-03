@@ -3,49 +3,27 @@
 	<target name="init" description="Sets properties needed by the other targets.">
 		<tstamp />
 		<property name="openmap.home" value="../.." />
-		<property name="vpf.home" value="." />
-		<property name="vpf.class_dir" value="./WEB-INF/src" />
-		<property name="vpf.lib_dir" value="./WEB-INF/lib" />
-		<property name="vpf.classes" value="./WEB-INF/classes" />
-		<property name="vpf.dist" value="./dist" />
+		<property name="vpf.home" value="${openmap.home}/src/vpfbrowseservlet" />
+		<property name="vpf.target" value="${vpf.home}/target" />
+		<property name="vpf.class_dir" value="${vpf.target}/WEB-INF/src" />
+		<property name="vpf.lib_dir" value="${vpf.target}/WEB-INF/lib" />
+		<property name="vpf.classes" value="${vpf.target}/WEB-INF/classes" />
 
-		<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
-		<!--<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-4.0.1"/>-->
-		<property name="tomcat.home" value="/usr/local/apache-tomcat-7.0.8" />
+		<property name="servlet-api.jar" value="${openmap.home}/ext/servlet-api-2.5.jar" />
+		<property name="openmap.jar" value="${openmap.home}/src/core/target/openmap.jar" />
 
-		<property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
-		                                       **/ChangeLog, **/*.html, **/*.txt,
-						       **/*.*.txt, **/*.dat,
-						       **/*.pl" />
-		<!-- The first jar is the tomcat 4 version
-                     (servlet.jar), the second is the tomcat 5 version (servlet-api.jar).
-                     Use the one that fits what you have.  -->
-		<!--<property name="tomcat.jar" value="${tomcat.home}/common/lib/servlet.jar"/>-->
-		<property name="tomcat.jar" value="${tomcat.home}/lib/servlet-api.jar" />
-		<property name="openmap.jar" value="${openmap.home}/lib/openmap.jar" />
-		<property name="vpf.jar" value="${vpf.lib_dir}/openmap.jar" />
 	</target>
 
 	<!--  ############################
-	      End of property setup.
-	      ############################ -->
+       End of property setup.
+       ############################ -->
 
 	<!--  ############################
-	      Main targets
-	      ############################ -->
+       Main targets
+       ############################ -->
 
-	<target name="todo" depends="classes, jar" description="Compiles all of the OpenMap classes and builds jar files in lib directory." />
-
-	<target name="classes" depends="vpf" description="Compiles VPF Servlet classes." />
 
 	<target name="all" depends="war" description="Compiles VPF Servlet classes and creates the war (web archive) file." />
-
-	<target name="war" depends="jar">
-		<war destfile="${vpf.home}/vpfbrowse.war" webxml="WEB-INF/web.xml">
-			<lib dir="${vpf.lib_dir}" />
-			<fileset dir="${vpf.home}" includes="*.jsp, *.html, *.css" />
-		</war>
-	</target>
 
 	<target name="jar" depends="classes">
 		<jar jarfile="${vpf.lib_dir}/vpfbrowse.jar">
@@ -53,30 +31,41 @@
 		</jar>
 	</target>
 
+	<target name="war" depends="classes">
+		<war destfile="${vpf.target}/vpfbrowse.war" webxml="${vpf.home}/src/main/webapp/WEB-INF/web.xml">
+			<lib dir="${vpf.lib_dir}" excludes="vpfbrowse.jar" />
+			<classes dir="${vpf.classes}" />
+			<zipfileset dir="${vpf.home}/src/main/webapp" includes="*.jsp, *.html, *.css" />
+		</war>
+	</target>
+
+
 	<!--  ############################
-	Standard target, to build everything you can.
-	############################ -->
-	<target name="vpf" depends="init" description="Compiles the VPF Servlet classes. ">
+       Standard target, to build everything you can.
+       ############################ -->
+	<target name="classes" depends="init" description="Compiles the VPF Servlet classes. ">
 		<echo message="Building VPF Servlet classes..." />
 		<mkdir dir="${vpf.lib_dir}" />
-		<copy todir="${vpf.lib_dir}">
-			<fileset dir="${openmap.home}/lib" includes="**/*.jar" />
-		</copy>
 		<mkdir dir="${vpf.classes}" />
-		<javac srcdir="${vpf.home}" destdir="${vpf.classes}" classpath="${tomcat.jar};${vpf.jar}" excludes="${javac.excludes}, ${dependency.excludes}" />
+		<copy todir="${vpf.lib_dir}">
+			<fileset dir="${openmap.home}/src/core/target" includes="**/*.jar" />
+		</copy>
+		<javac srcdir="${vpf.home}" destdir="${vpf.classes}" classpath="${servlet-api.jar};${openmap.jar}" excludes="${javac.excludes}, ${dependency.excludes}" />
 	</target>
 
 	<!--  ############################
-	Build the documentation.
-	############################ -->
+       Build the documentation.
+       ############################ -->
 	<target name="docs" depends="init" description="Make the javadoc API html documents.">
-		<javadoc sourcepath="${openmap.home}" destdir="${openmap.home}/doc/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="Copyright (C) 2002, BBNT Solutions LLC; See http://openmap.bbn.com/ for details" />
+		<javadoc sourcepath="${vpf.home}/src/main/java" destdir="${vpf.home}/doc/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*" author="true" version="true" use="true" windowtitle="OpenMap VPF Browse API" doctitle="OpenMap VPF Browse" bottom="See http://openmap-java.org/ for details" />
 	</target>
 
 	<!--  ############################
-	Cleanup targets
-	############################ -->
-	<target name="clean" depends="clean_classes, clean_jars" description="Delete jar files and all class files" />
+       Cleanup targets
+       ############################ -->
+	<target name="clean" depends="clean_classes" description="Delete jar files and all class files">
+		<delete dir="${vpf.target}" />
+	</target>
 
 	<target name="distclean" depends="clean_classes" description="Delete class files, but not the jar files." />
 
@@ -84,11 +73,6 @@
 
 	<target name="clean_classes" depends="init" description="Delete the OpenMap class files.">
 		<delete dir="${vpf.classes}" />
-	</target>
-
-	<target name="clean_jars" description="Delete only the jar files from the lib directory.">
-		<delete file="${vpf.home}/vpfbrowse.war" />
-		<delete dir="${vpf.home}/WEB-INF/lib" />
 	</target>
 
 	<target name="clean_docs" description="Delete only the generated API documentation.">
@@ -101,8 +85,8 @@
 	</target>
 
 	<!--  ############################
-	End of cleanup targets.
-	############################ -->
+       End of cleanup targets.
+       ############################ -->
 
 </project>
 

@@ -1,110 +1,101 @@
 <?xml version="1.0"?>
 <project name="OpenMap Maptile Servlet" default="all" basedir=".">
-	<target name="init" description="Sets properties needed by the other targets.">
-		<tstamp />
-		<property name="openmap.home" value="../.." />
-		<property name="ommaptile.home" value="." />
-		<property name="ommaptile.class_dir" value="./WEB-INF/src" />
-		<property name="ommaptile.lib_dir" value="./WEB-INF/lib" />
-		<property name="ommaptile.classes" value="./WEB-INF/classes" />
-		<property name="ommaptile.dist" value="./dist" />
-		<property name="ommaptile.mvnclasses" value="./target/classes" />		
-		<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
-		<!--<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-4.0.1"/>-->
-		<!--<property name="tomcat.home" value="/usr/local/apache-tomcat-7.0.8" />-->
 
-		<property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
-		                                       **/ChangeLog, **/*.html, **/*.txt,
-						       **/*.*.txt, **/*.dat,
-						       **/*.pl" />
-		<!-- The first jar is the tomcat 4 version
-                     (servlet.jar), the second is the tomcat 5 version (servlet-api.jar).
-                     Use the one that fits what you have.  -->
-		<!--<property name="tomcat.jar" value="${tomcat.home}/common/lib/servlet.jar"/>-->
-		<!--<property name="tomcat.jar" value="${tomcat.home}/lib/servlet-api.jar" />-->
-		<property name="tomcat.jar" value="${openmap.home}/ext/apache/servlet-api.jar" />
-		<property name="openmap.jar" value="${openmap.home}/lib/openmap.jar" />
-		<property name="sqlite.jar" value="${openmap.home}/ext/sqlitejdbc/sqlitejdbc-v056.jar" />
-		<property name="ommaptile.jar" value="${ommaptile.lib_dir}/openmap.jar" />
-	</target>
+	<property name="openmap.home" value="../.." />
+	<property name="ommaptile.home" value="${openmap.home}/src/maptileservlet" />
+	<property name="ommaptile.target" value="${ommaptile.home}/target" />
+	<property name="ommaptile.lib_dir" value="${ommaptile.target}/ommaptile/WEB-INF/lib" />
+	<property name="ommaptile.classes" value="${ommaptile.target}/ommaptile/WEB-INF/classes" />
+	<property name="ommaptile.mvnclasses" value="${ommaptile.target}/classes" />
+	<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
+	<!--<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-4.0.1"/>-->
+	<!--<property name="tomcat.home" value="/usr/local/apache-tomcat-7.0.8" />-->
+
+
+	<!-- The first jar is the tomcat 4 version
+       (servlet.jar), the second is the tomcat 5 version (servlet-api.jar).
+       Use the one that fits what you have.  -->
+	<!--<property name="tomcat.jar" value="${tomcat.home}/common/lib/servlet.jar"/>-->
+	<!--<property name="tomcat.jar" value="${tomcat.home}/lib/servlet-api.jar" />-->
+	<property name="servlet-api.jar" value="${openmap.home}/ext/servlet-api-2.5.jar" />
+	<property name="openmap.jar" value="${openmap.home}/src/core/target/openmap.jar" />
+	<property name="sqlite.jar" value="${openmap.home}/ext/sqlitejdbc-v056.jar" />
+	<property name="ommaptile.jar" value="${ommaptile.lib_dir}/openmap.jar" />
 
 	<!--  ############################
-	      End of property setup.
-	      ############################ -->
+       End of property setup.
+       ############################ -->
 
 	<!--  ############################
-	      Main targets
-	      ############################ -->
+       Main targets
+       ############################ -->
 
-	<target name="todo" depends="classes, jar" description="Compiles all of the OpenMap classes and builds jar files in lib directory." />
-
-	<target name="classes" depends="ommaptile" description="Compiles ommaptile Servlet classes." />
+	<target name="todo" depends="classes, jar" description="Compiles all of the OpenMap MapTileServlet classes and builds jar files in lib directory." />
 
 	<target name="all" depends="war" description="Compiles ommaptile Servlet classes and creates the war (web archive) file." />
 
-	<target name="war" depends="jar">
-	  <war destfile="${ommaptile.home}/ommaptile.war" webxml="WEB-INF/web.xml">
-	    <lib dir="${ommaptile.lib_dir}"/>
-	    <classes dir="${ommaptile.home}" includes="src/main/resources/tileSetProperties"/>
-	  </war>
+	<target name="war" depends="classes">
+		<war destfile="${ommaptile.target}/ommaptile.war" webxml="${ommaptile.home}/src/main/webapp/WEB-INF/web.xml">
+			<lib dir="${ommaptile.lib_dir}" />
+			<classes dir="${ommaptile.classes}" />
+			<zipfileset dir="${ommaptile.home}/src/main/resources/tileSetProperties" prefix="tileSetProperties" />
+		</war>
 	</target>
-	
+
 	<target name="jar" depends="classes">
 		<jar jarfile="${ommaptile.lib_dir}/ommaptile.jar">
-			<fileset dir="${ommaptile.classes}"/>
+			<fileset dir="${ommaptile.classes}" />
 		</jar>
 	</target>
-	
-	<target name="ommaptilejar" depends="init" description="Builds the ommaptile.jar after compilation with maven">
+
+	<target name="ommaptilejar" description="Builds the ommaptile.jar after compilation with maven">
 		<jar jarfile="${ommaptile.lib_dir}/ommaptile.jar">
-			<fileset dir="${ommaptile.mvnclasses}"/>
+			<fileset dir="${ommaptile.mvnclasses}" />
 		</jar>
 	</target>
 
 	<!--  ############################
-	Standard target, to build everything you can.
-	############################ -->
-	<target name="ommaptile" depends="init" description="Compiles the Map Tile Servlet classes. ">
+       Standard target, to build everything you can.
+       ############################ -->
+	<target name="classes" description="Compiles the Map Tile Servlet classes. ">
 		<echo message="Building OMMapTile Servlet classes..." />
 		<mkdir dir="${ommaptile.lib_dir}" />
 		<mkdir dir="${ommaptile.classes}" />
 		<copy todir="${ommaptile.lib_dir}">
 			<fileset dir="${openmap.home}/lib" includes="**/*.jar" />
 		</copy>
+		<!-- openmap.jar -->
 		<copy todir="${ommaptile.lib_dir}">
-			<fileset dir="${openmap.home}/ext/sqlitejdbc" includes="*.jar" />
+			<fileset dir="${openmap.home}/src/core/target" includes="**/*.jar" />
 		</copy>
-		
-		
-		<javac srcdir="${ommaptile.home}" destdir="${ommaptile.classes}" classpath="${tomcat.jar};${ommaptile.jar}" excludes="${javac.excludes}, ${dependency.excludes}" />
+		<copy todir="${ommaptile.lib_dir}">
+			<fileset dir="${openmap.home}/ext" includes="*.jar" />
+		</copy>
+		<javac srcdir="${ommaptile.home}" destdir="${ommaptile.classes}" classpath="${servlet-api.jar};${ommaptile.jar};${openmap.jar}" />
 	</target>
 
 	<!--  ############################
-	Build the documentation.
-	############################ -->
-	<target name="docs" depends="init" description="Make the javadoc API html documents.">
-		<javadoc sourcepath="${openmap.home}" destdir="${openmap.home}/doc/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="See http://openmap.bbn.com/ for details" />
+       Build the documentation.
+       ############################ -->
+	<target name="docs" description="Make the javadoc API html documents.">
+		<javadoc sourcepath="${ommaptile.home}" destdir="${ommaptile.home}/doc/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*" author="true" version="true" use="true" windowtitle="OpenMap MapTileServer API" doctitle="OpenMap MapTileServer" bottom="See http://openmap-java.org/ for details" />
 	</target>
 
 	<!--  ############################
-	Cleanup targets
-	############################ -->
-	<target name="clean" depends="clean_classes, clean_jars" description="Delete jar files and all class files">
-		<delete dir="${ommaptile.dist}"/>
+       Cleanup targets
+       ############################ -->
+	<target name="clean" depends="clean_classes" description="Delete jar files and all class files">
+		<delete dir="${ommaptile.target}" />
 	</target>
 
-	<target name="distclean" depends="clean_classes" description="Delete class files, but not the jar files." >
+	<target name="distclean" depends="clean_classes" description="Delete class files, but not the jar files.">
 		<delete dir="${ommaptile.lib_dir}" />
 	</target>
 
 	<target name="clean_all" depends="clean, clean_docs" description="Delete jar files, class files, and generated documentation." />
 
-	<target name="clean_classes" depends="init" description="Delete the OpenMap class files.">
+	<target name="clean_classes" description="Delete the OpenMap class files.">
 		<delete dir="${ommaptile.classes}" />
-	</target>
-
-	<target name="clean_jars" description="Delete only the jar files from the lib directory.">
-		<delete file="${ommaptile.home}/ommaptile.war" />
 	</target>
 
 	<target name="clean_docs" description="Delete only the generated API documentation.">
@@ -117,8 +108,8 @@
 	</target>
 
 	<!--  ############################
-	End of cleanup targets.
-	############################ -->
+       End of cleanup targets.
+       ############################ -->
 
 </project>
 

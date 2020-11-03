@@ -1,14 +1,20 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>openmap</artifactId>
+	<groupId>com.bbn.openmap</groupId>
+	<version>6.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>openmap</name>
 	<description>OpenMap is a Java Beans based toolkit for building applications and applets needing geographic information.  This project encapsulates the core components of the toolkit.</description>
 	<url>http://github.com/OpenMap-java/openmap</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.sun.media</groupId>
@@ -181,12 +187,8 @@
 			<url>https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master/releases</url>
 		</repository>
 	</repositories>
-	<parent>
-		<groupId>com.bbn.openmap</groupId>
-		<artifactId>openmap-all</artifactId>
-		<version>6.0-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
-	</parent>
+	<!-- <parent> <groupId>com.bbn.openmap</groupId> <artifactId>openmap-all</artifactId> 
+		<version>6.0-SNAPSHOT</version> <relativePath>../..</relativePath> </parent> -->
 	<build>
 		<plugins>
 			<plugin>
@@ -202,6 +204,7 @@
 					</archive>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 </project>

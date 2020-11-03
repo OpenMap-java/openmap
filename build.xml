@@ -20,6 +20,7 @@
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
 		<property name="openmap_version" value="6.0b" />
 		<property name="core.src" value="${openmap.home}/src/core" />
+		<property name="ommaptile.src" value="${openmap.home}/src/maptileservlet" />
 		<property name="openmap_dist.dir" value="${openmap.home}/dist" />
 		<property name="openmap_mac_dist.dir" value="${openmap_dist.dir}/OpenMap_${openmap_version}" />
 		<property name="openmap_release.dir" value="${openmap_dist.dir}/openmap-${openmap_version}" />
@@ -34,11 +35,13 @@
 
 		<!-- ################################
 		You can add path to external jars here, comma separated in the includes list.  This covers 
-		the jars in the external libraries available from svn 
+		the jars in the external libraries. 
 		#########################  -->
 		<path id="ext_tools_classpath">
 			<fileset dir="ext" includes="**/*.jar" />
 		</path>
+
+		<echo message="Building with ${java.home}" />
 
 	</target>
 
@@ -48,14 +51,20 @@
 
 	<target name="classes" depends="init" description="Compiles all OpenMap classes.">
 		<antcall target="core" />
+		<antcall target="maptileservlet" />
 	</target>
 
 	<target name="core" depends="init" description="Compiles core OpenMap classes.">
 		<ant antfile="${core.src}/build.xml" target="classes" />
-	</target>	
-	
+	</target>
+
+	<target name="maptileservlet" depends="init" description="Compiles map tile servlet classes.">
+		<ant antfile="${ommaptile.src}/src/maptileservlet/build.xml" target="classes" />
+	</target>
+
 	<target name="jars" depends="classes" description="Compiles OpenMap and alternative package classes.">
 		<ant antfile="${core.src}/build.xml" target="jar" inheritRefs="true" />
+		<ant antfile="${ommaptile.src}/build.xml" target="jar" inheritRefs="true" />
 	</target>
 
 	<target name="geo" depends="init" description="Compiles Geo dist package and creates omgeo.jar.">
@@ -64,10 +73,12 @@
 
 	<target name="all" depends="init" description="Compiles OpenMap classes and creates the jar files.">
 		<ant antfile="${core.src}/build.xml" target="all" inheritRefs="true" />
+		<ant antfile="${ommaptile.src}/build.xml" target="all" inheritRefs="true" />
 	</target>
 
 	<target name="docs" depends="init" description="Creates OpenMap API documentation.">
 		<ant antfile="${core.src}/build.xml" target="docs.core" inheritRefs="true" />
+		<ant antfile="${ommaptile.src}/build.xml" target="docs" inheritRefs="true" />
 	</target>
 
 	<!--  ############################
@@ -80,10 +91,12 @@
 
 	<target name="clean" depends="init" description="Delete jar files and all class files.">
 		<ant antfile="${core.src}/build.xml" target="clean" inheritRefs="true" />
+		<ant antfile="${ommaptile.src}/build.xml" target="clean" inheritRefs="true" />
 	</target>
 
 	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
 		<ant antfile="${core.src}/build.xml" target="distclean" inheritRefs="true" />
+		<ant antfile="${ommaptile.src}/build.xml" target="distclean" inheritRefs="true" />
 	</target>
 
 	<target name="clean_jars" depends="init" description="Delete only the jar files from the lib directory.">
@@ -110,7 +123,7 @@
 		</java>
 	</target>
 
-<!--
+	<!--
 	<target name="mac" depends="all" description="Create MacOS X application.">
 		<delete dir="${mac.app}" />
 
@@ -155,26 +168,26 @@
 				<include name="INSTALL*" />
 				<include name="LICENSE" />
 				<include name="build.xml" />
-				<include name="version.txt" />				
+				<include name="version.txt" />
 			</fileset>
 		</copy>
 		<copy todir="${openmap_release.dir}/src">
-		  <fileset dir="${openmap.home}/src" excludes="**/target/**, ${install_excludes}" />
+			<fileset dir="${openmap.home}/src" excludes="**/target/**, ${install_excludes}" />
 		</copy>
 		<copy todir="${openmap_release.dir}/lib">
-		  <fileset dir="${openmap.home}/lib" excludes="${install_excludes}" />
+			<fileset dir="${openmap.home}/lib" excludes="${install_excludes}" />
 		</copy>
-		<copy todir="${openmap_release.dir}/lib" flatten="true" >
-		  <fileset dir="${openmap.home}/src" includes="**/target/*.jar" />
+		<copy todir="${openmap_release.dir}/lib" flatten="true">
+			<fileset dir="${openmap.home}/src" includes="**/target/*.jar" />
 		</copy>
 		<copy todir="${openmap_release.dir}/share">
-		  <fileset dir="${openmap.home}/share" excludes="${install_excludes}" />
+			<fileset dir="${openmap.home}/share" excludes="${install_excludes}" />
 		</copy>
 		<zip destfile="${openmap.zip}" basedir="${openmap_release.dir}" includes="**" />
 
-<!--		<ant target="zip" />-->
+		<!--		<ant target="zip" />-->
 
-<!--
+		<!--
 		<copy todir="${openmap_mac_dist.dir}/${mac.app}">
 		  <fileset dir="${mac.app}" />
 		</copy>
@@ -187,7 +200,7 @@
 		<delete dir="${mac.app}" />
 	</target>
 
-<!--	<target name="zip" description="Create a OpenMap package zip file." depends="init">
+	<!--	<target name="zip" description="Create a OpenMap package zip file." depends="init">
 
 	</target>
 -->

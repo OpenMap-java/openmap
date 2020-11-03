@@ -1,123 +1,139 @@
 <?xml version="1.0"?>
 <project name="OpenMap_Core" default="all" basedir=".">
 
+	<property name="openmap.home" value="../.." />
+	<property name="openmap.core" value="${openmap.home}/src/core" />
+	<property name="openmap.src" value="${openmap.core}/src/main/java" />
+	<property name="openmap.classes" value="${openmap.core}/target/classes" />
+	<property name="openmap.jar" value="${openmap.core}/target/openmap.jar" />
+	<property name="openmap.docs" value="${openmap.home}/doc" />
+	<property name="openmap.ext" value="${openmap.home}/ext" />
+	<property name="openmap.dependency" value="${openmap.core}/target/dependency" />
+
+	<mkdir dir="${openmap.ext}" />
+	<path id="project.class.path">
+		<fileset dir="${openmap.ext}" includes="**/*.jar" />
+		<pathelement path="${java.class.path}/" />
+	</path>
+
+	<property name="general.excludes" value="**/*.in,**/Makefile,**/*.bat,**/ChangeLog,**/*.html,**/*.txt,**/*.*.txt,**/*.dat,**/*.pl,**/unimplemented/**,**/build.xml" />
+	<property name="javac.excludes" value="${general.excludes},**/*.gif,**/*.png,**/*.properties" />
+
+	<property name="jai.includes" value="**/jai/**,**/geotiff/**" />
+	<property name="json.includes" value="**/geojson/**,**/tpk/**" />
+	<property name="postgis.includes" value="**/postgis/**" />
+	<property name="browserlauncher.includes" value="**/BrowserLauncher*.java" />
+	<property name="vectortile.includes" value="**/VectorMapTileLayer.java,**/mb/**" />
+	<property name="svg.includes" value="**/SVG*.java" />
+	<property name="j3d.includes" value="**/j3d/**" />
+
+	<property name="jar.excludes" value="${general.excludes}, **/*.java" />
+	<available classpathref="project.class.path" classname="com.sun.media.jai.codec.ImageCodec" property="do.jai" />
+	<available classpathref="project.class.path" classname="com.fasterxml.jackson.annotation.JsonInclude" property="do.json" />
+	<available classpathref="project.class.path" classname="org.postgis.PGgeometry" property="do.postgis" />
+	<available classpathref="project.class.path" classname="edu.stanford.ejalbert.BrowserLauncher" property="do.browserlauncher" />
+	<available classpathref="project.class.path" classname="no.ecc.vectortile.VectorTileDecoder" property="do.vectortile" />
+	<available classpathref="project.class.path" classname="org.apache.batik.svggen.SVGGraphics2D" property="do.svg" />
+	<available classpathref="project.class.path" classname="javax.media.j3d.Shape3D" property="do.j3d" />
+
 	<!--  ############################
-	Set up the different builds.
-	############################ -->
+       Set up the different builds.
+       ############################ -->
 
-	<target name="init" description="Sets properties needed by the OpenMap core targets.">
-		<tstamp />
+	<target name="copydependency.check">
+		<echo message="Checking if dependencies available..." />
+		<condition property="copydependency">
+			<and>
+				<available file="${openmap.dependency}" type="dir" />
+			</and>
+		</condition>
+	</target>
 
-		<property name="openmap.home" value="../.." />
-		<property name="openmap.core" value="${openmap.home}/src/core" />		
-		<property name="openmap.src" value="${openmap.core}/src/main/java" />
-		<property name="openmap.classes" value="${openmap.core}/target/classes" />
-		<property name="openmap.jar" value="${openmap.core}/target/openmap.jar" />
-		<property name="openmap.docs" value="${openmap.home}/doc" />
-
-		<property name="general.excludes" value="**/*.in,**/Makefile,**/*.bat,**/ChangeLog,**/*.html,**/*.txt,**/*.*.txt,**/*.dat,**/*.pl,**/unimplemented/**,**/build.xml" />
-		<property name="javac.excludes" value="${general.excludes},**/*.gif,**/*.png,**/*.properties" />
-
-		<property name="jai.includes" value="**/jai/**,**/geotiff/**" />
-		<property name="json.includes" value="**/geojson/**,**/tpk/**" />
-		<property name="postgis.includes" value="**/postgis/**" />
-		<property name="browserlauncher.includes" value="**/BrowserLauncher*.java" />
-		<property name="vectortile.includes" value="**/VectorMapTileLayer.java,**/mb/**" />
-		<!--<property name="svg.includes" value="**/SVGFormatter.java, **/SVGRasterizer.java, **/SVGSymbolImageMaker.java" />-->
-		<property name="svg.includes" value="**/SVG*.java" />		
-		<property name="j3d.includes" value="**/j3d/**" />				
-		
-
-		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
-		<available classname="com.sun.media.jai.codec.ImageCodec" property="do.jai" />
-		<available classname="com.fasterxml.jackson.annotation.JsonInclude" property="do.json" />
-		<available classname="org.postgis.PGgeometry" property="do.postgis" />
-		<available classname="edu.stanford.ejalbert.BrowserLauncher" property="do.browserlauncher" />
-		<available classname="no.ecc.vectortile.VectorTileDecoder" property="do.vectortile" />
-		<available classname="org.apache.batik.svggen.SVGGraphics2D" property="do.svg" />
-		<available classname="javax.media.j3d.Shape3D" property="do.j3d" />		
-
-		<echo message="Java Home: ${java.home}" />
+	<target name="ext.copy" depends="copydependency.check" if="copydependency">
+		<echo message="Copying dependencies..." />
+		<copy todir="${openmap.ext}">
+			<fileset dir="${openmap.dependency}" includes="**/*.jar" />
+		</copy>
 	</target>
 
 	<!--  ############################
-	      End of property setup.
-	      ############################ -->
+       End of property setup.
+       ############################ -->
 
 	<!--  ############################
-	      Main targets
-	      ############################ -->
+       Main targets
+       ############################ -->
 
 	<target name="all" depends="jar" description="Compiles standard OpenMap classes and creates the jar files." />
 
 	<target name="jar" depends="classes" description="Builds jar files, placing them in the lib directory.">
 
 		<jar jarfile="${openmap.jar}" basedir="${openmap.classes}" manifest="${openmap.home}/share/manifest.txt" index="true" includes="openmap.properties,
-			 **/*.class,
-			 **/*.gif, **/*.png,
-			 **/*.properties" />
+																    **/*.class,
+																    **/*.gif, **/*.png,
+																    **/*.properties" />
 	</target>
 
 	<!--  ############################
-	Standard target, to build everything you can.
-	############################ -->
-	<target name="classes" depends="init" description="Compiles the OpenMap classes.">
+       Standard target, to build everything you can.
+       ############################ -->
+	<target name="classes" depends="ext.copy" description="Compiles the OpenMap classes.">
 
-	    <mkdir dir="${openmap.classes}" />
+		<mkdir dir="${openmap.classes}" />
 
 		<!-- Main OpenMap Classes -->
-		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes},${json.includes},${postgis.includes},${browserlauncher.includes},${vectortile.includes},${svg.includes},${j3d.includes}"/>
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes},${json.includes},${postgis.includes},${browserlauncher.includes},${vectortile.includes},${svg.includes},${j3d.includes}" />
 
 		<!-- Optional classes, depending on available external packages -->
 		<condition property="jai.message" value="jai dependencies found" else="jai dependencies NOT found, skipping those classes...">
-		  <isset property="do.jai"/>
+			<isset property="do.jai" />
 		</condition>
-		<echo message="${jai.message}"/>
+		<echo message="${jai.message}" />
 
 		<condition property="json.message" value="json dependencies found" else="json dependencies NOT found, skipping those classes...">
-		  <isset property="do.json"/>
+			<isset property="do.json" />
 		</condition>
-		<echo message="${json.message}"/>
+		<echo message="${json.message}" />
 
 		<condition property="postgis.message" value="postgis dependencies found" else="postgis dependencies NOT found, skipping those classes...">
-		  <isset property="do.postgis"/>
+			<isset property="do.postgis" />
 		</condition>
-		<echo message="${postgis.message}"/>
+		<echo message="${postgis.message}" />
 
 		<condition property="browserlauncher.message" value="browserlauncher dependencies found" else="browserlauncher dependencies NOT found, skipping those classes...">
-		  <isset property="do.browserlauncher"/>
+			<isset property="do.browserlauncher" />
 		</condition>
-		<echo message="${browserlauncher.message}"/>
+		<echo message="${browserlauncher.message}" />
 
 		<condition property="vectortile.message" value="vector tile dependencies found" else="vector tile dependencies NOT found, skipping those classes...">
-		  <isset property="do.vectortile"/>
+			<isset property="do.vectortile" />
 		</condition>
-		<echo message="${vectortile.message}"/>
-		
-		<condition property="svg.message" value="SVG dependencies found" else="SVG dependencies NOT found, skipping those classes...">
-		  <isset property="do.svg"/>
-		</condition>
-		<echo message="${svg.message}"/>		
-		
-		<condition property="j3d.message" value="J3D dependencies found" else="J3D dependencies NOT found, skipping those classes...">
-		  <isset property="do.j3d"/>
-		</condition>
-		<echo message="${j3d.message}"/>		
+		<echo message="${vectortile.message}" />
 
-		<condition property="suggestion.message" value="" else="NOTE: dependencies can be retrieved if you use maven to build OpenMap...">
-		  <isset property="do.vectortile" />
+		<condition property="svg.message" value="SVG dependencies found" else="SVG dependencies NOT found, skipping those classes...">
+			<isset property="do.svg" />
 		</condition>
-		<echo message="${suggestion.message}"/>
+		<echo message="${svg.message}" />
+
+		<condition property="j3d.message" value="J3D dependencies found" else="J3D dependencies NOT found, skipping those classes...">
+			<isset property="do.j3d" />
+		</condition>
+		<echo message="${j3d.message}" />
+
+		<condition property="suggestion.message" value="" else="NOTE: dependencies can be retrieved if you use maven to build OpenMap, with: mvn dependency:copy-dependencies">
+			<isset property="do.vectortile" />
+		</condition>
+		<echo message="${suggestion.message}" />
 
 		<antcall target="classes.jai" />
 		<antcall target="classes.json" />
 		<antcall target="classes.postgis" />
 		<antcall target="classes.browserlauncher" />
 		<antcall target="classes.vectortile" />
-		<antcall target="classes.svg" />		
-		<antcall target="classes.j3d" />		
+		<antcall target="classes.svg" />
+		<antcall target="classes.j3d" />
 
-		<echo message="gathering resources..."/>
+		<echo message="gathering resources..." />
 		<!-- Copy the gifs and other resources to the new classpath. -->
 		<copy todir="${openmap.classes}" file="${openmap.home}/openmap.properties" />
 		<copy todir="${openmap.classes}">
@@ -126,70 +142,84 @@
 
 	</target>
 
-	<target name="classes.jai" if="${do.jai}" >
-	  <echo message="Compiling JAI classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}"/>
+	<target name="classes.jai" if="${do.jai}">
+		<echo message="Compiling JAI classes..." />
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}">
+			<classpath refid="project.class.path" />
+		</javac>
 	</target>
 
-	<target name="classes.json" if="${do.json}" >
-	  <echo message="Compiling JSOM classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${json.includes}"/>
+	<target name="classes.json" if="${do.json}">
+		<echo message="Compiling JSOM classes..." />
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${json.includes}">
+			<classpath refid="project.class.path" />
+		</javac>
 	</target>
 
-	<target name="classes.postgis" if="${do.postgis}" >
-	  <echo message="Compiling PostGIS classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${postgis.includes}"/>
+	<target name="classes.postgis" if="${do.postgis}">
+		<echo message="Compiling PostGIS classes..." />
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${postgis.includes}">
+			<classpath refid="project.class.path" />
+		</javac>
 	</target>
 
-	<target name="classes.browserlauncher" if="${do.browserlauncher}" >
-	  <echo message="Compiling BrowserLauncher classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${browserlauncher.includes}"/>
+	<target name="classes.browserlauncher" if="${do.browserlauncher}">
+		<echo message="Compiling BrowserLauncher classes..." />
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${browserlauncher.includes}">
+			<classpath refid="project.class.path" />
+		</javac>
 	</target>
 
-	<target name="classes.vectortile" if="${do.vectortile}" >
-	  <echo message="Compiling Vector Tile classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${vectortile.includes}"/>
+	<target name="classes.vectortile" if="${do.vectortile}">
+		<echo message="Compiling Vector Tile classes..." />
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${vectortile.includes}">
+			<classpath refid="project.class.path" />
+		</javac>
 	</target>
 
-	<target name="classes.svg" if="${do.svg}" >
-	  <echo message="Compiling SVG classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${svg.includes}"/>
-	</target>	
-	
-	<target name="classes.j3d" if="${do.j3d}" >
-	  <echo message="Compiling J3D classes..." />
-	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${j3d.includes}" />
-	</target>	
-	
+	<target name="classes.svg" if="${do.svg}">
+		<echo message="Compiling SVG classes..." />
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${svg.includes}">
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+
+	<target name="classes.j3d" if="${do.j3d}">
+		<echo message="Compiling J3D classes..." />
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${j3d.includes}">
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+
 	<!--  ############################
-	Build the documentation.
-	############################ -->
-	<target name="docs.core" depends="init" description="Make the javadoc API html documents.">
-		<javadoc sourcepath="${openmap.src}" destdir="${openmap.docs}/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*, Acme.*, dopplet.*, edu.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="Copyright (C) BBNT Solutions LLC; See http://openmap-java.org/ for details"/>
+       Build the documentation.
+       ############################ -->
+	<target name="docs.core" description="Make the javadoc API html documents.">
+		<javadoc sourcepath="${openmap.src}" destdir="${openmap.docs}/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*, Acme.*, dopplet.*, edu.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="See http://openmap-java.org/ for details" />
 	</target>
 
 	<!--  ############################
-	Cleanup targets
-	############################ -->
+       Cleanup targets
+       ############################ -->
 	<target name="clean_all" depends="clean, docsclean" description="Delete jar files, class files, and generated documentation." />
 
-	<target name="clean" depends="init" description="Delete jar files and all class files" >
+	<target name="clean" description="Delete jar files and all class files">
 		<delete dir="${openmap.core}/target" />
 	</target>
 
-	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
-		<delete dir="${openmap.classes}" />		
+	<target name="distclean" description="Delete class files, but not the jar files.">
+		<delete dir="${openmap.classes}" />
 	</target>
 
 	<target name="jarclean" description="Delete only the jar files from the lib directory.">
 		<delete file="${openmap.core}/target/*.jar" />
 	</target>
 
-	<target name="docsclean" depends="init" description="Delete only the generated API documentation.">
+	<target name="docsclean" description="Delete only the generated API documentation.">
 		<delete>
 			<fileset dir="${openmap.docs}/api" includes="**/*.html,
-				     **/stylesheet.css, 
-				     **/package-list" excludes="doc-index.html" />
+						   **/stylesheet.css, 
+						   **/package-list" excludes="doc-index.html" />
 		</delete>
 		<delete dir="${openmap.docs}/api/com" />
 		<delete dir="${openmap.docs}/api/Acme" />
@@ -197,8 +227,8 @@
 	</target>
 
 	<!--  ############################
-	End of cleanup targets.
-	############################ -->
+       End of cleanup targets.
+       ############################ -->
 
 </project>
 
