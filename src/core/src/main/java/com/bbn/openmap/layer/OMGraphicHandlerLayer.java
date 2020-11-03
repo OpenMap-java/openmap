@@ -705,23 +705,25 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 				long stop = System.currentTimeMillis();
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine(getName() + "|LayerWorker.construct(): fetched "
-							+ (list == null ? "null list " : (list.size() + " graphics ")) + "in "
+							+ (list == null ? "null list in " : (list.size() + " graphics in "))
 							+ (double) ((stop - start) / 1000d) + " seconds");
 				}
 				return list;
 
 			} catch (OutOfMemoryError e) {
-				errorMsg = getName() + "|LayerWorker.construct(): " + e.getMessage();
-				if (logger.isLoggable(Level.FINER)) {
+				errorMsg = getName() + "| Ran out of memory: " + e.getMessage();
+				if (logger.isLoggable(Level.FINE)) {
 					logger.fine(errorMsg);
 					e.printStackTrace();
 				} else {
-					logger.info(getName() + " layer ran out of memory, attempting to recover...");
+					logger.warning(getName() + " layer ran out of memory, attempting to recover...");
 				}
 			} catch (Throwable e) {
-				errorMsg = getName() + "|LayerWorker.construct(): " + e.getClass().getName() + ", " + e.getMessage();
-				logger.info(errorMsg);
-				e.printStackTrace();
+				errorMsg = getName() + "Caught thrown error: " + e.getClass().getName() + ", details: " + e.getMessage();
+				logger.warning(errorMsg);
+				if (logger.isLoggable(Level.FINE)) {
+					e.printStackTrace();
+				}
 			}
 
 			// This is only called if there is an error.
@@ -878,7 +880,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 
 		String mmString = props.getProperty(realPrefix + MouseModesProperty);
 		if (mmString != null) {
-			Vector<String> mmv = PropUtils.parseSpacedMarkers(mmString);
+			List<String> mmv = PropUtils.parseSpacedMarkers(mmString);
 			if (!mmv.isEmpty()) {
 				String[] mm = new String[mmv.size()];
 				int i = 0;
