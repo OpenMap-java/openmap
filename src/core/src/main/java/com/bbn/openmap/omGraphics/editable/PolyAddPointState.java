@@ -26,6 +26,8 @@ package com.bbn.openmap.omGraphics.editable;
 
 import java.awt.event.MouseEvent;
 
+import javax.swing.SwingUtilities;
+
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.event.EOMGEvent;
@@ -45,7 +47,7 @@ public class PolyAddPointState
     public boolean mouseReleased(MouseEvent e) {
         Debug.message("eomg", "PointStateMachine|add point state|mouseReleased");
 
-        if (e.getClickCount() > 1) {
+        if (SwingUtilities.isRightMouseButton(e)) {
             ((EditableOMPoly) graphic).evaluateEnclosed();
             if ((graphic.getStateMachine()).isOffsetNeeded() == true) {
                 graphic.getStateMachine().setOffset();
