@@ -7,10 +7,10 @@
 	<property name="ommaptile.lib_dir" value="${ommaptile.target}/ommaptile/WEB-INF/lib" />
 	<property name="ommaptile.classes" value="${ommaptile.target}/ommaptile/WEB-INF/classes" />
 	<property name="ommaptile.mvnclasses" value="${ommaptile.target}/classes" />
+	
 	<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
 	<!--<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-4.0.1"/>-->
 	<!--<property name="tomcat.home" value="/usr/local/apache-tomcat-7.0.8" />-->
-
 
 	<!-- The first jar is the tomcat 4 version
        (servlet.jar), the second is the tomcat 5 version (servlet-api.jar).
@@ -22,6 +22,19 @@
 	<property name="sqlite.jar" value="${openmap.home}/ext/sqlitejdbc-v056.jar" />
 	<property name="ommaptile.jar" value="${ommaptile.lib_dir}/openmap.jar" />
 
+	<!-- Test for availability of servlet-api.jar -->
+	<property name="openmap.ext" value="${openmap.home}/ext" />
+	<path id="project.class.path">
+		<fileset dir="${openmap.ext}" includes="**/*.jar" />
+		<pathelement path="${java.class.path}/" />
+	</path>	
+	<available classpathref="project.class.path" classname="javax.servlet.http.HttpServlet" property="do.servlet" />	
+	<condition property="servlet.message" value="servlet-api.jar found" else="servlet.jar is required to build maptileservlet classes, it is not in the classpath.  Modify the maptileservlet build.xml file with the correct path.">
+	  <isset property="do.servlet" />
+	</condition>
+	<echo message="${servlet.message}" />
+
+	
 	<!--  ############################
        End of property setup.
        ############################ -->
@@ -34,7 +47,7 @@
 
 	<target name="all" depends="war" description="Compiles ommaptile Servlet classes and creates the war (web archive) file." />
 
-	<target name="war" depends="classes">
+	<target name="war" depends="classes" if="${do.servlet}">
 		<war destfile="${ommaptile.target}/ommaptile.war" webxml="${ommaptile.home}/src/main/webapp/WEB-INF/web.xml">
 			<lib dir="${ommaptile.lib_dir}" />
 			<classes dir="${ommaptile.classes}" />
@@ -42,13 +55,13 @@
 		</war>
 	</target>
 
-	<target name="jar" depends="classes">
+	<target name="jar" depends="classes" if="${do.servlet}">
 		<jar jarfile="${ommaptile.lib_dir}/ommaptile.jar">
 			<fileset dir="${ommaptile.classes}" />
 		</jar>
 	</target>
 
-	<target name="ommaptilejar" description="Builds the ommaptile.jar after compilation with maven">
+	<target name="ommaptilejar" description="Builds the ommaptile.jar after compilation with maven" if="${do.servlet}">
 		<jar jarfile="${ommaptile.lib_dir}/ommaptile.jar">
 			<fileset dir="${ommaptile.mvnclasses}" />
 		</jar>
@@ -57,7 +70,7 @@
 	<!--  ############################
        Standard target, to build everything you can.
        ############################ -->
-	<target name="classes" description="Compiles the Map Tile Servlet classes. ">
+	<target name="classes" description="Compiles the Map Tile Servlet classes. " if="${do.servlet}">
 		<echo message="Building OMMapTile Servlet classes..." />
 		<mkdir dir="${ommaptile.lib_dir}" />
 		<mkdir dir="${ommaptile.classes}" />
@@ -71,7 +84,7 @@
 		<copy todir="${ommaptile.lib_dir}">
 			<fileset dir="${openmap.home}/ext" includes="*.jar" />
 		</copy>
-		<javac srcdir="${ommaptile.home}" destdir="${ommaptile.classes}" classpath="${servlet-api.jar};${ommaptile.jar};${openmap.jar}" />
+		<javac srcdir="${ommaptile.home}" destdir="${ommaptile.classes}" classpath="${servlet-api.jar};${ommaptile.jar};${openmap.jar}" includeantruntime="false"/>
 	</target>
 
 	<!--  ############################

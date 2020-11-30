@@ -12,15 +12,27 @@
 	<property name="servlet-api.jar" value="${openmap.home}/ext/servlet-api-2.5.jar" />
 	<property name="openmap.jar" value="${openmap.home}/src/core/target/openmap.jar" />
 
+	<!-- Test for availability of servlet-api.jar -->
+	<property name="openmap.ext" value="${openmap.home}/ext" />
+	<path id="project.class.path">
+	  <fileset dir="${openmap.ext}" includes="**/*.jar" />
+	  <pathelement path="${java.class.path}/" />
+	</path>	
+	<available classpathref="project.class.path" classname="javax.servlet.http.HttpServlet" property="do.servlet" />	
+	<condition property="servlet.message" value="servlet-api.jar found" else="servlet.jar is required to build wmsservlet classes, it is not in the classpath.  Modify the wmsservlet build.xml file with the correct path.">
+	  <isset property="do.servlet" />
+	</condition>
+	<echo message="${servlet.message}" />		
+
 	<target name="all" depends="war" description="Compiles OpenMap WMS Servlet classes and creates the war (web archive) file." />
 
-	<target name="jar" depends="classes">
+	<target name="jar" depends="classes" if="${do.servlet}">
 		<jar jarfile="${omwms.lib_dir}/omwms.jar">
 			<fileset dir="${omwms.classes}" />
 		</jar>
 	</target>
 
-	<target name="war" depends="classes">
+	<target name="war" depends="classes" if="${do.servlet}">
 		<war destfile="${omwms.target}/omwms.war" webxml="${omwms.home}/src/main/webapp/WEB-INF/web.xml">
 			<lib dir="${omwms.lib_dir}" includes="*.jar" excludes="omwms.jar" />
 			<classes dir="${omwms.classes}" />
@@ -31,7 +43,7 @@
 	<!--  ############################
        Standard target, to build everything you can.
        ############################ -->
-	<target name="classes" description="Compiles the OM WMS Servlet classes. ">
+	<target name="classes" description="Compiles the OM WMS Servlet classes. " if="${do.servlet}">
 		<echo message="Building Omwms Servlet classes..." />
 		<mkdir dir="${omwms.lib_dir}" />
 		<mkdir dir="${omwms.classes}" />
@@ -49,7 +61,7 @@
 	</copy>
     -->
 
-		<javac srcdir="${omwms.home}" destdir="${omwms.classes}" classpath="${servlet-api.jar};${omwms.jar};${openmap.jar}" />
+		<javac srcdir="${omwms.home}" destdir="${omwms.classes}" classpath="${servlet-api.jar};${omwms.jar};${openmap.jar}" includeantruntime="false"/>
 	</target>
 
 	<!-- ############################ 

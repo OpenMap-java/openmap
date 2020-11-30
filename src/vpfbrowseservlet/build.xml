@@ -1,18 +1,29 @@
 <?xml version="1.0"?>
 <project name="OpenMap VPF Servlet" default="all" basedir=".">
-	<target name="init" description="Sets properties needed by the other targets.">
-		<tstamp />
-		<property name="openmap.home" value="../.." />
-		<property name="vpf.home" value="${openmap.home}/src/vpfbrowseservlet" />
-		<property name="vpf.target" value="${vpf.home}/target" />
-		<property name="vpf.class_dir" value="${vpf.target}/WEB-INF/src" />
-		<property name="vpf.lib_dir" value="${vpf.target}/WEB-INF/lib" />
-		<property name="vpf.classes" value="${vpf.target}/WEB-INF/classes" />
 
-		<property name="servlet-api.jar" value="${openmap.home}/ext/servlet-api-2.5.jar" />
-		<property name="openmap.jar" value="${openmap.home}/src/core/target/openmap.jar" />
+  <tstamp />
+  <property name="openmap.home" value="../.." />
+  <property name="vpf.home" value="${openmap.home}/src/vpfbrowseservlet" />
+  <property name="vpf.target" value="${vpf.home}/target" />
+  <property name="vpf.class_dir" value="${vpf.target}/WEB-INF/src" />
+  <property name="vpf.lib_dir" value="${vpf.target}/WEB-INF/lib" />
+  <property name="vpf.classes" value="${vpf.target}/WEB-INF/classes" />
+  
+  <property name="servlet-api.jar" value="${openmap.home}/ext/servlet-api-2.5.jar" />
+  <property name="openmap.jar" value="${openmap.home}/src/core/target/openmap.jar" />
+  
+  <!-- Test for availability of servlet-api.jar -->
+  <property name="openmap.ext" value="${openmap.home}/ext" />
+  <path id="project.class.path">
+    <fileset dir="${openmap.ext}" includes="**/*.jar" />
+    <pathelement path="${java.class.path}/" />
+  </path>	
+  <available classpathref="project.class.path" classname="javax.servlet.http.HttpServlet" property="do.servlet" />	
+  <condition property="servlet.message" value="servlet-api.jar found" else="servlet.jar is required to build vpfbrowse classes, it is not in the classpath.  Modify the vpfbrowseservlet build.xml file with the correct path.">
+    <isset property="do.servlet" />
+  </condition>
+  <echo message="${servlet.message}" />		
 
-	</target>
 
 	<!--  ############################
        End of property setup.
@@ -25,13 +36,13 @@
 
 	<target name="all" depends="war" description="Compiles VPF Servlet classes and creates the war (web archive) file." />
 
-	<target name="jar" depends="classes">
+	<target name="jar" depends="classes" if="${do.servlet}">
 		<jar jarfile="${vpf.lib_dir}/vpfbrowse.jar">
 			<fileset dir="${vpf.classes}" />
 		</jar>
 	</target>
 
-	<target name="war" depends="classes">
+	<target name="war" depends="classes" if="${do.servlet}">
 		<war destfile="${vpf.target}/vpfbrowse.war" webxml="${vpf.home}/src/main/webapp/WEB-INF/web.xml">
 			<lib dir="${vpf.lib_dir}" excludes="vpfbrowse.jar" />
 			<classes dir="${vpf.classes}" />
@@ -43,20 +54,20 @@
 	<!--  ############################
        Standard target, to build everything you can.
        ############################ -->
-	<target name="classes" depends="init" description="Compiles the VPF Servlet classes. ">
+	<target name="classes" description="Compiles the VPF Servlet classes. " if="${do.servlet}">
 		<echo message="Building VPF Servlet classes..." />
 		<mkdir dir="${vpf.lib_dir}" />
 		<mkdir dir="${vpf.classes}" />
 		<copy todir="${vpf.lib_dir}">
 			<fileset dir="${openmap.home}/src/core/target" includes="**/*.jar" />
 		</copy>
-		<javac srcdir="${vpf.home}" destdir="${vpf.classes}" classpath="${servlet-api.jar};${openmap.jar}" excludes="${javac.excludes}, ${dependency.excludes}" />
+		<javac srcdir="${vpf.home}" destdir="${vpf.classes}" classpath="${servlet-api.jar};${openmap.jar}" excludes="${javac.excludes}, ${dependency.excludes}" includeantruntime="false"/>
 	</target>
 
 	<!--  ############################
        Build the documentation.
        ############################ -->
-	<target name="docs" depends="init" description="Make the javadoc API html documents.">
+	<target name="docs" description="Make the javadoc API html documents.">
 		<javadoc sourcepath="${vpf.home}/src/main/java" destdir="${vpf.home}/doc/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*" author="true" version="true" use="true" windowtitle="OpenMap VPF Browse API" doctitle="OpenMap VPF Browse" bottom="See http://openmap-java.org/ for details" />
 	</target>
 
@@ -71,7 +82,7 @@
 
 	<target name="clean_all" depends="clean, clean_docs" description="Delete jar files, class files, and generated documentation." />
 
-	<target name="clean_classes" depends="init" description="Delete the OpenMap class files.">
+	<target name="clean_classes" description="Delete the OpenMap class files.">
 		<delete dir="${vpf.classes}" />
 	</target>
 
