@@ -1,6 +1,6 @@
 // **********************************************************************
 // 
- // <copyright>
+// <copyright>
 // 
 //  BBN Technologies
 //  10 Moulton Street
@@ -24,154 +24,81 @@
 
 package com.bbn.openmap.tools.icon;
 
-import java.awt.Polygon;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-
 public class OpenMapAppPartCollection extends IconPartCollection {
 
-    static OpenMapAppPartCollection omparts;
+	static OpenMapAppPartCollection omparts;
 
-    protected OpenMapAppPartCollection() {
-        super("OpenMap", "Common parts used in OpenMap Application Icons");
-        init();
-    }
-
-    public synchronized static OpenMapAppPartCollection getInstance() {
-        if (omparts == null) {
-            omparts = new OpenMapAppPartCollection();
-        }
-        return omparts;
-    }
-
-    protected void init() {
-        add(BIG_BOX);
-        add(SMALL_BOX);
-        add(FILL_BOX);
-        add(UL_TRI);
-        add(LR_TRI);
-        add(LL_UR_LINE);
-        add(UL_LR_LINE);
-        add(BIG_ARROW);
-        add(MED_ARROW);
-        add(SMALL_ARROW);
-        add(CORNER_TRI);
-        add(OPP_CORNER_TRI);
-        add(CIRCLE);
-    }
-
-    public final static OpenMapAppPart BIG_BOX = new OpenMapAppPart.Poly("BIG_BOX", "BIG_BOX", new int[] {
-            10, 10, 90, 90, 10 }, new int[] { 10, 90, 90, 10, 10 });
-    public final static OpenMapAppPart SMALL_BOX = new OpenMapAppPart.Poly("SMALL_BOX", "SMALL_BOX", new int[] {
-            30, 30, 70, 70, 30 }, new int[] { 30, 70, 70, 30, 30 });
-    public final static OpenMapAppPart FILL_BOX = new OpenMapAppPart.Poly("FILL_BOX", "FILL_BOX", new int[] {
-            10, 10, 50, 50, 30, 30, 70, 70, 50, 50, 90, 90, 10 }, new int[] {
-            10, 90, 90, 70, 70, 30, 30, 70, 70, 90, 90, 10, 10 });
-    public final static OpenMapAppPart UL_TRI = new OpenMapAppPart.Poly("UL_TRI", "UL_TRI", new int[] {
-            10, 10, 75, 10 }, new int[] { 10, 75, 10, 10 });
-    public final static OpenMapAppPart LR_TRI = new OpenMapAppPart.Poly("LR_TRI", "LR_TRI", new int[] {
-            25, 90, 90, 25 }, new int[] { 90, 90, 25, 90 });
-    public final static OpenMapAppPart LL_UR_LINE = new OpenMapAppPart.Poly("LL_UR_LINE", "LL_UR_LINE", new int[] {
-            10, 90 }, new int[] { 90, 10 });
-    public final static OpenMapAppPart UL_LR_LINE = new OpenMapAppPart.Poly("UL_LR_LINE", "UL_LR_LINE", new int[] {
-            10, 90 }, new int[] { 10, 90 });
-    public final static OpenMapAppPart BIG_ARROW = new OpenMapAppPart.Poly("BIG_ARROW", "BIG_ARROW", new int[] {50,90,80,80,20,20,10,50}, new int[] {10,40,40,90,90,40,40,10});
-    public final static OpenMapAppPart MED_ARROW = new OpenMapAppPart.Poly("MED_ARROW", "MED_ARROW", new int[] {50,90,70,70,30,30,10,50}, new int[] {10,50,50,90,90,50,50,10});
-    public final static OpenMapAppPart SMALL_ARROW = new OpenMapAppPart.Poly("SMALL_ARROW", "SMALL_ARROW", new int[] {50,80,60,60,40,40,20,50}, new int[] {10,50,50,90,90,50,50,10});
-    public final static OpenMapAppPart CORNER_TRI = new OpenMapAppPart.Poly("CORNER_TRI", "CORNER_TRI", new int[] {10,50,10}, new int[] {10,10,50});
-    public final static OpenMapAppPart OPP_CORNER_TRI = new OpenMapAppPart.Poly("OPP_CORNER_TRI", "OPP_CORNER_TRI", new int[] {50,90,50}, new int[] {50,50,90});
-    public final static OpenMapAppPart CIRCLE = new OpenMapAppPart.Circle("CIRCLE", "CIRCLE", 50, 50, 46);
-    public final static OpenMapAppPart DOT = new OpenMapAppPart.Circle("DOT", "DOT", 50, 50, 6);
-    public final static OpenMapAppPart PLUS = new OpenMapAppPart.Poly("PLUS", "PLUS", new int[] {25,50,50,50,50,75,75,50,50,50,50,25,25}, new int[] {50,50,25,25,50,50,50,50,75,75,50,50,50});
-    public final static OpenMapAppPart ADD_PLUS = new OpenMapAppPart.Poly("ADD_PLUS", "ADD_PLUS", new int[] {70,80,80,80,80,90}, new int[] {20,20,10,30,20,20});
-    public final static OpenMapAppPart MINUS = new OpenMapAppPart.Poly("MINUS", "MINUS", new int[] {25,75}, new int[] {50,50});
-    public final static OpenMapAppPart MAP_PIN_HEAD = new OpenMapAppPart.Circle("MAP_PIN_HEAD", "MAP_PIN_HEAD", 50, 33, 30);
-    public final static OpenMapAppPart MAP_PIN_BOTTOM = new OpenMapAppPart.Poly("MAP_PIN_BOTTOM", "MAP_PIN_BOTTOM", new int[] {50,30,70,50}, new int[] {90,50,50,90});
-    
-    public static class OpenMapAppPart extends IconPartCollectionEntry {
-
-        public OpenMapAppPart(String n, String d, Shape shape) {
-            this(n, d, shape, (AffineTransform) null);
-        }
-
-        public OpenMapAppPart(String n, String d, Shape shape,
-                AffineTransform affTrans) {
-            super(n, d, new BasicIconPart(shape, affTrans));
-        }
-        
-        public static class Poly extends OpenMapAppPart {
-            public Poly(String n, String d, int[] xp, int[] yp) {
-                this(n, d, xp, yp, (AffineTransform) null);
-            }
-
-            public Poly(String n, String d, int[] xp, int[] yp,
-                    AffineTransform af) {
-                super(n, d, new Polygon(xp, yp, xp.length), af);
-            }
-        }
-
-        public static class Circle extends OpenMapAppPart {
-            public Circle(String n, String d, double x, double y, double radius) {
-                this(n, d, x, y, radius, (AffineTransform) null);
-            }
-
-            public Circle(String n, String d, double x, double y,
-                    double radius, AffineTransform af) {
-                super(n,
-                      d,
-                      new Ellipse2D.Double(x - radius, y - radius, radius * 2, radius * 2),
-                      af);
-            }
-        }
-        
-        /**
-         * type = Arc2D.OPEN, Arc2D.CHORD, Arc2D.PIE
-         * @author dietrick
-         *
-         */
-        public static class Arc extends OpenMapAppPart {
-        	public Arc(String n, String d, double x, double y, double radius, double start, double end, int type) {
-        		this(n, d, x, y, radius, start, end, type, null);
-        	}
-        	
-        	public Arc(String n, String d, double x, double y, double radius, double start, double end, int type, AffineTransform af) {
-        		super(n, d, new Arc2D.Double(type), af);
-        		Arc2D arc = (Arc2D) super.getIconPart().getGeometry();
-        		arc.setArcByCenter(x, y, radius, start, end, type);
-        	}
-        }
-    }
-    
-    public static IconPart getReloadSymbol() {
-    	IconPartList ipList = new IconPartList();
-		ipList.add(new OpenMapAppPartCollection.OpenMapAppPart.Arc("RELOAD_ARC", "RELOAD_ARC", 50, 50, 30, 90, 270, Arc2D.OPEN)
-				.getIconPart());
-		ipList.add(new OpenMapAppPartCollection.OpenMapAppPart.Poly("RELOAD_POINT", "RELOAD_POINT",
-				new int[] { 43, 65, 49 }, new int[] { 15, 20, 37 }).getIconPart());
-		return ipList;
-    }
-    
-    public static IconPart getSettingsSymbol() {
-    	IconPartList ipList = new IconPartList();
-		ipList.add(new OpenMapAppPartCollection.OpenMapAppPart.Circle("SETTINGS_CIRCLE", "SETTINGS_CIRCLE", 50, 50, 30).getIconPart());
-		
-		for (int i = 0; i < 360; i+= 30) {
-			double angle = Math.toRadians(i);
-			double cos = Math.cos(angle);
-			double sin = Math.sin(angle);
-			double x1 = 30.0 * cos + 50;
-			double y1 = 30.0 * sin + 50;
-			double x2 = 40.0 * cos + 50;
-			double y2 = 40.0 * sin + 50;
-			
-			Line2D.Double line = new Line2D.Double(x1, y1,  x2, y2);
-			ipList.add(new OpenMapAppPartCollection.OpenMapAppPart("RELOAD_POINT", "RELOAD_POINT", line).getIconPart());
+	protected OpenMapAppPartCollection() {
+		super("OpenMap", "Common parts used in OpenMap Application Icons");
+		init();
+	}
+	
+	public static OpenMapAppPartCollection getInstance() {
+		if (omparts == null) {
+			omparts = new OpenMapAppPartCollection();
 		}
-		
-		return ipList;    	
-    }
+		return omparts;		
+	}
+
+	protected void init() {
+		add(BIG_BOX);
+		add(SMALL_BOX);
+		add(FILL_BOX);
+		add(UL_TRI);
+		add(LR_TRI);
+		add(LL_UR_LINE);
+		add(UL_LR_LINE);
+		add(BIG_ARROW);
+		add(MED_ARROW);
+		add(SMALL_ARROW);
+		add(CORNER_TRI);
+		add(OPP_CORNER_TRI);
+		add(CIRCLE);		
+		add(DOT);		
+		add(PLUS);		
+		add(ADD_PLUS);		
+		add(MINUS);
+		add(CIRCLE);		
+		add(MAP_PIN_HEAD);				
+		add(MAP_PIN_BOTTOM);				
+		add(TRIANGLE);
+		add(SQUAT_TRIANGLE);
+	}
+
+	public final static OpenMapAppPart BIG_BOX = new OpenMapAppPart("BIG_BOX", "BIG_BOX", OMIconPart.BIG_BOX);
+	public final static OpenMapAppPart SMALL_BOX = new OpenMapAppPart("SMALL_BOX", "SMALL_BOX", OMIconPart.SMALL_BOX);
+	public final static OpenMapAppPart FILL_BOX = new OpenMapAppPart("FILL_BOX", "FILL_BOX", OMIconPart.FILL_BOX);
+	public final static OpenMapAppPart UL_TRI = new OpenMapAppPart("UL_TRI", "UL_TRI", OMIconPart.UL_TRI);
+	public final static OpenMapAppPart LR_TRI = new OpenMapAppPart("LR_TRI", "LR_TRI", OMIconPart.LR_TRI);
+	public final static OpenMapAppPart LL_UR_LINE = new OpenMapAppPart("LL_UR_LINE", "LL_UR_LINE",
+			OMIconPart.LL_UR_LINE);
+	public final static OpenMapAppPart UL_LR_LINE = new OpenMapAppPart("UL_LR_LINE", "UL_LR_LINE",
+			OMIconPart.UL_LR_LINE);
+	public final static OpenMapAppPart BIG_ARROW = new OpenMapAppPart("BIG_ARROW", "BIG_ARROW", OMIconPart.BIG_ARROW);
+	public final static OpenMapAppPart MED_ARROW = new OpenMapAppPart("MED_ARROW", "MED_ARROW", OMIconPart.MED_ARROW);
+	public final static OpenMapAppPart SMALL_ARROW = new OpenMapAppPart("SMALL_ARROW", "SMALL_ARROW",
+			OMIconPart.SMALL_ARROW);
+	public final static OpenMapAppPart CORNER_TRI = new OpenMapAppPart("CORNER_TRI", "CORNER_TRI",
+			OMIconPart.CORNER_TRI);
+	public final static OpenMapAppPart OPP_CORNER_TRI = new OpenMapAppPart("OPP_CORNER_TRI", "OPP_CORNER_TRI",
+			OMIconPart.OPP_CORNER_TRI);
+	public final static OpenMapAppPart CIRCLE = new OpenMapAppPart("CIRCLE", "CIRCLE", OMIconPart.CIRCLE);
+	public final static OpenMapAppPart DOT = new OpenMapAppPart("DOT", "DOT", OMIconPart.DOT);
+	public final static OpenMapAppPart PLUS = new OpenMapAppPart("PLUS", "PLUS", OMIconPart.PLUS);
+	public final static OpenMapAppPart ADD_PLUS = new OpenMapAppPart("ADD_PLUS", "ADD_PLUS", OMIconPart.ADD_PLUS);
+	public final static OpenMapAppPart MINUS = new OpenMapAppPart("MINUS", "MINUS", OMIconPart.MINUS);
+	public final static OpenMapAppPart MAP_PIN_HEAD = new OpenMapAppPart("MAP_PIN_HEAD", "MAP_PIN_HEAD",
+			OMIconPart.MAP_PIN_HEAD);
+	public final static OpenMapAppPart MAP_PIN_BOTTOM = new OpenMapAppPart("MAP_PIN_BOTTOM", "MAP_PIN_BOTTOM",
+			OMIconPart.MAP_PIN_BOTTOM);
+	public final static OpenMapAppPart TRIANGLE = new OpenMapAppPart("TRIANGLE", "TRIANGLE", OMIconPart.TRIANGLE);
+	public final static OpenMapAppPart SQUAT_TRIANGLE = new OpenMapAppPart("SQUAT_TRIANGLE", "SQUAT_TRIANGLE",
+			OMIconPart.SQUAT_TRIANGLE);
+
+	public static class OpenMapAppPart extends IconPartCollectionEntry {
+		public OpenMapAppPart(String n, String d, OMIconPart iconPart) {
+			super(n, d, iconPart.getIconPart());
+		}
+	}
 
 }

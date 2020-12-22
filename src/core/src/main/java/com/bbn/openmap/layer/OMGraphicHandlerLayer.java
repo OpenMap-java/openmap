@@ -34,7 +34,6 @@ import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,7 +68,7 @@ import com.bbn.openmap.omGraphics.event.StandardMapMouseInterpreter;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.tools.icon.IconPart;
 import com.bbn.openmap.tools.icon.OMIconFactory;
-import com.bbn.openmap.tools.icon.OpenMapAppPartCollection;
+import com.bbn.openmap.tools.icon.OMIconPart;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.ISwingWorker;
 import com.bbn.openmap.util.PooledSwingWorker;
@@ -1422,10 +1421,10 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 		DrawingAttributes da = DrawingAttributes.getDefaultClone();
 		da.setStroke(new BasicStroke(3));
 
-		IconPart reloadSymbol = OpenMapAppPartCollection.getReloadSymbol();
+		IconPart reloadSymbol = OMIconPart.getReloadSymbol();
 		reloadSymbol.setRenderingAttributes(da);
 
-		ImageIcon ii = OMIconFactory.getIcon(25, 25, reloadSymbol);
+		ImageIcon ii = OMIconFactory.getIcon(20, 20, reloadSymbol);
 		JButton redraw = new JButton(ii);
 		redraw.setActionCommand(RedrawCmd);
 		redraw.setToolTipText("Redraw Layer");
@@ -1437,10 +1436,10 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 		DrawingAttributes da = DrawingAttributes.getDefaultClone();
 		da.setStroke(new BasicStroke(3));
 
-		IconPart settingsSymbol = OpenMapAppPartCollection.getSettingsSymbol();
+		IconPart settingsSymbol = OMIconPart.getSettingsSymbol();
 		settingsSymbol.setRenderingAttributes(da);
 
-		ImageIcon ii = OMIconFactory.getIcon(25, 25, settingsSymbol);
+		ImageIcon ii = OMIconFactory.getIcon(20, 20, settingsSymbol);
 		JButton redraw = new JButton(ii);
 		redraw.setActionCommand(DisplayPropertiesCmd);
 		redraw.setToolTipText(tooltip);

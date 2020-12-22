@@ -31,179 +31,222 @@ import java.awt.geom.GeneralPath;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 
 /**
- * The BasicIconPart is an implementation of the IconPart. In addition
- * to the geometry and DrawingAttributes adjustments that can be done
- * on an IconPart, the BasicIconPart also lets you use an
- * AffineTransform to rotate, translate or scale the geometrym and
- * will create GradientPaints for the Colors from the
- * DrawingAttribtues if desired.
+ * The BasicIconPart is an implementation of the IconPart. In addition to the
+ * geometry and DrawingAttributes adjustments that can be done on an IconPart,
+ * the BasicIconPart also lets you use an AffineTransform to rotate, translate
+ * or scale the geometries and will create GradientPaints for the Colors from
+ * the DrawingAttribtues if desired.
  */
 public class BasicIconPart implements IconPart, Cloneable {
 
-    /**
-     * AffineTransform to adjust geometry if needed.
-     */
-    protected AffineTransform baseTransform;
-    /**
-     * Shape geometry for this IconPart.
-     */
-    protected Shape geometry;
-    /**
-     * Shape clipping area for this IconPart.
-     */
-    protected Shape clip;
-    /**
-     * DrawingAttributes for this IconPart.
-     */
-    protected DrawingAttributes renderingAttributes = null;
-    /**
-     * Flag to modifying DrawingAttributes Colors into GradientPaints,
-     * for that 3D lighting look.
-     */
-    protected boolean gradient = false;
+	/**
+	 * AffineTransform to adjust geometry if needed.
+	 */
+	protected AffineTransform baseTransform;
+	/**
+	 * Shape geometry for this IconPart.
+	 */
+	protected Shape geometry;
+	/**
+	 * Shape clipping area for this IconPart.
+	 */
+	protected Shape clip;
+	/**
+	 * DrawingAttributes for this IconPart.
+	 */
+	protected DrawingAttributes renderingAttributes = null;
+	/**
+	 * Flag to modifying DrawingAttributes Colors into GradientPaints, for that 3D
+	 * lighting look.
+	 */
+	protected boolean gradient = false;
 
-    /**
-     * Create a BasicIconPart with a java.awt.Shape object for a geometry.
-     */
-    public BasicIconPart(Shape shape) {
-        this(shape, null, DrawingAttributes.DEFAULT);
-    }
+	/**
+	 * Create a BasicIconPart with a java.awt.Shape object for a geometry.
+	 */
+	public BasicIconPart(Shape shape) {
+		this(shape, null, DrawingAttributes.DEFAULT);
+	}
 
-    /**
-     * Create a BasicIconPart with a java.awt.Shape object for a geometry, along
-     * with an AffineTransform that may be applied to the geometry at
-     * rendertime.
-     */
-    public BasicIconPart(Shape shape, AffineTransform transform) {
-        this(shape, transform, DrawingAttributes.DEFAULT);
-    }
-    
-    /**
-     * Create a BasicIconPart with a java.awt.Shape object for a geometry.
-     */
-    public BasicIconPart(Shape shape, DrawingAttributes da) {
-        this(shape, (AffineTransform) null, da);
-    }
+	/**
+	 * Create a BasicIconPart with a java.awt.Shape object for a geometry, along
+	 * with an AffineTransform that may be applied to the geometry at rendertime.
+	 */
+	public BasicIconPart(Shape shape, AffineTransform transform) {
+		this(shape, transform, DrawingAttributes.DEFAULT);
+	}
 
-    /**
-     * Create a BasicIconPart with a java.awt.Shape object for a geometry, along
-     * with an AffineTransform that may be applied to the geometry at
-     * rendertime.
-     */
-    public BasicIconPart(Shape shape, AffineTransform transform, DrawingAttributes da) {
-        geometry = shape;
+	/**
+	 * Create a BasicIconPart with a java.awt.Shape object for a geometry.
+	 */
+	public BasicIconPart(Shape shape, DrawingAttributes da) {
+		this(shape, (AffineTransform) null, da);
+	}
 
-        if (transform == null) {
-            transform = new AffineTransform();
-        }
+	/**
+	 * Create a BasicIconPart with a java.awt.Shape object for a geometry, along
+	 * with an AffineTransform that may be applied to the geometry at rendertime.
+	 */
+	public BasicIconPart(Shape shape, AffineTransform transform, DrawingAttributes da) {
+		geometry = shape;
 
-        baseTransform = transform;
-        setRenderingAttributes(da);
-    }
+		if (transform == null) {
+			transform = new AffineTransform();
+		}
 
-    /**
-     * Get the DrawingAttributes that should be used for rendering.
-     * 
-     * @param da DrawingAttributes passed in that may affect rendering
-     *        choices. Can be null, and the IconPart may decide to
-     *        ignore it.
-     * @return DrawingAttribute for this part.
-     */
-    protected DrawingAttributes getAttributesForRendering(DrawingAttributes da) {
-        return getRenderingAttributes();
-    }
+		baseTransform = transform;
+		setRenderingAttributes(da);
+	}
 
-    /**
-     * @param g a java.awt.Graphics object to render into.
-     * @param width pixel width of icon, used to scale geometry.
-     * @param height pixel height of icon, used to scale geometry.
-     */
-    public void render(Graphics g, int width, int height) {
-        render(g, width, height, null);
-    }
+	/**
+	 * Get the DrawingAttributes that should be used for rendering.
+	 * 
+	 * @param da DrawingAttributes passed in that may affect rendering choices. Can
+	 *           be null, and the IconPart may decide to ignore it.
+	 * @return DrawingAttribute for this part.
+	 */
+	protected DrawingAttributes getAttributesForRendering(DrawingAttributes da) {
+		return getRenderingAttributes();
+	}
 
-    /**
-     * @param g a java.awt.Graphics object to render into.
-     * @param width pixel width of icon, used to scale geometry.
-     * @param height pixel height of icon, used to scale geometry.
-     * @param appDA drawing attributes to use under certain
-     *        conditions. Certain IconParts on this list may use these
-     *        drawing attributes if they want/should. May be null.
-     */
-    public void render(Graphics g, int width, int height,
-                       DrawingAttributes appDA) {
+	/**
+	 * @param g      a java.awt.Graphics object to render into.
+	 * @param width  pixel width of icon, used to scale geometry.
+	 * @param height pixel height of icon, used to scale geometry.
+	 */
+	public void render(Graphics g, int width, int height) {
+		render(g, width, height, null);
+	}
 
-        AffineTransform transform = AffineTransform.getScaleInstance((double) width / 100.0,
-                (double) height / 100.0);
-        transform.concatenate(baseTransform);
+	/**
+	 * @param g      a java.awt.Graphics object to render into.
+	 * @param width  pixel width of icon, used to scale geometry.
+	 * @param height pixel height of icon, used to scale geometry.
+	 * @param appDA  drawing attributes to use under certain conditions. Certain
+	 *               IconParts on this list may use these drawing attributes if they
+	 *               want/should. May be null.
+	 */
+	public void render(Graphics g, int width, int height, DrawingAttributes appDA) {
 
-        // Handle clip area in Graphics, first
-        Shape clip = getClip();
-        if (clip != null) {
-            g.setClip(new GeneralPath(clip).createTransformedShape(transform));
-        }
+		AffineTransform transform = AffineTransform.getScaleInstance((double) width / 100.0, (double) height / 100.0);
+		transform.concatenate(baseTransform);
 
-        Shape shape = new GeneralPath(geometry).createTransformedShape(transform);
-        getAttributesForRendering(appDA).render((Graphics2D) g, shape, gradient);
-    }
+		// Handle clip area in Graphics, first
+		Shape clip = getClip();
+		if (clip != null) {
+			g.setClip(new GeneralPath(clip).createTransformedShape(transform));
+		}
+		
+		if (geometry != null) {
+			Shape shape = new GeneralPath(geometry).createTransformedShape(transform);
+			getAttributesForRendering(appDA).render((Graphics2D) g, shape, gradient);
+		}
+	}
 
-    /**
-     * Set whether colors should be replaced by GradientPaints.
-     */
-    public void setGradient(boolean value) {
-        gradient = value;
-    }
+	/**
+	 * Set whether colors should be replaced by GradientPaints.
+	 */
+	public void setGradient(boolean value) {
+		gradient = value;
+	}
 
-    /**
-     * Get whether colors should be replaced by GradientPaints.
-     */
-    public boolean isGradient() {
-        return gradient;
-    }
+	/**
+	 * Get whether colors should be replaced by GradientPaints.
+	 */
+	public boolean isGradient() {
+		return gradient;
+	}
 
-    public void setClip(Shape clipArea) {
-        clip = clipArea;
-    }
+	public void setClip(Shape clipArea) {
+		clip = clipArea;
+	}
 
-    public Shape getClip() {
-        return clip;
-    }
+	public Shape getClip() {
+		return clip;
+	}
 
-    public void setGeometry(Shape shape) {
-        geometry = shape;
-    }
+	public void setGeometry(Shape shape) {
+		geometry = shape;
+	}
 
-    public Shape getGeometry() {
-        return geometry;
-    }
+	public Shape getGeometry() {
+		return geometry;
+	}
 
-    public void setTransform(AffineTransform af) {
-        baseTransform = af;
-    }
+	public void setTransform(AffineTransform af) {
+		baseTransform = af;
+	}
 
-    public AffineTransform getTransform() {
-        return baseTransform;
-    }
+	public AffineTransform getTransform() {
+		return baseTransform;
+	}
 
-    public void setRenderingAttributes(DrawingAttributes da) {
-        renderingAttributes = da;
-    }
+	public void setRenderingAttributes(DrawingAttributes da) {
+		renderingAttributes = da;
+	}
 
-    public DrawingAttributes getRenderingAttributes() {
-        if (renderingAttributes == null) {
-            return DrawingAttributes.DEFAULT;
-        } else {
-            return renderingAttributes;
-        }
-    }
+	public DrawingAttributes getRenderingAttributes() {
+		if (renderingAttributes == null) {
+			return DrawingAttributes.DEFAULT;
+		} else {
+			return renderingAttributes;
+		}
+	}
 
-    public Object clone() {
-        BasicIconPart clone = null;
-        try {
-            clone = (BasicIconPart) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return clone;
-    }
+	private BasicIconPart with(Shape s, AffineTransform af, DrawingAttributes da, Shape clipArea, boolean gradient) {
+		BasicIconPart bip = new BasicIconPart(s, af, da);
+		bip.setGradient(gradient);
+		bip.setClip(clipArea);
+		return bip;
+	}
+
+	/**
+	 * @param da new DrawingAttributes
+	 * @return new BasicIconPart with adjusted setting.
+	 */
+	public BasicIconPart with(DrawingAttributes da) {
+		return with(geometry, baseTransform, da, clip, gradient);
+	}
+
+	/**
+	 * @param new affine transform to be applied to the geometry
+	 * @return new BasicIconPart with adjusted setting.
+	 */
+	public BasicIconPart with(AffineTransform af) {
+		return with(geometry, af, renderingAttributes, clip, gradient);
+	}
+
+	/**
+	 * @param s new geometry
+	 * @return new BasicIconPart with adjusted setting.
+	 */
+	public BasicIconPart with(Shape s) {
+		return with(s, baseTransform, renderingAttributes, clip, gradient);
+	}
+
+	/**
+	 * @param c new clip area
+	 * @return new BasicIconPart with adjusted setting.
+	 */
+	public BasicIconPart withClip(Shape c) {
+		return with(geometry, baseTransform, renderingAttributes, c, gradient);
+	}
+
+	/**
+	 * @param gradient true to use gradient colors
+	 * @return new BasicIconPart with adjusted setting.
+	 */
+	public BasicIconPart with(boolean gradient) {
+		return with(geometry, baseTransform, renderingAttributes, clip, gradient);
+	}
+
+	public Object clone() {
+		BasicIconPart clone = null;
+		try {
+			clone = (BasicIconPart) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return clone;
+	}
 }

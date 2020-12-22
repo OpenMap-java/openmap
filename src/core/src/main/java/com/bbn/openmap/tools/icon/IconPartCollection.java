@@ -114,7 +114,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
         }
 
         if (part == null) {
-            for (IconPartCollection ipc : collections) {
+            for (IconPartCollection ipc : getCollections()) {
                 part = ipc.get(name);
                 if (part != null) {
                     break;
@@ -142,7 +142,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
         }
 
         if (desc == null) {
-            for (IconPartCollection ipc : collections) {
+            for (IconPartCollection ipc : getCollections()) {
                 desc = ipc.getDescription(name);
                 if (desc != null) {
                     break;

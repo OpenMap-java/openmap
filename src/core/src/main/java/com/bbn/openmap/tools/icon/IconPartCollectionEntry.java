@@ -40,7 +40,7 @@ public class IconPartCollectionEntry {
         this.description = description;
         this.part = part;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
