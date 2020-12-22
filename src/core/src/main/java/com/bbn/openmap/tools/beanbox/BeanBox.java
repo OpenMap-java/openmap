@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.beans.BeanInfo;
 import java.util.HashMap;
 import java.util.Vector;
@@ -225,7 +226,7 @@ public abstract class BeanBox {
         if (Debug.debugging("beanbox"))
             Debug.output("" + d);
         img = ImageScaler.getOptimalScalingImage(img,(int) d.getWidth(),
-                (int) d.getHeight());
+                (int) d.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
         return img;
     }

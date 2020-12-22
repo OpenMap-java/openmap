@@ -18,9 +18,14 @@ public class ImageScaler {
      * Progressive bilinear scaling: for any downscale size, scale
      * iteratively by halves using BILINEAR filtering until the proper 
      * size is reached.
+     * 
+     * @param inputImage the starting image
+     * @param startSize a starting dimension of the image, either h or w
+     * @param endSize a finishing dimension of the image, same as startSize h or w
+     * @param imageType the image type for rendering, from BufferedImage.
      */
     public static Image getOptimalScalingImage(Image inputImage,
-            int startSize, int endSize) {
+            int startSize, int endSize, int imageType) {
         int currentSize = startSize;
         Image currentImage = inputImage;
         int delta = currentSize - endSize;
@@ -29,7 +34,7 @@ public class ImageScaler {
             if (delta <= nextPow2) {
                 if (currentSize != endSize) {
                     BufferedImage tmpImage = new BufferedImage(endSize,
-                            endSize, BufferedImage.TYPE_INT_RGB);
+                            endSize, imageType);
                     Graphics g = tmpImage.getGraphics();
                     ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
                             RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -40,7 +45,7 @@ public class ImageScaler {
                 return currentImage;
             } else {
                 BufferedImage tmpImage = new BufferedImage(currentSize >> 1,
-                        currentSize >> 1, BufferedImage.TYPE_INT_RGB);
+                        currentSize >> 1, imageType);
                 Graphics g = tmpImage.getGraphics();
                 ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
                         RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -53,5 +58,19 @@ public class ImageScaler {
             }
         }
         return currentImage;
+    }
+    
+	/**
+     * Progressive bilinear scaling: for any downscale size, scale
+     * iteratively by halves using BILINEAR filtering until the proper 
+     * size is reached.  Assumes the image type is BufferedImage.TYPE_INT_ARGB.
+     * 
+     * @param inputImage the starting image
+     * @param startSize a starting dimension of the image, either h or w
+     * @param endSize a finishing dimension of the image, same as startSize h or w
+     */
+    public static Image getOptimalScalingImage(Image inputImage,
+            int startSize, int endSize) {
+    	return getOptimalScalingImage(inputImage, startSize, endSize, BufferedImage.TYPE_INT_ARGB);
     }
 }

@@ -1848,6 +1848,10 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
      */
     public void render(Graphics2D g, Shape shape, boolean replaceColorWithGradient) {
 
+    	if (shape == null) {
+    		return;
+    	}
+    	
         if (matted) {
             if (stroke instanceof BasicStroke) {
                 g.setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
@@ -2092,7 +2096,8 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
     protected static class DrawingAttributesGUIButton extends JButton implements
             PropertyChangeListener {
 
-        DrawingAttributes parentDA;
+		private static final long serialVersionUID = 1L;
+		DrawingAttributes parentDA;
 
         protected DrawingAttributesGUIButton(DrawingAttributes da) {
             this(null, da);

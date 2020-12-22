@@ -318,7 +318,9 @@ public abstract class AbstractImageFormatter
             Debug.output("Formatter: scaling image to : " + scaledWidth + ", " + scaledHeight);
         }
 
-        java.awt.Image image = ImageScaler.getOptimalScalingImage(bufferedImage, scaledWidth, scaledHeight);
+        int imageType = (imageFormatSupportTransparentPixel() ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
+        // Algorithm takes overall size? 
+        java.awt.Image image = ImageScaler.getOptimalScalingImage(bufferedImage, bufferedImage.getWidth(), scaledWidth, imageType);
 
         if (Debug.debugging("formatter")) {
             Debug.output("Formatter: creating scaled image...");
@@ -326,7 +328,7 @@ public abstract class AbstractImageFormatter
 
         try {
 
-            BufferedImage buffi = BufferedImageHelper.getBufferedImage(image, 0, 0, -1, -1);
+            BufferedImage buffi = BufferedImageHelper.getBufferedImage(image, 0, 0, -1, -1, imageType);
 
             // Do this here, in case something bad happens in the
             // buffered image creation, so at least the original image

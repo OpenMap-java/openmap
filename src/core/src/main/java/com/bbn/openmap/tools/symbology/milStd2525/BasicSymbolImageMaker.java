@@ -133,7 +133,7 @@ public class BasicSymbolImageMaker extends OMComponent implements
 
             BufferedImage bi = BufferedImageHelper.getBufferedImage(fileURL);
             return new ImageIcon(ImageScaler.getOptimalScalingImage(bi, (int) di.getWidth(),
-                    (int) di.getHeight()));
+                    (int) di.getHeight(), bi.getType()));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NullPointerException npe) {
