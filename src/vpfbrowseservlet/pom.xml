@@ -1,18 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>openmap-vpfbrowseservlet</artifactId>
-	<groupId>com.bbn.openmap</groupId>
-	<version>6.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>openmap-vpfbrowseservlet</name>
 	<description>OpenMap is a Java Beans based toolkit for building applications and applets needing geographic information.  This project contains components that can create a server to browse the contents of VPF libraries.</description>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -23,9 +15,13 @@
 			<groupId>com.bbn.openmap</groupId>
 			<artifactId>openmap</artifactId>
 			<version>6.0-SNAPSHOT</version>
-			<type>jar</type>
 		</dependency>
 	</dependencies>
-	<!-- <parent> <groupId>com.bbn.openmap</groupId> <artifactId>openmap-all</artifactId> 
-		<version>6.0-SNAPSHOT</version> <relativePath>../..</relativePath> </parent> -->
+
+	<parent>
+		<groupId>com.bbn.openmap</groupId>
+		<artifactId>openmap-all</artifactId>
+		<version>6.0-SNAPSHOT</version>
+		<relativePath>../..</relativePath>
+	</parent>
 </project>
