@@ -595,6 +595,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                     }
                 } // else what? Never seen this test fail with Java2D
 
+            } else if (DEBUG) {
+            	logger.fine("visible image area not on the map");
             }
 
         } else if (DEBUG) {
