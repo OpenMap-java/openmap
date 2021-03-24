@@ -220,7 +220,7 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
             // start using class names for pretty names.
             try {
             	Class<?> clss = Class.forName(name);
-            	if (clss.isAssignableFrom(Projection.class)) {
+            	if (Projection.class.isAssignableFrom(clss)) {
                     return (Class<? extends Projection>) clss;
             	}
 
