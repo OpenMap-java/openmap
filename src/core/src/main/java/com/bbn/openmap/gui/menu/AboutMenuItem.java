@@ -67,10 +67,7 @@ public class AboutMenuItem extends JMenuItem implements ActionListener {
     }
 
     protected JComponent createCopyrightViewer() {
-        StringBuffer sb = new StringBuffer(MapBean.getCopyrightMessage())
-                .append(Environment.get("line.separator"))
-                .append(Environment.get("line.separator")).append("Version ")
-                .append(Environment.get(Environment.Version));
+        StringBuffer sb = new StringBuffer(MapBean.getCopyrightMessage());
 
         String buildDate = Environment.get(Environment.BuildDate);
         if (buildDate != null) {
