@@ -21,7 +21,6 @@
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 package com.bbn.openmap.tools.icon;
 
 public class OpenMapAppPartCollection extends IconPartCollection {
@@ -32,12 +31,12 @@ public class OpenMapAppPartCollection extends IconPartCollection {
 		super("OpenMap", "Common parts used in OpenMap Application Icons");
 		init();
 	}
-	
+
 	public static OpenMapAppPartCollection getInstance() {
 		if (omparts == null) {
 			omparts = new OpenMapAppPartCollection();
 		}
-		return omparts;		
+		return omparts;
 	}
 
 	protected void init() {
@@ -53,14 +52,14 @@ public class OpenMapAppPartCollection extends IconPartCollection {
 		add(SMALL_ARROW);
 		add(CORNER_TRI);
 		add(OPP_CORNER_TRI);
-		add(CIRCLE);		
-		add(DOT);		
-		add(PLUS);		
-		add(ADD_PLUS);		
+		add(CIRCLE);
+		add(DOT);
+		add(PLUS);
+		add(ADD_PLUS);
 		add(MINUS);
-		add(CIRCLE);		
-		add(MAP_PIN_HEAD);				
-		add(MAP_PIN_BOTTOM);				
+		add(CIRCLE);
+		add(MAP_PIN_HEAD);
+		add(MAP_PIN_BOTTOM);
 		add(TRIANGLE);
 		add(SQUAT_TRIANGLE);
 	}
@@ -96,6 +95,7 @@ public class OpenMapAppPartCollection extends IconPartCollection {
 			OMIconPart.SQUAT_TRIANGLE);
 
 	public static class OpenMapAppPart extends IconPartCollectionEntry {
+
 		public OpenMapAppPart(String n, String d, OMIconPart iconPart) {
 			super(n, d, iconPart.getIconPart());
 		}
