@@ -1007,7 +1007,7 @@ public class PropertyHandler
     protected static void printComponentProperties(List<?> components, PropertyHandler ph, PrintStream ps,
                                                    Properties createdProperties) {
 
-        // this section looks at the components and trys to create
+        // this section looks at the components and tries to create
         // the openmap.components list and then write out all the
         // properties for them.
 
@@ -1020,7 +1020,6 @@ public class PropertyHandler
         boolean buildConfiguredApplication = true;
         boolean componentListBuilt = false;
         int numComponents = 0;
-        String markerName;
         String componentProperty = PropertyHandler.componentProperty;
         StringBuffer componentMarkerString = new StringBuffer(componentProperty).append("=");
         if (ph != null) {
@@ -1040,10 +1039,12 @@ public class PropertyHandler
 
             List<String> componentList = PropUtils.parseSpacedMarkers(phProps.getProperty(componentProperty));
 
-            for (String markerNameClass : componentList) {
-                componentPropsString.append(markerNameClass + ".class").append("=").append(phProps.get(markerNameClass)).append("\n");
+            for (String markerName : componentList) {
+            	String markerNameClassKey = markerName + ".class";
+            	String markerNameClass = phProps.getProperty(markerNameClassKey);
+            	componentPropsString.append(markerNameClassKey).append("=").append(markerNameClass).append("\n");
                 if (createdProperties != null) {
-                    createdProperties.put(markerNameClass, phProps.get(markerNameClass));
+                    createdProperties.put(markerNameClassKey, markerNameClass);
                 }
             }
             componentListBuilt = true;
@@ -1065,7 +1066,7 @@ public class PropertyHandler
 
                 PropertyConsumer pc = (PropertyConsumer) component;
                 componentProperties.clear();
-                markerName = pc.getPropertyPrefix();
+                String markerName = pc.getPropertyPrefix();
 
                 if (ph != null && markerName != null && !markerName.equals("openmap")) {
                     // Gets the properties for the prefix that the
@@ -1085,11 +1086,12 @@ public class PropertyHandler
                         componentMarkerString.append(" ").append(markerName);
                         pc.setPropertyPrefix(markerName);
                     }
-
-                    componentPropsString.append(markerName).append(".class=").append(component.getClass().getName()).append("\n");
+                    
+                    String componentClassName = component.getClass().getName();
+                    componentPropsString.append(markerName).append(".class=").append(componentClassName).append("\n");
 
                     if (createdProperties != null) {
-                        createdProperties.put(markerName, component.getClass().getName());
+                        createdProperties.put(markerName, componentClassName);
                     }
                 }
 
@@ -1111,11 +1113,12 @@ public class PropertyHandler
                     }
                 }
             } else if (!componentListBuilt) {
-                markerName = "component" + (numComponents++);
+                String markerName = "component" + (numComponents++);
                 componentMarkerString.append(" ").append(markerName);
-                componentPropsString.append(markerName).append(".class=").append(component.getClass().getName()).append("\n");
+                String componentClassName = component.getClass().getName();
+                componentPropsString.append(markerName).append(".class=").append(componentClassName).append("\n");
                 if (createdProperties != null) {
-                    createdProperties.put(markerName, component.getClass().getName());
+                    createdProperties.put(markerName, componentClassName);
                 }
             }
         }
