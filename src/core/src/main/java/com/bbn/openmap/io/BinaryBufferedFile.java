@@ -242,6 +242,16 @@ public class BinaryBufferedFile extends BinaryFile {
         buffer = null;
         super.dispose();
     }
+    
+    /**
+     * Overriding because of bug report of memory leak.
+     */
+    public void close() throws IOException {
+    	super.close();        	
+    	firstbyteoffset = 0;
+    	curptr = 0;
+    	bytesinbuffer = 0;
+    }
 
     public int read() throws IOException {
         try {
