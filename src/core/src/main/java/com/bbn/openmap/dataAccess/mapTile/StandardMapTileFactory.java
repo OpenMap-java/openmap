@@ -36,7 +36,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.logging.Level;

@@ -7,12 +7,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.bbn.openmap.dataAccess.mapTile.MapTileCoordinateTransform;
-import com.bbn.openmap.dataAccess.mapTile.OSMMapTileCoordinateTransform;
-import com.bbn.openmap.dataAccess.mapTile.ServerMapTileFactory;
 import com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.TilePathBuilder;
-import com.bbn.openmap.dataAccess.mapTile.TMSMapTileCoordinateTransform;
-import com.bbn.openmap.dataAccess.mapTile.ZoomLevelInfo;
 import com.bbn.openmap.dataAccess.shape.EsriGraphic;
 import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -164,6 +159,7 @@ public class TileGrabber {
 			ServerMapTileFactory tileServer = new ServerMapTileFactory();
 			TilePathBuilder serverPathBuilder = new TilePathBuilder(source);
 			TilePathBuilder localPathBuilder = new TilePathBuilder(target);
+			tileServer.localCacheDir = target;
 
 			ZoomLevelInfo zoomInfo = new ZoomLevelInfo();
 
@@ -245,8 +241,8 @@ public class TileGrabber {
 		}
 
 		/**
-		 * Set the starting x number of the subjar file to create. Depends on
-		 * the subjar zoom to figure out what that means.
+		 * Set the starting x number of the subjar file to create. Depends on the subjar
+		 * zoom to figure out what that means.
 		 * 
 		 * @param parseInt
 		 */
@@ -256,8 +252,8 @@ public class TileGrabber {
 		}
 
 		/**
-		 * Set the starting y number of the subjar file to create. Depends on
-		 * the subjar zoom to figure out what that means.
+		 * Set the starting y number of the subjar file to create. Depends on the subjar
+		 * zoom to figure out what that means.
 		 * 
 		 * @param parseInt
 		 */
@@ -267,8 +263,8 @@ public class TileGrabber {
 		}
 
 		/**
-		 * Set the ending y number of the subjar file to create. Depends on the
-		 * subjar zoom to figure out what that means.
+		 * Set the ending y number of the subjar file to create. Depends on the subjar
+		 * zoom to figure out what that means.
 		 * 
 		 * @param parseInt
 		 */
@@ -278,8 +274,8 @@ public class TileGrabber {
 		}
 
 		/**
-		 * Set the ending y number of the subjar file to create. Depends on the
-		 * subjar zoom to figure out what that means.
+		 * Set the ending y number of the subjar file to create. Depends on the subjar
+		 * zoom to figure out what that means.
 		 * 
 		 * @param parseInt
 		 */
@@ -325,8 +321,7 @@ public class TileGrabber {
 		}
 
 		/**
-		 * Check whether the build process will only fetch tiles that don't
-		 * exist.
+		 * Check whether the build process will only fetch tiles that don't exist.
 		 */
 		public boolean isFill() {
 			return fill;
@@ -344,8 +339,8 @@ public class TileGrabber {
 
 	/**
 	 * Takes arguments for source tile directory, target directory, and option
-	 * sub-jar zoom level, and creates jars in the right place with expected
-	 * tiles. Prints usage statement.
+	 * sub-jar zoom level, and creates jars in the right place with expected tiles.
+	 * Prints usage statement.
 	 * 
 	 * @param args
 	 */
