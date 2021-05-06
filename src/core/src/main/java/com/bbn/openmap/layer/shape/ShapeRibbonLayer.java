@@ -39,7 +39,19 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMShape;
 import com.bbn.openmap.omGraphics.util.RibbonMaker;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.PropUtils;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import javax.swing.JTextArea;
 
 /**
  * An OpenMap Layer that displays outlines of a shapefile, extended or shrunk by
@@ -104,6 +116,9 @@ public class ShapeRibbonLayer extends OMGraphicHandlerLayer {
 	public final static String dbfColumnChoiceProperty = "dbfColumnChoice";
 	public final static String includeAllShapesProperty = "includeAllShapes";
 
+        // Internally, we store a copy of the poly projected forward
+        List<List<LatLonPoint>> currAreaOutline = null;
+        
 	@Override
 	public void setProperties(String prefix, Properties props) {
 		super.setProperties(prefix, props);
@@ -155,16 +170,22 @@ public class ShapeRibbonLayer extends OMGraphicHandlerLayer {
 
 	@Override
 	public Component getGUI() {
-		JPanel guiPanel = new JPanel(new GridLayout(0, 2));
+            
+                GridBagConstraints gbc_remainder = new GridBagConstraints();
+                gbc_remainder.gridwidth = GridBagConstraints.REMAINDER;
+                
+                JPanel pan = new JPanel(new GridBagLayout());
+                
+		JPanel optionsPanel = new JPanel(new GridLayout(0, 2));
 		if (null == esriLayer) {
-			guiPanel.add(new JLabel("No data loaded"));
-			return guiPanel;
+			optionsPanel.add(new JLabel("No data loaded"));
+			return optionsPanel;
 		}
 
-		guiPanel.add(new JLabel(String.format("Choose Range (%s)", units.getAbbr())));
+		optionsPanel.add(new JLabel(String.format("Choose Range (%s)", units.getAbbr())));
 		final JSpinner rangeSpinner = new JSpinner(
 				new SpinnerNumberModel(units.fromRadians(rangeRadians), -1000.0, 1000.0, 100.0));
-		guiPanel.add(rangeSpinner);
+		optionsPanel.add(rangeSpinner);
 
 		DbfTableModel model = esriLayer.getModel();
 
@@ -180,20 +201,20 @@ public class ShapeRibbonLayer extends OMGraphicHandlerLayer {
 
 		final JComboBox<String> combo = new JComboBox<String>(knownValues);
 		combo.setSelectedIndex(chosenidx);
-		guiPanel.add(new JLabel("Choose a shape:"));
-		guiPanel.add(combo);
+		optionsPanel.add(new JLabel("Choose a shape:"));
+		optionsPanel.add(combo);
 
-		guiPanel.add(new JLabel("Fill Ribbon"));
+		optionsPanel.add(new JLabel("Fill Ribbon"));
 		final JCheckBox fillRibbonCheck = new JCheckBox("", fillRibbon);
-		guiPanel.add(fillRibbonCheck);
+		optionsPanel.add(fillRibbonCheck);
 
-		guiPanel.add(new JLabel("Remove Shape From Fill"));
+		optionsPanel.add(new JLabel("Remove Shape From Fill"));
 		final JCheckBox removeShapeFromFillCheck = new JCheckBox("", removeShapeFromFill);
-		guiPanel.add(removeShapeFromFillCheck);
+		optionsPanel.add(removeShapeFromFillCheck);
 
-		guiPanel.add(new JLabel("Include All Shapes"));
+		optionsPanel.add(new JLabel("Include All Shapes"));
 		final JCheckBox includeAllShapesCheck = new JCheckBox("", includeAllShapes);
-		guiPanel.add(includeAllShapesCheck);
+		optionsPanel.add(includeAllShapesCheck);
 
 		// Set up listeners so the gui elements update the screen automatically
 		ActionListener actionListener = new ActionListener() {
@@ -217,7 +238,40 @@ public class ShapeRibbonLayer extends OMGraphicHandlerLayer {
 		includeAllShapesCheck.addActionListener(actionListener);
 		removeShapeFromFillCheck.addActionListener(actionListener);
 		combo.addActionListener(actionListener);
-		return guiPanel;
+                pan.add(optionsPanel, gbc_remainder);
+                
+                // Add a sub-poly calculator
+                JPanel subPolyPanel = new JPanel(new GridBagLayout());
+                
+                subPolyPanel.add(new JLabel(String.format("Points every %s along the shape ribbon:", units.getAbbr())));
+                final JSpinner pointsEverySpinner = new JSpinner(
+				new SpinnerNumberModel(30.0, 0.1, 10000.0, 10.0));
+		subPolyPanel.add(pointsEverySpinner, gbc_remainder);
+                final JTextArea pointsEveryOutputText = new JTextArea();
+                pointsEveryOutputText.setPreferredSize(new Dimension(400, 150));
+                pointsEveryOutputText.setLineWrap(true);
+                subPolyPanel.add(pointsEveryOutputText);
+                
+                pointsEverySpinner.addChangeListener(new ChangeListener() {
+                    public void stateChanged(ChangeEvent e) {
+                        double pointsEvery = ((SpinnerNumberModel)pointsEverySpinner.getModel()).getNumber().doubleValue();
+                        double pointEveryRad = units.toRadians(pointsEvery);
+                        List<LatLonPoint> pointsAroundPolys = getPointsAroundPolys(currAreaOutline, pointEveryRad);
+                        StringBuilder sb = new StringBuilder();
+                        for(LatLonPoint p : pointsAroundPolys) {
+                            sb.append(p.getLatitude());
+                            sb.append(",");
+                            sb.append(p.getLongitude());
+                            sb.append(";");
+                        }
+                        pointsEveryOutputText.setText(sb.toString());
+                    }
+                    
+                });
+                
+                pan.add(subPolyPanel, gbc_remainder);
+                
+		return pan;
 	}
 
 	/**
@@ -227,13 +281,13 @@ public class ShapeRibbonLayer extends OMGraphicHandlerLayer {
 	 * @param distRadians
 	 * @return
 	 */
-	public Area createAreaFromEsri(OMGraphic g, double distRadians) {
+	public Area createAreaFromEsri(OMGraphic g, double distRadians, List<List<LatLonPoint>> polys) {
 		Area a = new Area();
 		if (g instanceof EsriGraphicList) {
 			// Recurse if necessary
 			EsriGraphicList esriList = (EsriGraphicList) g;
 			for (OMGraphic omg : esriList) {
-				a.add(createAreaFromEsri(omg, distRadians));
+				a.add(createAreaFromEsri(omg, distRadians, polys));
 			}
 		} else if (g instanceof EsriPolygon) {
 			EsriPolygon esriGraphic = (EsriPolygon) g;
@@ -265,9 +319,41 @@ public class ShapeRibbonLayer extends OMGraphicHandlerLayer {
 				OMAreaList outerRing = ribbon.getOuterRing(distRadians);
 				outerRing.generate(getProjection());
 				final GeneralPath oneRingShape = outerRing.getShape();
-				if (null != oneRingShape) {
-					a.add(new Area(oneRingShape));
+                                if (null != oneRingShape) {
+                                    a.add(new Area(oneRingShape));
 				}
+                                
+                                // Stash a copy, projected back into l/l
+                                if(null != polys && null != oneRingShape) {
+                                    PathIterator pathIterator = oneRingShape.getPathIterator(null);
+                                    List<LatLonPoint> pointList = new ArrayList<LatLonPoint>();
+                                    double[] coords = new double[6];
+                                    
+                                    Projection proj = getProjection();
+                                    for(; !pathIterator.isDone(); pathIterator.next()) {
+                                        LatLonPoint.Double llp = new LatLonPoint.Double();
+                                        int segtype = pathIterator.currentSegment(coords);
+                                        switch(segtype) {
+                                            case PathIterator.SEG_MOVETO:
+                                                // One point
+                                                proj.inverse(coords[0], coords[1], llp);
+                                                pointList.add(llp);
+                                                break;
+                                            case PathIterator.SEG_LINETO:
+                                                // One point
+                                                proj.inverse(coords[0], coords[1], llp);
+                                                pointList.add(llp);
+                                                break;
+                                            case PathIterator.SEG_QUADTO:
+                                            case PathIterator.SEG_CUBICTO:
+                                            case PathIterator.SEG_CLOSE:
+                                                // RibbonMaker doesn't generate these
+                                            default:
+                                                // *shrug*
+                                        }
+                                    }
+                                    polys.add(pointList);
+                                }
 			}
 		}
 		return a;
@@ -288,7 +374,7 @@ public class ShapeRibbonLayer extends OMGraphicHandlerLayer {
 			a = new Area();
 			for (int i = 0; i < model.getRowCount(); i++) {
 				System.out.println(String.format("%d/%d", i, model.getRowCount()));
-				a.add(getOneRibbonedAreaFromShapeFile(i));
+				a.add(getOneRibbonedAreaFromShapeFile(i, null));
 			}
 		} else {
 			// Find the row index we need in the shape data
@@ -304,7 +390,8 @@ public class ShapeRibbonLayer extends OMGraphicHandlerLayer {
 
 			// Assuming we found it...
 			if (rownum >= 0) {
-				a = getOneRibbonedAreaFromShapeFile(rownum);
+                            currAreaOutline = new ArrayList<List<LatLonPoint>>();
+                            a = getOneRibbonedAreaFromShapeFile(rownum, currAreaOutline);
 			}
 		}
 		l.add(new OMShape.PROJECTED(a));
@@ -316,21 +403,57 @@ public class ShapeRibbonLayer extends OMGraphicHandlerLayer {
 		return l;
 	}
 
+        /**
+         * Given a list of polygons represented by points, return a new set of
+         * points that is "a point every pointEveryRad distance around those polys"
+         * @param polys
+         * @param pointEveryRad
+         * @return 
+         */
+        private List<LatLonPoint> getPointsAroundPolys(List<List<LatLonPoint>> polys, double pointEveryRad) {
+            List<LatLonPoint> retval = new ArrayList<LatLonPoint>();
+            if(null == polys) {
+                return retval;
+            }
+            
+            for(List<LatLonPoint> onePoly : polys) {
+                double currDistRad = 0.0;
+                retval.add(onePoly.get(0));
+                for(int i = 0; i < onePoly.size()-1; i++) {
+                    LatLonPoint p1 = onePoly.get(i);
+                    LatLonPoint p2 = onePoly.get(i+1);
+                    double p1_p2_dist = p1.distance(p2);
+                    double p1_p2_az = p1.azimuth(p2);
+                    
+                    while(currDistRad + p1_p2_dist >= pointEveryRad) {
+                        LatLonPoint nextp = p1.getPoint(pointEveryRad - currDistRad, p1_p2_az);
+                        retval.add(nextp);
+                        p1 = nextp;
+                        p1_p2_dist = p1.distance(p2);
+                        currDistRad = 0.0;
+                    }
+                    
+                    currDistRad += p1_p2_dist;
+                }
+            }
+            return retval;
+        }
+        
 	/**
 	 * From the esri layer, create an Area using the current settings
 	 * 
 	 * @param rownum
 	 * @return
 	 */
-	private Area getOneRibbonedAreaFromShapeFile(int rownum) {
+	private Area getOneRibbonedAreaFromShapeFile(int rownum, List<List<LatLonPoint>> polys) {
 		OMGraphic sourceGraphic = esriLayer.getEsriGraphicList().get(rownum);
 
 		// Create the graphics representing the ribbon
-		Area ribbonArea = createAreaFromEsri(sourceGraphic, rangeRadians);
+		Area ribbonArea = createAreaFromEsri(sourceGraphic, rangeRadians, polys);
 
 		if (null != ribbonArea) {
 			if (removeShapeFromFill || rangeRadians < 0) {
-				Area countryArea = createAreaFromEsri(sourceGraphic, 0.0);
+				Area countryArea = createAreaFromEsri(sourceGraphic, 0.0, null);
 				if (rangeRadians > 0) {
 					ribbonArea.subtract(countryArea);
 				} else {
