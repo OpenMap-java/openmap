@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>openmap</artifactId>
 	<groupId>com.bbn.openmap</groupId>
-	<version>6.0-SNAPSHOT</version>
+	<version>6.0</version>
 	<packaging>jar</packaging>
 	<name>openmap</name>
 	<description>OpenMap is a Java Beans based toolkit for building applications and applets needing geographic information.  This project encapsulates the core components of the toolkit.</description>
@@ -188,7 +188,7 @@
 		</repository>
 	</repositories>
 	<!-- <parent> <groupId>com.bbn.openmap</groupId> <artifactId>openmap-all</artifactId> 
-		<version>6.0-SNAPSHOT</version> <relativePath>../..</relativePath> </parent> -->
+		<version>6.0</version> <relativePath>../..</relativePath> </parent> -->
 	<build>
 		<plugins>
 			<plugin>
