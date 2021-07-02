@@ -190,7 +190,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
 		if (key instanceof String) {
 			String imagePath = (String) key;
 			if (verbose) {
-				logger.fine("fetching file for cache: " + imagePath);
+				logger.log(Level.FINE, "fetching file for cache: {0}", imagePath);
 			}
 
 			try {
@@ -205,14 +205,14 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
 					}
 
 				} else {
-					logger.fine("Can't find resource located at " + imagePath);
+					logger.log(Level.FINE, "Can't find resource located at {0}", imagePath);
 				}
 			} catch (MalformedURLException e) {
-				logger.fine("Can't find resource located at " + imagePath);
+				logger.log(Level.FINE, "Can't find resource located at {0}", imagePath);
 			} catch (InterruptedException e) {
-				logger.fine("Reading the image file was interrupted: " + imagePath);
+				logger.log(Level.FINE, "Reading the image file was interrupted: {0}", imagePath);
 			} catch (Exception fnfe) {
-				logger.fine("file not found: " + imagePath);
+				logger.log(Level.FINE, "file not found: {0}", imagePath);
 			}
 		}
 		return null;

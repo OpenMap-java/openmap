@@ -89,10 +89,9 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 	 * parameters. If the object is not found in the cache, null is returned.
 	 */
 	public Object getFromCache(Object key, int x, int y, int zoomLevel) {
-		String localLoc = null;
 
 		if (localCacheDir != null && zoomLevelInfo != null) {
-			localLoc = buildLocalFilePath(x, y, zoomLevel, getFileExt());
+			String localLoc = buildLocalFilePath(x, y, zoomLevel, getFileExt());
 			/**
 			 * If a local cache is defined, then the cache will always use the
 			 * string for the local file as the key.
@@ -100,7 +99,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 			CacheObject ret = searchCache(localLoc);
 			if (ret != null) {
 				if (logger.isLoggable(Level.FINE)) {
-					logger.fine("found tile (" + x + ", " + y + ") in cache");
+					logger.log(Level.FINE, "found tile ({0}, {1}) in cache", new Object[] {x, y});
 				}
 				return ret.obj;
 			}
@@ -136,7 +135,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 		if (key instanceof String) {
 
 			if (verbose) {
-				logger.fine("fetching file for cache: " + key);
+				logger.log(Level.FINE, "fetching file for cache: {0}", key);
 			}
 
 			byte[] imageBytes = null;
@@ -144,7 +143,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 			CacheObject localVersion = super.load(key, x, y, zoomLevel, proj);
 
 			if (localVersion != null) {
-				logger.fine("found version of tile in local cache: " + key);
+				logger.log(Level.FINE, "found version of tile in local cache: {0}", key);
 				return localVersion;
 			}
 
@@ -171,7 +170,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 
 				} catch (InterruptedException ie) {
 					if (logger.isLoggable(Level.FINE)) {
-						logger.fine("factory interrupted fetching " + imagePath);
+						logger.log(Level.FINE, "factory interrupted fetching {0}", imagePath);
 					}
 				}
 
@@ -203,14 +202,15 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 		try {
 			java.net.URL url = new java.net.URL(imagePath);
 			java.net.URLConnection urlc = url.openConnection();
+            urlc.setConnectTimeout(800);
 
 			if (logger.isLoggable(Level.FINER)) {
-				logger.finer("url content type: " + urlc.getContentType());
+				logger.log(Level.FINER, "url content type: {0}", urlc.getContentType());
 			}
 
-			if (urlc == null || urlc.getContentType() == null) {
+			if (urlc.getContentType() == null) {
 				if (logger.isLoggable(Level.FINE)) {
-					logger.fine("unable to connect to (tile might be unavailable): " + imagePath);
+					logger.log(Level.FINE, "unable to connect to (tile might be unavailable): {0}", imagePath);
 				}
 
 				// text
@@ -218,7 +218,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 				java.io.BufferedReader bin = new java.io.BufferedReader(
 						new java.io.InputStreamReader(urlc.getInputStream()));
 				String st;
-				StringBuffer message = new StringBuffer();
+				StringBuilder message = new StringBuilder();
 				while ((st = bin.readLine()) != null) {
 					message.append(st);
 				}
@@ -259,9 +259,9 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 
 			} // end if image
 		} catch (java.net.MalformedURLException murle) {
-			logger.warning("ServerMapTileFactory: URL \"" + imagePath + "\" is malformed.");
+			logger.log(Level.WARNING, "ServerMapTileFactory: URL \"{0}\" is malformed.", imagePath);
 		} catch (java.io.IOException ioe) {
-			logger.fine("Couldn't connect to " + imagePath + ", connection problem");
+			logger.log(Level.FINE, "Couldn't connect to {0}, connection problem", imagePath);
 		}
 
 		return imageBytes;
@@ -357,7 +357,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 				try {
 					FileUtils.deleteFile(localCacheDirFile);
 				} catch (IOException e) {
-					logger.fine("There's a problem deleting local cache directory: " + e.getMessage());
+					logger.log(Level.FINE, "There's a problem deleting local cache directory: {0}", e.getMessage());
 				}
 			}
 		}
