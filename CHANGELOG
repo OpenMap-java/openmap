@@ -1,3 +1,21 @@
+2021-07-01  Donald Dietrick  <dietrick@haswaknow.local>
+
+	* Tagged OpenMap 6.0 - As you can see, 5 years worth of
+	significant modifications and architecture changes.
+
+	* The project has been updated to be a maven project.  You can
+	still use ant, but things go a lot smoother if you use Maven.
+
+	* The directory class paths have been reorganized, significantly.
+	Classes have been moved.  An IDE like NetBeans or Eclipse will
+	greatly assist you in fixing import statements if your project
+	depended on a previous version of OpenMap.
+
+	* PlugIns have  been removed.  They have been  replaced with Layer
+	classes that  extend OMGraphicHandlerLayer.  Plugins  were removed
+	because  they inserted  a  layer of  unnecessary  complexity to  a
+	layer.
+
 2016-12-09  Don Dietrick  <dietrick@hsawaknow.local>
 
 	* Tagged OpenMap 5.1.15
@@ -9,7 +27,7 @@
 
 	* EditableOMPoly grab points now in synchronized list to
           handle rapid clicks and repaints.
-	
+
 	* Updated MapTileLayer to have a property where the local file
 	cache can be saved or destroyed after use "saveCache".
 
