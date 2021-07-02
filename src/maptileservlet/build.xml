@@ -4,6 +4,7 @@
 	<property name="openmap.home" value="../.." />
 	<property name="ommaptile.home" value="${openmap.home}/src/maptileservlet" />
 	<property name="ommaptile.target" value="${ommaptile.home}/target" />
+	<property name="ommaptile.dependency" value="${ommaptile.target}/dependency" />	
 	<property name="ommaptile.lib_dir" value="${ommaptile.target}/ommaptile/WEB-INF/lib" />
 	<property name="ommaptile.classes" value="${ommaptile.target}/ommaptile/WEB-INF/classes" />
 	<property name="ommaptile.mvnclasses" value="${ommaptile.target}/classes" />
@@ -25,11 +26,11 @@
 	<!-- Test for availability of servlet-api.jar -->
 	<property name="openmap.ext" value="${openmap.home}/ext" />
 	<path id="project.class.path">
-		<fileset dir="${openmap.ext}" includes="**/*.jar" />
+	        <fileset dir="${openmap.ext}" includes="**/*.jar" />
 		<pathelement path="${java.class.path}/" />
 	</path>	
-	<available classpathref="project.class.path" classname="javax.servlet.http.HttpServlet" property="do.servlet" />	
-	<condition property="servlet.message" value="servlet-api.jar found" else="servlet.jar is required to build maptileservlet classes, it is not in the classpath.  Modify the maptileservlet build.xml file with the correct path.">
+	<available classpathref="project.class.path" classname="javax.servlet.http.HttpServlet" property="do.servlet" />
+	<condition property="servlet.message" value="servlet-api.jar found" else="servlet.jar is required to build maptileservlet classes, it is not in the classpath.  Modify the maptileservlet build.xml file with the correct path. NOTE: dependencies can be retrieved if you use maven to build OpenMap, with: mvn dependency:copy-dependencies">
 	  <isset property="do.servlet" />
 	</condition>
 	<echo message="${servlet.message}" />
@@ -42,6 +43,22 @@
 	<!--  ############################
        Main targets
        ############################ -->
+
+	<target name="copydependency.check">
+	  <echo message="Checking if dependencies available..." />
+	  <condition property="copydependency">
+	    <and>
+	      <available file="${ommaptile.dependency}" type="dir" />
+	    </and>
+	  </condition>
+	</target>
+	
+	<target name="ext.copy" depends="copydependency.check" if="copydependency">
+	  <echo message="Copying dependencies..." />
+	  <copy todir="${openmap.ext}">
+	    <fileset dir="${ommaptile.dependency}" includes="**/*.jar" />
+	  </copy>
+	</target>
 
 	<target name="todo" depends="classes, jar" description="Compiles all of the OpenMap MapTileServlet classes and builds jar files in lib directory." />
 
@@ -70,7 +87,7 @@
 	<!--  ############################
        Standard target, to build everything you can.
        ############################ -->
-	<target name="classes" description="Compiles the Map Tile Servlet classes. " if="${do.servlet}">
+	<target name="classes" depends="ext.copy" description="Compiles the Map Tile Servlet classes. " if="${do.servlet}">
 		<echo message="Building OMMapTile Servlet classes..." />
 		<mkdir dir="${ommaptile.lib_dir}" />
 		<mkdir dir="${ommaptile.classes}" />
@@ -84,7 +101,7 @@
 		<copy todir="${ommaptile.lib_dir}">
 			<fileset dir="${openmap.home}/ext" includes="*.jar" />
 		</copy>
-		<javac srcdir="${ommaptile.home}" destdir="${ommaptile.classes}" classpath="${servlet-api.jar};${ommaptile.jar};${openmap.jar}" includeantruntime="false"/>
+		<javac srcdir="${ommaptile.home}" destdir="${ommaptile.classes}" classpathref="project.class.path" includeantruntime="false"/>
 	</target>
 
 	<!--  ############################

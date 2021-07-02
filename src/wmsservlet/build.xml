@@ -5,6 +5,7 @@
 
 	<property name="omwms.home" value="${openmap.home}/src/wmsservlet" />
 	<property name="omwms.target" value="${omwms.home}/target" />
+	<property name="omwms.dependency" value="${omwms.target}/depencency" />	
 	<property name="omwms.lib_dir" value="${omwms.target}/omwms/WEB-INF/lib" />
 	<property name="omwms.classes" value="${omwms.target}/omwms/WEB-INF/classes" />
 	<property name="omwms.mvnclasses" value="${omwms.target}/classes" />
@@ -19,11 +20,27 @@
 	  <pathelement path="${java.class.path}/" />
 	</path>	
 	<available classpathref="project.class.path" classname="javax.servlet.http.HttpServlet" property="do.servlet" />	
-	<condition property="servlet.message" value="servlet-api.jar found" else="servlet.jar is required to build wmsservlet classes, it is not in the classpath.  Modify the wmsservlet build.xml file with the correct path.">
+	<condition property="servlet.message" value="servlet-api.jar found" else="servlet.jar is required to build wmsservlet classes, it is not in the classpath.  Modify the wmsservlet build.xml file with the correct path. NOTE: dependencies can be retrieved if you use maven to build OpenMap, with: mvn dependency:copy-dependencies">
 	  <isset property="do.servlet" />
 	</condition>
 	<echo message="${servlet.message}" />		
 
+	<target name="copydependency.check">
+	  <echo message="Checking if dependencies available..." />
+	  <condition property="copydependency">
+	    <and>
+	      <available file="${omwms.dependency}" type="dir" />
+	    </and>
+	  </condition>
+	</target>
+	
+	<target name="ext.copy" depends="copydependency.check" if="copydependency">
+	  <echo message="Copying dependencies..." />
+	  <copy todir="${openmap.ext}">
+	    <fileset dir="${omwms.dependency}" includes="**/*.jar" />
+	  </copy>
+	</target>
+	
 	<target name="all" depends="war" description="Compiles OpenMap WMS Servlet classes and creates the war (web archive) file." />
 
 	<target name="jar" depends="classes" if="${do.servlet}">
@@ -43,7 +60,7 @@
 	<!--  ############################
        Standard target, to build everything you can.
        ############################ -->
-	<target name="classes" description="Compiles the OM WMS Servlet classes. " if="${do.servlet}">
+	<target name="classes" depends="ext.copy" description="Compiles the OM WMS Servlet classes. " if="${do.servlet}">
 		<echo message="Building Omwms Servlet classes..." />
 		<mkdir dir="${omwms.lib_dir}" />
 		<mkdir dir="${omwms.classes}" />
