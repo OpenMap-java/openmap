@@ -19,7 +19,6 @@
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 package com.bbn.openmap.wmsservlet;
 
 import java.io.IOException;
@@ -38,11 +37,8 @@ public class HttpResponse implements IHttpResponse {
     /**
      * Initialize the input <code>Reader</code> and output <code>Writer</code>
      * and start the connection thread.
-     * 
-     * @param client_socket
-     *            the client's socket
-     * @param server
-     *            the server object
+     *
+     * @param response the response object
      */
     public HttpResponse(HttpServletResponse response) {
         this.httpResponse = response;
@@ -50,13 +46,9 @@ public class HttpResponse implements IHttpResponse {
 
     /**
      * Write a String response encoded as UTF-8 to the OutputStream.
-     * 
-     * @param out
-     *            the OutputStream of the response.
-     * @param contentType
-     *            the content type of the response.
-     * @param response
-     *            the string containing the response.
+     *
+     * @param contentType the content type of the response.
+     * @param response the string containing the response.
      */
     public void writeHttpResponse(String contentType, String response) throws IOException {
         writeHttpResponse(contentType, response.getBytes("UTF-8"));
@@ -64,13 +56,9 @@ public class HttpResponse implements IHttpResponse {
 
     /**
      * Write a byte[] response to the OutputStream.
-     * 
-     * @param out
-     *            the OutputStream of the response.
-     * @param contentType
-     *            the content type of the response.
-     * @param response
-     *            the byte array containing the response.
+     *
+     * @param contentType the content type of the response.
+     * @param response the byte array containing the response.
      */
     public void writeHttpResponse(String contentType, byte[] response) throws IOException {
         httpResponse.setContentType(contentType);

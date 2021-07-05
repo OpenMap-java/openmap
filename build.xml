@@ -21,6 +21,7 @@
 		<property name="openmap_version" value="6.0b" />
 		<property name="core.src" value="${openmap.home}/src/core" />
 		<property name="ommaptile.src" value="${openmap.home}/src/maptileservlet" />
+		<property name="wms.src" value="${openmap.home}/src/wmsservlet" />		
 		<property name="openmap_dist.dir" value="${openmap.home}/dist" />
 		<property name="openmap_mac_dist.dir" value="${openmap_dist.dir}/OpenMap_${openmap_version}" />
 		<property name="openmap_release.dir" value="${openmap_dist.dir}/openmap-${openmap_version}" />
@@ -52,6 +53,7 @@
 	<target name="classes" depends="init" description="Compiles all OpenMap classes.">
 		<antcall target="core" />
 		<antcall target="maptileservlet" />
+		<antcall target="wmsservlet" />		
 	</target>
 
 	<target name="core" depends="init" description="Compiles core OpenMap classes.">
@@ -59,9 +61,13 @@
 	</target>
 
 	<target name="maptileservlet" depends="init" description="Compiles map tile servlet classes.">
-		<ant antfile="${ommaptile.src}/src/maptileservlet/build.xml" target="classes" />
+		<ant antfile="${ommaptile.src}/build.xml" target="classes" />
 	</target>
 
+	<target name="wmsservlet" depends="init" description="Compiles wms servlet classes.">
+		<ant antfile="${wms.src}/build.xml" target="classes" />
+	</target>
+	
 	<target name="jars" depends="classes" description="Compiles OpenMap and alternative package classes.">
 		<ant antfile="${core.src}/build.xml" target="jar" inheritRefs="true" />
 		<ant antfile="${ommaptile.src}/build.xml" target="jar" inheritRefs="true" />
@@ -74,11 +80,13 @@
 	<target name="all" depends="init" description="Compiles OpenMap classes and creates the jar files.">
 		<ant antfile="${core.src}/build.xml" target="all" inheritRefs="true" />
 		<ant antfile="${ommaptile.src}/build.xml" target="all" inheritRefs="true" />
+		<ant antfile="${wms.src}/build.xml" target="all" inheritRefs="true" />		
 	</target>
 
 	<target name="docs" depends="init" description="Creates OpenMap API documentation.">
 		<ant antfile="${core.src}/build.xml" target="docs.core" inheritRefs="true" />
 		<ant antfile="${ommaptile.src}/build.xml" target="docs" inheritRefs="true" />
+		<ant antfile="${wms.src}/build.xml" target="docs" inheritRefs="true" />				
 	</target>
 
 	<!--  ############################
@@ -92,11 +100,13 @@
 	<target name="clean" depends="init" description="Delete jar files and all class files.">
 		<ant antfile="${core.src}/build.xml" target="clean" inheritRefs="true" />
 		<ant antfile="${ommaptile.src}/build.xml" target="clean" inheritRefs="true" />
+		<ant antfile="${wms.src}/build.xml" target="clean" inheritRefs="true" />		
 	</target>
 
 	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
 		<ant antfile="${core.src}/build.xml" target="distclean" inheritRefs="true" />
 		<ant antfile="${ommaptile.src}/build.xml" target="distclean" inheritRefs="true" />
+		<ant antfile="${wms.src}/build.xml" target="distclean" inheritRefs="true" />		
 	</target>
 
 	<target name="clean_jars" depends="init" description="Delete only the jar files from the lib directory.">

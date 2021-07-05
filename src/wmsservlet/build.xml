@@ -44,13 +44,13 @@
 	<target name="all" depends="war" description="Compiles OpenMap WMS Servlet classes and creates the war (web archive) file." />
 
 	<target name="jar" depends="classes" if="${do.servlet}">
-		<jar jarfile="${omwms.lib_dir}/omwms.jar">
+		<jar jarfile="${omwms.target}/omwms.jar">
 			<fileset dir="${omwms.classes}" />
 		</jar>
 	</target>
 
 	<target name="war" depends="classes" if="${do.servlet}">
-		<war destfile="${omwms.target}/omwms.war" webxml="${omwms.home}/src/main/webapp/WEB-INF/web.xml">
+		<war destfile="${omwms.target}/openmap-wmsservlet.war" webxml="${omwms.home}/src/main/webapp/WEB-INF/web.xml">
 			<lib dir="${omwms.lib_dir}" includes="*.jar" excludes="omwms.jar" />
 			<classes dir="${omwms.classes}" />
 			<fileset dir="${openmap.home}/share/" includes="data/**" />
@@ -61,7 +61,7 @@
        Standard target, to build everything you can.
        ############################ -->
 	<target name="classes" depends="ext.copy" description="Compiles the OM WMS Servlet classes. " if="${do.servlet}">
-		<echo message="Building Omwms Servlet classes..." />
+		<echo message="Building OM WebMapService Servlet classes..." />
 		<mkdir dir="${omwms.lib_dir}" />
 		<mkdir dir="${omwms.classes}" />
 		<copy todir="${omwms.lib_dir}">

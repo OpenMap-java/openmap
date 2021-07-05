@@ -37,7 +37,7 @@
 	<target name="all" depends="war" description="Compiles VPF Servlet classes and creates the war (web archive) file." />
 
 	<target name="jar" depends="classes" if="${do.servlet}">
-		<jar jarfile="${vpf.lib_dir}/vpfbrowse.jar">
+		<jar jarfile="${vpf.target}/openmap-vpfbrowse.jar">
 			<fileset dir="${vpf.classes}" />
 		</jar>
 	</target>
