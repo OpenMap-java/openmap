@@ -40,7 +40,8 @@ public class OgcWmsServlet extends HttpServlet {
     }
 
     /**
-     * 
+     * @param request the request argument
+     * @return Properties
      */
     protected Properties parsePropertiesFromRequest(HttpServletRequest request) {
         Properties props = new Properties();
@@ -61,7 +62,7 @@ public class OgcWmsServlet extends HttpServlet {
 	 * Get a {@link Properties} object with the content of openmap.properties.
 	 * No request specific properties are included.
 	 * 
-	 * @return
+	 * @return Properties
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
@@ -135,7 +136,10 @@ public class OgcWmsServlet extends HttpServlet {
     }
 
     /**
-     * 
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
