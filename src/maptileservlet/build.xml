@@ -64,8 +64,8 @@
 
 	<target name="all" depends="war" description="Compiles ommaptile Servlet classes and creates the war (web archive) file." />
 
-	<target name="war" depends="classes" if="${do.servlet}">
-		<war destfile="${ommaptile.target}/ommaptile.war" webxml="${ommaptile.home}/src/main/webapp/WEB-INF/web.xml">
+	<target name="war" depends="jar" if="${do.servlet}">
+		<war destfile="${ommaptile.target}/openmap-maptileservlet.war" webxml="${ommaptile.home}/src/main/webapp/WEB-INF/web.xml">
 			<lib dir="${ommaptile.lib_dir}" />
 			<classes dir="${ommaptile.classes}" />
 			<zipfileset dir="${ommaptile.home}/src/main/resources/tileSetProperties" prefix="tileSetProperties" />
@@ -73,14 +73,8 @@
 	</target>
 
 	<target name="jar" depends="classes" if="${do.servlet}">
-		<jar jarfile="${ommaptile.lib_dir}/ommaptile.jar">
+		<jar jarfile="${ommaptile.target}/ommaptile.jar">
 			<fileset dir="${ommaptile.classes}" />
-		</jar>
-	</target>
-
-	<target name="ommaptilejar" description="Builds the ommaptile.jar after compilation with maven" if="${do.servlet}">
-		<jar jarfile="${ommaptile.lib_dir}/ommaptile.jar">
-			<fileset dir="${ommaptile.mvnclasses}" />
 		</jar>
 	</target>
 
