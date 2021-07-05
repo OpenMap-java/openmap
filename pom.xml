@@ -88,7 +88,8 @@
 	<artifactId>maven-javadoc-plugin</artifactId>
 	<version>3.2.0</version>
 	<configuration>
-	  <failOnError>false</failOnError>	    
+	  <failOnError>false</failOnError>
+	  <show>private</show>
 	</configuration>
 	<executions>
 	  <execution>
@@ -107,7 +108,7 @@
 	<executions>
 	  <execution>
 	    <id>copy-dependencies</id>
-	    <phase>deploy</phase>
+	    <phase>package</phase>
 	    <goals>
 	      <goal>copy-dependencies</goal>
 	    </goals>
@@ -115,18 +116,6 @@
 	  </execution>
 	</executions>
       </plugin>
-      <plugin>
-            <groupId>net.ju-n.maven.plugins</groupId>
-            <artifactId>checksum-maven-plugin</artifactId>
-            <version>1.2</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>artifacts</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>      
     </plugins>
   </build>
   
