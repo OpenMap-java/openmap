@@ -374,7 +374,7 @@ public class VPFConfig
 
    @SuppressWarnings("unchecked")
    protected void loadCurrentFeatures(DefaultMutableTreeNode top, String featureName, LayerGraphicWarehouseSupport warehouse) {
-      Enumeration<DefaultMutableTreeNode> treeEnum = top.children();
+       Enumeration<?> treeEnum = top.children();
       while (treeEnum.hasMoreElements()) {
          DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeEnum.nextElement();
          Object obj = node.getUserObject();
