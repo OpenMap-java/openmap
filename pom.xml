@@ -30,7 +30,21 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+	
 	<build>
+
+	  <resources>
+	    <resource>
+	      <directory>./src/openmap/</directory>
+	      <includes>
+		<include>**/*.png</include>
+		<include>**/*.gif</include>
+		<include>**/*.jpg</include>
+	      </includes>
+	    </resource>
+	  </resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
