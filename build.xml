@@ -221,5 +221,14 @@
 		<zip destfile="${openmap.zip}" basedir="${openmap_mac_package.dir}" includes="**" />
 	</target>
 
+	<target name="libzip" description="Create a OpenMap library package zip file." depends="clean,package">
+		<copy todir="${openmap_package.dir}/OpenMap">
+			<fileset dir="${openmap_mac_package.dir}/openmap-${openmap_version}">
+				<exclude name="${install_excludes}" />
+			</fileset>
+		</copy>
+		<zip destfile="${openmap_package.dir}/OpenMap_${openmap_version}.zip" basedir="${openmap_package.dir}" includes="OpenMap/**" />
+		<delete dir="${openmap_package.dir}/OpenMap" />
+	</target>
 </project>
 

@@ -1,6 +1,9 @@
+.DS_Store
 /classes
 /package
 /nbproject/private/
 /build/
 /dist/
+*.jar
+*.zip
 src/corba/com/bbn/openmap/corba
