@@ -227,7 +227,7 @@
 				<exclude name="${install_excludes}" />
 			</fileset>
 		</copy>
-		<zip destfile="${openmap_package.dir}/OpenMap_${openmap_version}.zip" basedir="${openmap_package.dir}" includes="OpenMap/**" />
+		<zip destfile="${openmap_package.dir}/OpenMap_v${openmap_version}.zip" basedir="${openmap_package.dir}" includes="OpenMap/**" />
 		<delete dir="${openmap_package.dir}/OpenMap" />
 	</target>
 </project>
