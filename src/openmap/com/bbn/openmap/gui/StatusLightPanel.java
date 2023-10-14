@@ -252,7 +252,7 @@ public class StatusLightPanel extends OMComponentPanel implements
      * @param icon the icon light representing the status.
      */
     protected void setLayerStatus(Layer layer, Icon icon) {
-        JButton statusgif = statusLights.get(layer);
+		JButton statusgif = statusLights.get(layer);
         if (statusgif != null) {
             statusgif.setIcon(icon);
 
@@ -288,19 +288,29 @@ public class StatusLightPanel extends OMComponentPanel implements
      * 
      * @param evt LayerStatusEvent
      */
-    public void updateLayerStatus(LayerStatusEvent evt) {
+	public void updateLayerStatus(final LayerStatusEvent evt) {
         switch (evt.getStatus()) {
         // these need to be coordinated correctly by the Layer,
         // otherwise
         // we'll get phantom status ticks or maybe an ArrayOutOfBounds
         // negative...
         case LayerStatusEvent.START_WORKING:
-            setLayerStatus((Layer) evt.getSource(), redIcon);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					setLayerStatus((Layer) evt.getSource(), redIcon);
+				}
+			});
             break;
         case LayerStatusEvent.STATUS_UPDATE:
             break;
         case LayerStatusEvent.FINISH_WORKING:
-            setLayerStatus((Layer) evt.getSource(), greenIcon);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					setLayerStatus((Layer) evt.getSource(), greenIcon);
+				}
+			});
             break;
         default:
             System.err.println("InformationDelegator.updateLayerStatus(): "

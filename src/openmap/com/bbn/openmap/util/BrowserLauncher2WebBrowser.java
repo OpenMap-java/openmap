@@ -22,9 +22,16 @@
 
 package com.bbn.openmap.util;
 
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import static java.util.logging.Level.*;
+
+import java.awt.Desktop;
+import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//import edu.stanford.ejalbert.BrowserLauncher;
+//import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+//import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 /**
  * A WebBrowser implementation that uses BrowserLauncher2. Requires the
@@ -35,22 +42,24 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
  */
 public class BrowserLauncher2WebBrowser extends WebBrowser {
 
-    BrowserLauncher browserLauncher;
+    private static Logger log = Logger.getLogger(BrowserLauncher2WebBrowser.class.getName());
+
+    // BrowserLauncher browserLauncher;
 
     /**
      * Create a web browser that delegates launching to BrowserLauncher2.
      * 
      */
     public BrowserLauncher2WebBrowser() {
-        try {
-            browserLauncher = new BrowserLauncher();
-        } catch (BrowserLaunchingInitializingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (UnsupportedOperatingSystemException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        // try {
+        // browserLauncher = new BrowserLauncher();
+        // } catch (BrowserLaunchingInitializingException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // } catch (UnsupportedOperatingSystemException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
     }
 
     /**
@@ -60,8 +69,16 @@ public class BrowserLauncher2WebBrowser extends WebBrowser {
      * @param urlString URL
      * 
      */
+    // public void launch(String urlString) {
+    // browserLauncher.openURLinBrowser(urlString);
+    // }
+
     public void launch(String urlString) {
-        browserLauncher.openURLinBrowser(urlString);
+        try {
+            Desktop.getDesktop().browse(new URI(urlString));
+        } catch (Exception e) {
+            log.log(SEVERE, "Could not open url " + urlString, e);
+        }
     }
 
 }
