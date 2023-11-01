@@ -563,44 +563,71 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param loc the pixel location of the image.
      */
     protected void renderImage(Graphics g, Image image, Point loc) {
-
-        Rectangle visibleImageArea = getClippedRectangle();
-
-        if (image != null) {
-
-            if (visibleImageArea != null) {
-
-                if (DEBUG) {
-                    logger.fine("drawing " + visibleImageArea + " image at " + loc.x + ", "
-                            + loc.y);
-                }
-
-                if (g instanceof Graphics2D) {
-                    if (image instanceof BufferedImage) {
-                        ((Graphics2D) g).drawImage(((BufferedImage) image).getSubimage(visibleImageArea.x, visibleImageArea.y, visibleImageArea.width, visibleImageArea.height), scalingXFormOp, loc.x, loc.y);
-                    } else {
-
-                        int sx1 = visibleImageArea.x;
-                        int sy1 = visibleImageArea.y;
-                        int sx2 = sx1 + visibleImageArea.width;
-                        int sy2 = sy1 + visibleImageArea.height;
-
-                        int dx1 = loc.x;
-                        int dy1 = loc.y;
-                        Point2D d2 = scalingXFormOp.getPoint2D(new Point2D.Double(dx1
-                                + visibleImageArea.width, dy1
-                                        + visibleImageArea.height), new Point2D.Double());
-                        int dx2 = (int) d2.getX();
-                        int dy2 = (int) d2.getY();
-
-                        ((Graphics2D) g).drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, this);
-                    }
-                } // else what? Never seen this test fail with Java2D
-
+        if (image == null) {
+            if (DEBUG) {
+                logger.fine("ignoring null bitmap image");
             }
+            return;
+        }
+        if (!(g instanceof Graphics2D)) {
+            if (DEBUG) {
+                logger.fine("ignoring graphics (" + g.getClass() + ")");
+            }
+            return;
+        }
+        final Rectangle visibleImageArea = getClippedRectangle();
+        if (visibleImageArea == null) {
+            if (DEBUG) {
+                logger.fine("ignoring null visible image area");
+            }
+            return;
+        }
+        try {
+            drawImage((Graphics2D) g, visibleImageArea, image, loc);
+        } catch (Exception ex) {
+            logger.warning(ex.toString());
+            logger.info(getClass().getName() + "[x=" + x + ",y=" + y + ",width=" + width
+                    + ",height=" + height + "]" + "[vx=" + visibleImageArea.x + ",vy="
+                    + visibleImageArea.y + ",vwidth=" + visibleImageArea.width + ",vheight="
+                    + visibleImageArea.height + "]");
+        }
+    }
 
-        } else if (DEBUG) {
-            logger.fine("ignoring null bitmap image");
+    /**
+     * Draw the image.
+     * 
+     * @param g
+     * @param g the Graphics object to render the image into. Assumes this is a
+     *        derivative of the Graphics passed into the OMGraphic, and can be
+     *        modified without worrying about passing settings on to other
+     *        OMGraphics.
+     * @param image the image to render.
+     * @param loc the pixel location of the image.
+     * @throws Exception if error.
+     */
+    protected void drawImage(final Graphics2D g, final Rectangle visibleImageArea,
+                             final Image image, final Point loc)
+            throws Exception {
+        if (DEBUG) {
+            logger.fine("drawing " + visibleImageArea + " image at " + loc.x + ", " + loc.y);
+        }
+        if (image instanceof BufferedImage) {
+            g.drawImage(((BufferedImage) image).getSubimage(visibleImageArea.x, visibleImageArea.y, visibleImageArea.width, visibleImageArea.height), scalingXFormOp, loc.x, loc.y);
+        } else {
+
+            int sx1 = visibleImageArea.x;
+            int sy1 = visibleImageArea.y;
+            int sx2 = sx1 + visibleImageArea.width;
+            int sy2 = sy1 + visibleImageArea.height;
+
+            int dx1 = loc.x;
+            int dy1 = loc.y;
+            Point2D d2 = scalingXFormOp.getPoint2D(new Point2D.Double(dx1
+                    + visibleImageArea.width, dy1 + visibleImageArea.height), new Point2D.Double());
+            int dx2 = (int) d2.getX();
+            int dy2 = (int) d2.getY();
+
+            g.drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, this);
         }
     }
 

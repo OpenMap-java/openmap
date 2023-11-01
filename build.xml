@@ -18,7 +18,7 @@
 					   **/*.gif, **/*.png, **/IntersectionTest.java" />
 		<property name="mac.app" value="OpenMap.app" />
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
-		<property name="openmap_version" value="5.1.15" />
+		<property name="openmap_version" value="5.1.15b" />
 		<property name="openmap.ext" value="${openmap.home}/src/ext" />
 		<property name="openmap.src" value="${openmap.home}/src/openmap" />
 		<property name="svg.src" value="${openmap.home}/src/svg" />
@@ -221,5 +221,14 @@
 		<zip destfile="${openmap.zip}" basedir="${openmap_mac_package.dir}" includes="**" />
 	</target>
 
+	<target name="libzip" description="Create a OpenMap library package zip file." depends="clean,package">
+		<copy todir="${openmap_package.dir}/OpenMap">
+			<fileset dir="${openmap_mac_package.dir}/openmap-${openmap_version}">
+				<exclude name="${install_excludes}" />
+			</fileset>
+		</copy>
+		<zip destfile="${openmap_package.dir}/OpenMap_v${openmap_version}.zip" basedir="${openmap_package.dir}" includes="OpenMap/**" />
+		<delete dir="${openmap_package.dir}/OpenMap" />
+	</target>
 </project>
 
