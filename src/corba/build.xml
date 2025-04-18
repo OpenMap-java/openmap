@@ -108,7 +108,6 @@
     -->
 
 		<echo message="  CORBA RPF FrameProvider package..." />
-		<exec executable="pwd" />
 		<exec executable="${idl2java.compiler}" failifexecutionfails="false">
 			<arg line='-td ${corba.src} -fall -pkgPrefix CRpfFrameProvider com.bbn.openmap.layer.rpf.corba ${corba.src}/com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl' />
 		</exec>
