@@ -31,7 +31,6 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Vector;
 
 import com.bbn.openmap.Environment;
