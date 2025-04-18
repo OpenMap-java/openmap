@@ -764,7 +764,7 @@ public class PropUtils {
             retval = Thread.currentThread().getContextClassLoader().getResource(name);
         }
 
-        // if (retval == null && !Environment.isApplet()) {
+        // if (retval == null) {
         // // Check the classpath plus the share directory, which may
         // // be in the openmap.jar file or in the development
         // // environment.
@@ -772,15 +772,6 @@ public class PropUtils {
         // logger.fine("checking with ClassLoader");
         // retval = ClassLoader.getSystemResource("share/" + name);
         // }
-
-        if (retval == null && Environment.isApplet()) {
-            if (DEBUG)
-                logger.fine("checking with URLClassLoader");
-            URL[] cba = new URL[1];
-            cba[0] = Environment.getApplet().getCodeBase();
-            URLClassLoader ucl = URLClassLoader.newInstance(cba);
-            retval = ucl.getResource(name);
-        }
 
         // If there was no resource by that name available
         if (retval == null) {

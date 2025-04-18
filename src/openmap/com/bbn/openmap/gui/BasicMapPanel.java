@@ -51,19 +51,19 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * The BasicMapPanel is a MapPanel and OMComponentPanel that is the heart of the
- * OpenMap application framework. It can be used in a application or applet. The
- * Panel has a BorderLayout, and creates a MapBean for its center area. It
- * creates a MapHandler to use to hold all of its OpenMap components, and uses
- * the PropertyHandler given to it in its constructor to create and configure
- * all of the application components. The best way to add components to the
- * MapPanel is to get the MapHandler from it and add components to that. The
- * BasicMapPanel also adds itself to its MapHandler, so when the PropertyHandler
- * adds MapPanelChildren components to the MapHandler, the BasicMapPanel is able
- * to find them via the findAndInit method. By default, the BasicMapPanel looks
- * for MapPanelChildren and asks them for where they would prefer to be located
- * (BorderLayout.NORTH, BorderLayout.SOUTH, BorderLayout.EAST,
- * BorderLayout.WEST). If you extend this component, though, other components
- * could be found via that same findAndInit method.
+ * OpenMap application framework. The Panel has a BorderLayout, and creates a 
+ * MapBean for its center area. It creates a MapHandler to use to hold all of 
+ * its OpenMap components, and uses the PropertyHandler given to it in its 
+ * constructor to create and configure all of the application components. The 
+ * best way to add components to the MapPanel is to get the MapHandler from it 
+ * and add components to that. The BasicMapPanel also adds itself to its 
+ * MapHandler, so when the PropertyHandler adds MapPanelChildren components to 
+ * the MapHandler, the BasicMapPanel is able to find them via the findAndInit 
+ * method. By default, the BasicMapPanel looks for MapPanelChildren and asks 
+ * them for where they would prefer to be located (BorderLayout.NORTH, 
+ * BorderLayout.SOUTH, BorderLayout.EAST, BorderLayout.WEST). If you extend 
+ * this component, though, other components could be found via that same 
+ * findAndInit method.
  * <p>
  * If a property prefix is set on this MapPanel, that property prefix can be
  * used to designate MapPanelChild objects for this MapPanel. The setName

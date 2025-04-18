@@ -137,8 +137,7 @@ public class GLPoint extends OMPoint implements ActionListener, FocusListener {
     protected transient java.awt.Container palette = null;
 
     /**
-     * Make the palette visible. Will automatically determine if we're
-     * running in an applet environment and will use a JInternalFrame
+     * Make the palette visible. Will use a JInternalFrame
      * over a JFrame if necessary.
      */
     public void showPalette() {

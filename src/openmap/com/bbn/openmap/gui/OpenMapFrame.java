@@ -53,11 +53,6 @@ import com.bbn.openmap.util.PropUtils;
  * Beans to the MapHandler BeanContext, and then positions the widgets it can
  * deal with within itself. The frame does not present itself until an MapPanel
  * is found.
- * 
- * <p>
- * The OpenMapFrame is intended to be used in an application environment. The
- * applet checks and code to handle the applet environment was moved to the
- * OpenMapApplet class.
  */
 public class OpenMapFrame
         extends JFrame

@@ -22,7 +22,6 @@
 
 package com.bbn.openmap;
 
-import java.applet.Applet;
 import java.awt.Color;
 import java.io.File;
 import java.util.Calendar;
@@ -32,7 +31,6 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import javax.swing.JApplet;
 import javax.swing.JLayeredPane;
 import javax.swing.JRootPane;
 
@@ -49,9 +47,7 @@ import com.bbn.openmap.util.PropUtils;
  * The environment is comprised of at least three property lists:
  * <ul>
  * <li>System properties form the basis of the environment. For applications,
- * This can be the System.getProperties(), or something else. In the case of
- * applets, this is a list of the ten system properties that applets are allowed
- * to access plus any applet parameters.
+ * This can be the System.getProperties(), or something else.
  * <p>
  * <li>Runtime properties are checked next. These are properties that exist only
  * while the process is running. They are calculated during Environment
@@ -66,10 +62,9 @@ import com.bbn.openmap.util.PropUtils;
  * the property is found. System properties are searched first, then runtime
  * properties, and then hardcoded properties.
  * <p>
- * This search pattern allows system properties and properties specified as
- * applet parameters or command line properties (using -DProperty=value Java
- * flag) to override more hardcoded properties specified elsewhere, say in a
- * user preferences file.
+ * This search pattern allows system properties or command line properties 
+ * (using -DProperty=value Java flag) to override more hardcoded properties 
+ * specified elsewhere, say in a user preferences file.
  * 
  * @see java.util.Properties <pre>
  * 
@@ -114,7 +109,6 @@ public class Environment extends Properties {
     protected Properties hardcodedProps;
     protected Properties runtimeProps;
     protected JLayeredPane desktop = null;
-    protected static Applet applet;
     private static int counter = 0;
     private static transient Vector extraPaths = new Vector();
     // user preferences file (used for later references)
@@ -187,30 +181,6 @@ public class Environment extends Properties {
     }
 
     /**
-     * Initializes the environment of an applet.
-     * 
-     * @param applet An applet
-     * @see java.applet.Applet
-     */
-    public static void init(Applet applet) {
-        if (applet == null) {
-            init(System.getProperties());
-        } else {
-            if (env != null) {
-                // overwrite properties
-                Debug.output("Reinitializing Applet Environment!");
-                setApplet(applet);
-                env.setAppletProperties(applet, env);
-                return;
-            }
-            new Environment(applet);
-        }
-        if (Debug.debugging("env")) {
-            env.list(System.out);
-        }
-    }
-
-    /**
      * Initializes the environment of an application.
      * 
      * @param sysProps Runtime/System Properties (Toplevel)
@@ -233,18 +203,6 @@ public class Environment extends Properties {
      */
     public static void init() {
         init(System.getProperties());
-    }
-
-    /**
-     * Creates an Environment based on applet properties.
-     * 
-     * @param applet an Applet
-     */
-    protected Environment(Applet applet) {
-        env = this;
-        setApplet(applet);
-        setAppletProperties(applet, this);
-        commonInit();
     }
 
     /**
@@ -298,45 +256,6 @@ public class Environment extends Properties {
     }
 
     /**
-     * Populates the system properties for an applet. Currently this property
-     * list contains the ten system properties available to applets and any
-     * applet parameters specified in Applet.getParameterInfo().
-     * 
-     * @param applet the applet
-     * @see java.applet.Applet#getParameterInfo
-     */
-    protected void setAppletProperties(Applet applet, Properties props) {
-        /*
-         * These are the ten properties available to applets.
-         */
-        final String[] appletProps = { "java.version", "java.vendor",
-                "java.vendor.url", "java.class.version", "os.name", "os.arch",
-                "os.version", "file.separator", "path.separator",
-                "line.separator" };
-
-        int i;
-
-        for (i = 0; i < appletProps.length; i++) {
-            String prop = appletProps[i];
-            props.put(prop, System.getProperty(prop));
-        }
-
-        String[][] pinfo = applet.getParameterInfo();
-        if (pinfo == null)
-            return;
-        for (i = 0; i < pinfo.length; i++) {
-            try {
-                String key = pinfo[i][0];
-                String value = applet.getParameter(key);
-                Debug.message("env", "Applet Parameter " + key + " has value "
-                        + value);
-                props.put(key, value);
-            } catch (NullPointerException e) {
-            }
-        }
-    }
-
-    /**
      * Initializes the runtime properties list. Runtime properties are those
      * properties that exist only while the program is running. They are not
      * persistent. Persistent properties should be stored in the user properties
@@ -345,10 +264,6 @@ public class Environment extends Properties {
      * @param p The runtime properties list
      */
     protected static void initRuntimeProperties(Properties p) {
-        if (isApplet()) {
-            p.put("user.name", "appletUser");// for convenience
-        }
-
         java.net.InetAddress addr = null;
         try {
             addr = java.net.InetAddress.getLocalHost();
@@ -381,13 +296,6 @@ public class Environment extends Properties {
         // Java-under-XWindows
         // polygon wraparound bug.
         String osname = Environment.get("os.name");
-
-        if (osname == null) {
-            isXWindows = false;
-            doingXWindowsWorkaround = false;
-            Debug.message("env", "Environment: is applet, Web Start.");
-            return;
-        }
 
         if (osname.equalsIgnoreCase("solaris")
                 || osname.equalsIgnoreCase("SunOS")) {
@@ -426,33 +334,6 @@ public class Environment extends Properties {
                     + "not working around XWindows clipping bug.");
             doingXWindowsWorkaround = false;
         }
-    }
-
-    /**
-     * Indicates whether the current process is an applet.
-     * 
-     * @return <code>true</code> if process is an applet; <code>false</code>
-     *         otherwise.
-     */
-    public static boolean isApplet() {
-        return (applet != null);
-    }
-
-    protected static void setApplet(Applet applet) {
-        Environment.applet = applet;
-        if (applet instanceof JApplet) {
-            Environment.useInternalFrames(((JApplet) applet).getRootPane());
-        }
-    }
-
-    /**
-     * Indicates whether the current process is an application.
-     * 
-     * @return <code>true</code> if process is an application;
-     *         <code>false</code> otherwise.
-     */
-    public static boolean isApplication() {
-        return (applet == null);
     }
 
     /**
@@ -657,15 +538,6 @@ public class Environment extends Properties {
     }
 
     /**
-     * Gets the applet associated with this process.
-     * 
-     * @return the applet, or null if process is an application
-     */
-    public static Applet getApplet() {
-        return applet;
-    }
-
-    /**
      * Adds a key/value pair to the Environment's system properties list.
      * 
      * @param key the key, used later for retrieval
@@ -746,18 +618,14 @@ public class Environment extends Properties {
      */
     public final static Vector<String> getClasspathDirs() {
         Vector v = new Vector();
-        try {
-            String classPath = System.getProperty("java.class.path");
-            StringTokenizer st = new StringTokenizer(classPath, File.pathSeparator);
+        String classPath = System.getProperty("java.class.path");
+        StringTokenizer st = new StringTokenizer(classPath, File.pathSeparator);
 
-            while (st.hasMoreTokens()) {
-                String path = st.nextToken();
-                if ((new File(path)).isDirectory()) {
-                    v.addElement(path);
-                }
+        while (st.hasMoreTokens()) {
+            String path = st.nextToken();
+            if ((new File(path)).isDirectory()) {
+                v.addElement(path);
             }
-        } catch (java.security.AccessControlException ace) {
-            // Running as an applet?!?
         }
 
         v.addAll(extraPaths);

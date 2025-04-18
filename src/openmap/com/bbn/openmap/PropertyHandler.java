@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -331,15 +330,6 @@ public class PropertyHandler
 
         InputStream propsIn = getClass().getResourceAsStream(propsFileName);
 
-        // Look in the codebase for applets...
-        if (propsIn == null && Environment.isApplet()) {
-            URL[] cba = new URL[1];
-            cba[0] = Environment.getApplet().getCodeBase();
-
-            URLClassLoader ucl = URLClassLoader.newInstance(cba);
-            propsIn = ucl.getResourceAsStream(propsFileName);
-        }
-
         if (propsIn == null) {
             propsIn = ClassLoader.getSystemResourceAsStream(propsFileName);
 
@@ -358,14 +348,8 @@ public class PropertyHandler
             tmpProperties.clear();
         }
 
-        if (!foundProperties && (Environment.isApplet() || DEBUG)) {
+        if (!foundProperties || DEBUG) {
             logger.fine("Unable to locate as resource: " + propsFileName);
-        }
-
-        // Seems like we can kick out here in event of Applet...
-        if (Environment.isApplet()) {
-            Environment.init(getProperties());
-            return;
         }
 
         Properties systemProperties;
@@ -436,7 +420,7 @@ public class PropertyHandler
             logger.fine("***** Done with property search ****");
         }
 
-        if (!foundProperties && !Environment.isApplet()) {
+        if (!foundProperties) {
             PropUtils.copyProperties(PropUtils.promptUserForProperties(), properties);
         }
 
@@ -531,10 +515,8 @@ public class PropertyHandler
         Properties includeProperties = getIncludeProperties(props.getProperty(prefix + includeProperty), props);
         merge(includeProperties, "include file properties", howString);
 
-        if (!Environment.isApplet()) {
-            Properties systemProperties = System.getProperties();
-            merge(systemProperties, props);
-        }
+        Properties systemProperties = System.getProperties();
+        merge(systemProperties, props);
 
         merge(props, "loaded", howString);
 

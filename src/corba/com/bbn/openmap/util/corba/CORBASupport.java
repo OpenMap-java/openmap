@@ -48,20 +48,11 @@ import com.bbn.openmap.util.Debug;
 public class CORBASupport {
 
    /**
-    * Return a static reference to the ORB. Figures out which environment
-    * (applet or application) the jre is in, and initialize the orb accordingly.
+    * Return a static reference to the initialized ORB.
     */
    public ORB initORB(String[] args) {
 
       Debug.message("corba", "CORBAManager.getORB(): initializing ORB");
-      if (Environment.isApplet()) {
-         // initialize the Environment with the properties passed
-         // in.
-         if (Debug.debugging("corba")) {
-            System.out.println("CORBAManager: initializing applet");
-         }
-         return ORB.init(Environment.getApplet(), Environment.getProperties());
-      }
 
       if (Debug.debugging("corba")) {
          System.out.println("CORBAManager: initializing application");

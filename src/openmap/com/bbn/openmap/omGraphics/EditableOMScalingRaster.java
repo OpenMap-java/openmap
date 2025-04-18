@@ -127,14 +127,8 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         init();
         stateMachine.setUndefined();
 
-        String pathToFile = null;
-
         // / This would be an ideal place to bring up a chooser!
-        if (!Environment.isApplet()) {
-            pathToFile = com.bbn.openmap.util.FileUtils.getFilePathToOpenFromUser("Choose Image File for Raster");
-        } else {
-            JOptionPane.showMessageDialog(null, "Can't search for images in an applet!", "Can't Choose Image", JOptionPane.ERROR_MESSAGE);
-        }
+        String pathToFile = com.bbn.openmap.util.FileUtils.getFilePathToOpenFromUser("Choose Image File for Raster");
 
         if (pathToFile == null)
             return;
