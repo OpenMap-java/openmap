@@ -172,14 +172,6 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
 
         OMGraphicList omList = new OMGraphicList();
 
-        // Location loc = new
-        // URLRasterLocation(42.3583f,-71.06f,"Boston,Massachusetts,USA","http://javamap.bbn.com:4711/appletimages/city.gif");
-        // //loc.setLocationColor(Color.blue);
-        // loc.setShowLocation(true);
-        // loc.setShowName(true);
-        // //loc.setDetails("Details");
-        // omList.add(loc);
-
         int bytearrsize = (16 * 16) / 8;
         byte[] bytearr = new byte[bytearrsize];
 

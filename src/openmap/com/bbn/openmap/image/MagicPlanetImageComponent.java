@@ -717,7 +717,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
                     ret = ret.replace('/', '\\');
                 }
             } catch (NullPointerException npe) {
-                // Applet, or Environment not set up.
+                // Environment not set up.
             }
 
             if (DEBUG) {

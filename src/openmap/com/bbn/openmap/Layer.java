@@ -1449,8 +1449,7 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
     }
 
     /**
-     * Make the palette visible. Will automatically determine if we're running
-     * in an applet environment and will use a JInternalFrame over a JFrame if
+     * Make the palette visible. Will use a JInternalFrame over a JFrame if
      * necessary.
      */
     public void showPalette() {

@@ -30,7 +30,7 @@ import javax.swing.JMenuBar;
  * The MapPanel is a interface describing a component that contains a MapBean, MapHandler, menu widgets and all the
  * other components connected to make an OpenMap map widget. A MapPanel is a self-contained OpenMap Swing component. It
  * is expected that the MapPanel will extend from java.awt.Container. If it doesn't, it might not be automatically added
- * to the OpenMapFrame or OpenMapApplet if it is found in the MapHandler.
+ * to the OpenMapFrame if it is found in the MapHandler.
  */
 public interface MapPanel {
 

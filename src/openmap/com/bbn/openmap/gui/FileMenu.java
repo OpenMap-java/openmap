@@ -34,8 +34,7 @@ import com.bbn.openmap.gui.menu.SavePropertiesMenuItem;
 
 /**
  * FileMenu creates AboutMenuItem, SavePropertiesMenuItem,
- * SaveImageMenuItem, ExitMenuItem. It only adds AboutMenuItem if
- * runing as an Applet, all otherwise. These menu items are added by
+ * SaveImageMenuItem, ExitMenuItem.  These menu items are added by
  * default.
  */
 public class FileMenu extends AbstractOpenMapMenu {
@@ -53,16 +52,13 @@ public class FileMenu extends AbstractOpenMapMenu {
 //        setMnemonic(defaultMnemonic);
 
         add(new AboutMenuItem());
-
-        if (!Environment.isApplet()) {
-            add(new JSeparator());
-            add(new SavePropertiesMenuItem());
-            add(new LoadPropertiesMenuItem());
-            add(new JSeparator());
-            add(new SaveAsMenu());
-            add(new MapBeanPrinterMenuItem());
-            add(new JSeparator());
-            add(new QuitMenuItem());
-        }
+        add(new JSeparator());
+        add(new SavePropertiesMenuItem());
+        add(new LoadPropertiesMenuItem());
+        add(new JSeparator());
+        add(new SaveAsMenu());
+        add(new MapBeanPrinterMenuItem());
+        add(new JSeparator());
+        add(new QuitMenuItem());
     }
 }

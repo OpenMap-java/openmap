@@ -374,7 +374,6 @@ public class LocationLayer extends OMGraphicHandlerLayer {
                             + "\"");
                 }
 
-                // Works for applet!
                 Object obj = Class.forName(className).newInstance();
 
                 if (obj instanceof LocationHandler) {

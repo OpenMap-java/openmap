@@ -31,7 +31,6 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Vector;
 
 import com.bbn.openmap.Environment;
@@ -107,20 +106,14 @@ public class BinaryFile {
         }
 
         try {
-            File file = null;
+            File file = new File(name);
             URL url = null;
 
-            if (!Environment.isApplet()) {
-                file = new File(name);
-            }
-
-            if (file != null && file.exists()) {
+            if (file.exists()) {
                 // If the string represents a file, then we want to
                 // use the RandomAccessFile aspect of the BinaryFile.
                 setInputReader(new FileInputReader(file));
             } else {
-                // see JNLP deploy tip here
-                // http://java.sun.com/javase/6/docs/technotes/guides/jweb/deployment_advice.html#ClassLoader_and_Resources
                 final InputStream resourceStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
                 if (resourceStream != null) {
                     if (showDebug) {
@@ -155,11 +148,9 @@ public class BinaryFile {
                             Debug.output("BinaryFile: looking for " + newname);
                         }
 
-                        if (!Environment.isApplet()) {
-                            file = new File(newname);
-                        }
+                        file = new File(newname);
 
-                        if (file != null && file.exists()) {
+                        if (file.exists()) {
                             // It's still a file, available directly.
                             // Access it with the RandomAccessFile
                             setInputReader(new FileInputReader(file));
@@ -177,20 +168,6 @@ public class BinaryFile {
 
                         }
 
-                    } else if (Environment.isApplet()) {
-                        if (showDebug) {
-                            Debug.output(" As applet, checking codebase...");
-                        }
-                        // Look in the codebase for applets...
-                        URL[] cba = new URL[1];
-                        cba[0] = Environment.getApplet().getCodeBase();
-
-                        URLClassLoader ucl = URLClassLoader.newInstance(cba);
-                        url = ucl.getResource(name);
-
-                        if (url != null) {
-                            setInputReader(new URLInputReader(url));
-                        }
                     }
                 }
 
@@ -296,14 +273,10 @@ public class BinaryFile {
     public static boolean exists(String name) {
         boolean exists = false;
         try {
-            File file = null;
+            File file = new File(name);
             URL url = null;
 
-            if (!Environment.isApplet()) {
-                file = new File(name);
-            }
-
-            if (file != null && file.exists()) {
+            if (file.exists()) {
                 exists = true;
             } else {
 
@@ -324,29 +297,6 @@ public class BinaryFile {
                 // a classpath, available for direct access.
                 if (url != null) {
                     exists = true;
-                } else if (Environment.isApplet()) {
-                    if (Debug.debugging("binaryfile")) {
-                        Debug.output(" As applet, checking codebase...");
-                    }
-                    // Look in the codebase for applets...
-                    URL[] cba = new URL[1];
-                    cba[0] = Environment.getApplet().getCodeBase();
-
-                    URLClassLoader ucl = URLClassLoader.newInstance(cba);
-                    if (ucl.getResource(name) != null) {
-                        exists = true;
-
-                        // This has been commented out because the
-                        // AppletDataNugget has been deprecated, and
-                        // is not needed.
-
-                        // } else {
-                        // url = AppletDataNugget.findResource(name);
-
-                        // if (url != null) {
-                        // exists = true;
-                        // }
-                    }
                 }
 
                 // It's not in the classpath, so try it as a URL to a

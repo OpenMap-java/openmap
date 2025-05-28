@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.util;
 
-import java.applet.Applet;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,7 +45,7 @@ import java.util.Properties;
  * put into it.
  * <p>
  * Debugging output is turned on or off by system properties for
- * applications, or parameters for applets.
+ * applications.
  * <p>
  * A programmer can use code like the following:
  * <p>
@@ -59,14 +58,9 @@ import java.util.Properties;
  * </code></pre>
  * <p>
  * The message gets printed when the application is run with
- * <code>-Ddebug.foo</code> or when the applet gets run with:
- * <pre>
- * 
- * <code>&lt;param name=debug.foo value=&gt;</code>
- * 
- * </pre>
+ * <code>-Ddebug.foo</code>.
  * The special token <code>debug.all</code> turns on all debugging
- * for both applets and applications.
+ * for applications.
  * 
  * @author Tom Mitchell (tmitchell@bbn.com)
  * @author $Author: dietrick $
@@ -138,59 +132,6 @@ public abstract class Debug {
     private static String debugTokenHeader = "debug.";
 
     /**
-     * Initialize debugging for the given applet. Applets must pass an array of
-     * parameters because the applet Parameters list cannot be accessed in
-     * whole, only queried. The parameters list looks something like this:
-     * 
-     * <pre>
-     * <code>
-     * String[] debugTokens = { &quot;debug.debug&quot;, // com.bbn.openmap.Debug
-     *         &quot;debug.openmap&quot;, // com.bbn.openmap.client.OpenMap
-     *         &quot;debug.mappanel&quot;, // com.bbn.openmap.awt.MapPanel
-     *         &quot;debug.awt&quot;, // com.bbn.openmap.awt.*
-     *         &quot;debug.map&quot;, // com.bbn.openmap.Map
-     *         &quot;debug.layer&quot;, // com.bbn.openmap.Layer
-     *         &quot;debug.proj&quot;, // com.bbn.openmap.proj.*
-     *         &quot;debug.spec&quot;, // com.bbn.openmap.spec.*
-     *         &quot;debug.env&quot; // com.bbn.openmap.Environment
-     * };
-     * </code>
-     * </pre>
-     * 
-     * @param applet The applet
-     * @param parameters The debugging flags to look for in the applet's
-     *        parameters list
-     */
-    public static void init(Applet applet, String[] parameters) {
-        if (applet == null) {
-            // handle a SecurityException in case we are an applet
-            // but no applet was passed as an argument.
-            try {
-                init(System.getProperties());
-            } catch (SecurityException e) {
-            }
-        } else if (parameters != null) {
-            try {
-                for (int i = 0; i < parameters.length; i++) {
-                    String pname = parameters[i];
-                    if (pname.startsWith(debugTokenHeader)
-                            && (applet.getParameter(parameters[i]) != null)) {
-                        String token = pname.substring(debugTokenHeader.length());
-                        dbgTable.put(token, Boolean.TRUE);
-                    }
-                }
-                // look for special debug.all token!
-                if (applet.getParameter(debugTokenHeader + debugAllToken) != null) {
-                    dbgTable.put(debugAllToken, Boolean.TRUE);
-                }
-            } catch (NullPointerException npe) {
-            }
-        }
-
-        Debug.postInit();
-    }
-
-    /**
      * Initialize debugging for an application. Debugging symbols are detected
      * in the given properties list, and must have the form "debug.X", where X
      * is a debug token used in the application.
@@ -224,7 +165,7 @@ public abstract class Debug {
     }
 
     /**
-     * Common inits, regardless of applet or application.
+     * Common inits
      */
     private static void postInit() {
         debugAll = dbgTable.containsKey(debugAllToken);
