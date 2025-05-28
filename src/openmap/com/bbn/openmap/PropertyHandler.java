@@ -348,7 +348,7 @@ public class PropertyHandler
             tmpProperties.clear();
         }
 
-        if (!foundProperties || DEBUG) {
+        if (!foundProperties && DEBUG) {
             logger.fine("Unable to locate as resource: " + propsFileName);
         }
 
