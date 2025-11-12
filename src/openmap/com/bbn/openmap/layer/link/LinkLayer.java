@@ -237,7 +237,16 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      * Retrieves the current graphics list.
      */
     public synchronized LinkOMGraphicList getGraphicList() {
-        return (LinkOMGraphicList) getList();
+        try {
+            return (LinkOMGraphicList) getList();
+        }
+        catch (ClassCastException e) {
+            if (Debug.debugging("link"))
+            {
+                Debug.output("OMGraphicHandlerLayer does not currently have a LinkOMGraphicList.");
+            }
+            return null;
+        }
     }
 
     /**
