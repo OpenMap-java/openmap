@@ -372,7 +372,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
      *         the next ExtractStringData() call on this DDFSubfieldDefn(). It
      *         should not be freed by the application.
      */
-    String extractStringData(byte[] pachSourceData, int nMaxBytes,
+    public String extractStringData(byte[] pachSourceData, int nMaxBytes,
                              MutableInt pnConsumedBytes) {
         int oldConsumed = 0;
         if (pnConsumedBytes != null) {

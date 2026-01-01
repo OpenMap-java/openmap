@@ -30,11 +30,10 @@
 
 package com.bbn.openmap.dataAccess.iso8211;
 
-import java.io.IOException;
-import java.util.Iterator;
-
 import com.bbn.openmap.layer.vpf.MutableInt;
 import com.bbn.openmap.util.Debug;
+import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Class that uses the DDF* classes to read an 8211 file and print out the
@@ -160,7 +159,7 @@ public class View8211 {
 
       Debug.init();
 
-      String pszFilename = null;
+      String pszFilename = "/Volumes/mushmouth/data/ENC/CATALOG.031";
       boolean bFSPTHack = false;
 
       for (int iArg = 0; iArg < argv.length; iArg++) {
