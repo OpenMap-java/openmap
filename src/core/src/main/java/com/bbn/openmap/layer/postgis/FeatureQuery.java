@@ -12,11 +12,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.postgis.PGgeometry;
-
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import net.postgis.jdbc.PGgeometry;
 
 /**
  * The object that builds a query for a particular feature type, and also
