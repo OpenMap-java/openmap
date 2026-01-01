@@ -17,11 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.vpf.DcwSpatialIndex;
 import com.bbn.openmap.util.html.HtmlListElement;
@@ -29,6 +24,9 @@ import com.bbn.openmap.util.html.ListElement;
 import com.bbn.openmap.util.html.TableHeaderElement;
 import com.bbn.openmap.util.html.TableRowElement;
 import com.bbn.openmap.util.html.WrapElement;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This servlet generates HTML for VPF files in spatial index format.

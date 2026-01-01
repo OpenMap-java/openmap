@@ -13,12 +13,11 @@
 // **********************************************************************
 package com.bbn.openmap.servlet.vpfBrowse;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.vpf.LibrarySelectionTable;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This class prints out a description of a VPF database, listing the

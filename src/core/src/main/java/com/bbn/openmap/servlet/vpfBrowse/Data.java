@@ -20,11 +20,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.vpf.Constants;
 import com.bbn.openmap.layer.vpf.DcwColumnInfo;
@@ -34,6 +29,9 @@ import com.bbn.openmap.util.html.StringElement;
 import com.bbn.openmap.util.html.TableHeaderElement;
 import com.bbn.openmap.util.html.TableRowElement;
 import com.bbn.openmap.util.html.WrapElement;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * A servlet class that will output table data.

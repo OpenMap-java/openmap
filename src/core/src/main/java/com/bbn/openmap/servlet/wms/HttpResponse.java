@@ -24,7 +24,7 @@ package com.bbn.openmap.servlet.wms;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.bbn.openmap.util.http.IHttpResponse;
 

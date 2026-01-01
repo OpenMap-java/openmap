@@ -15,11 +15,6 @@ package com.bbn.openmap.servlet.vpfBrowse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.bbn.openmap.layer.vpf.DcwColumnInfo;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
 import com.bbn.openmap.util.html.HtmlListElement;
@@ -27,6 +22,9 @@ import com.bbn.openmap.util.html.ListElement;
 import com.bbn.openmap.util.html.StringElement;
 import com.bbn.openmap.util.html.TableRowElement;
 import com.bbn.openmap.util.html.WrapElement;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * A servlet class that will print the schema for a VPF table.

@@ -15,12 +15,10 @@ package com.bbn.openmap.servlet.vpfBrowse;
 
 import java.util.Iterator;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
 import com.bbn.openmap.util.html.TableRowElement;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * A RowMaker class for int.vdt and char.vdt tables. It generates a

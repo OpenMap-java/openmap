@@ -23,11 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.vpf.CoverageAttributeTable;
 import com.bbn.openmap.layer.vpf.CoverageTable;
@@ -38,6 +33,9 @@ import com.bbn.openmap.util.html.HtmlListElement;
 import com.bbn.openmap.util.html.ListBodyElement;
 import com.bbn.openmap.util.html.ListElement;
 import com.bbn.openmap.util.html.WrapElement;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This class prints out a description of a VPF database, listing the available

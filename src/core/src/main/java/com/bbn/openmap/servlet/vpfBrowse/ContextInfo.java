@@ -14,6 +14,7 @@
 package com.bbn.openmap.servlet.vpfBrowse;
 
 import com.bbn.openmap.layer.vpf.LibrarySelectionTable;
+import jakarta.servlet.ServletContext;
 import java.io.File;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.servlet.ServletContext;
+
 
 /**
  * This class holds information retrieved from the ServletContext.
