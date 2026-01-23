@@ -1282,8 +1282,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             center = GreatCircle.sphericalBetween(ProjMath.degToRad(latmax),
                                                   ProjMath.degToRad(lonmin),
                                                   dist, azimuth);
-            latitude = (float) center.getY();
-            longitude = (float) center.getX();
+            latitude = (float) center.getX();
+            longitude = (float) center.getY();
         }
 
         MapHandler mapHandler = (MapHandler) getBeanContext();
