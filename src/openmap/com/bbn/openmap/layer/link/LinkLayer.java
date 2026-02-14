@@ -237,7 +237,16 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      * Retrieves the current graphics list.
      */
     public synchronized LinkOMGraphicList getGraphicList() {
-        return (LinkOMGraphicList) getList();
+        try {
+            return (LinkOMGraphicList) getList();
+        }
+        catch (ClassCastException e) {
+            if (Debug.debugging("link"))
+            {
+                Debug.output("OMGraphicHandlerLayer does not currently have a LinkOMGraphicList.");
+            }
+            return null;
+        }
     }
 
     /**
@@ -1273,8 +1282,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             center = GreatCircle.sphericalBetween(ProjMath.degToRad(latmax),
                                                   ProjMath.degToRad(lonmin),
                                                   dist, azimuth);
-            latitude = (float) center.getY();
-            longitude = (float) center.getX();
+            latitude = (float) center.getX();
+            longitude = (float) center.getY();
         }
 
         MapHandler mapHandler = (MapHandler) getBeanContext();
