@@ -1,5 +1,5 @@
-/classes
-/package
-/nbproject/private/
-/build/
-/dist/
+*/target/**
+
+/classes/
+/target/
+/.classpath

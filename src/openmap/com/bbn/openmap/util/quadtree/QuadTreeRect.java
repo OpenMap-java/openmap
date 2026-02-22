@@ -131,6 +131,6 @@ public class QuadTreeRect implements Serializable {
 
         double dx = ewdistance * ewdistance;
         double dy = nsdistance * nsdistance;
-        return dx * dx + dy * dy;
+        return dx + dy;
     }
 }

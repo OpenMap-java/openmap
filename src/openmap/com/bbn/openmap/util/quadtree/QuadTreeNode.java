@@ -117,14 +117,14 @@ public class QuadTreeNode<T> implements Serializable {
         double ewHalf = (bounds.east - (bounds.east - bounds.west) / 2.0);
         children = new ArrayList<QuadTreeNode<T>>(4);
 
-        children.add(new QuadTreeNode<T>(bounds.north, bounds.west, nsHalf, ewHalf, maxItems));
-        children.add(new QuadTreeNode<T>(bounds.north, ewHalf, nsHalf, bounds.east, maxItems));
-        children.add(new QuadTreeNode<T>(nsHalf, ewHalf, bounds.south, bounds.east, maxItems));
-        children.add(new QuadTreeNode<T>(nsHalf, bounds.west, bounds.south, ewHalf, maxItems));
-        Collection<QuadTreeLeaf> temp = new ArrayList<QuadTreeLeaf>(items);
+        children.add(new QuadTreeNode<T>(bounds.north, bounds.west, nsHalf, ewHalf, maxItems, minSize));
+        children.add(new QuadTreeNode<T>(bounds.north, ewHalf, nsHalf, bounds.east, maxItems, minSize));
+        children.add(new QuadTreeNode<T>(nsHalf, ewHalf, bounds.south, bounds.east, maxItems, minSize));
+        children.add(new QuadTreeNode<T>(nsHalf, bounds.west, bounds.south, ewHalf, maxItems, minSize));
+        Collection<QuadTreeLeaf<T>> temp = new ArrayList<QuadTreeLeaf<T>>(items);
         items.clear();
 
-        for (QuadTreeLeaf leaf : temp) {
+        for (QuadTreeLeaf<T> leaf : temp) {
             put(leaf);
         }
     }
@@ -217,7 +217,7 @@ public class QuadTreeNode<T> implements Serializable {
         if (children == null) {
             // This must be the node that has it...
             for (QuadTreeLeaf<T> qtl : new ArrayList<QuadTreeLeaf<T>>(items)) {
-                if (leaf.object == qtl.object) {
+                if (java.util.Objects.equals(leaf.object, qtl.object)) {
                     items.remove(qtl);
                     return qtl.object;
                 }

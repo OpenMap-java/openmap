@@ -46,6 +46,7 @@ import java.util.logging.Level;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.BufferedMapBean;
 import com.bbn.openmap.Layer;
@@ -372,9 +373,14 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
      * necessary.
      */
     @Override
-    public void projectionChanged(ProjectionEvent pevent) {
+	public void projectionChanged(final ProjectionEvent pevent) {
         // Just pass it on, let the layers decide if they have to update.
-        mapBean.setProjection(pevent.getProjection());
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				mapBean.setProjection(pevent.getProjection());
+			}
+		});
     }
 
     /**

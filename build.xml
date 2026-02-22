@@ -6,7 +6,7 @@
 	############################ -->
 
 	<target name="init" description="Sets properties needed by the other targets.">
-
+	  <property name="build.compiler" value="extJavac"/>
 		<property name="openmap.home" value="." />
 
 		<property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,

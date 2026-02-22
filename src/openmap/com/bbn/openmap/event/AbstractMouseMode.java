@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
@@ -45,6 +46,7 @@ import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.OMComponent;
+import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
 
@@ -107,6 +109,8 @@ public class AbstractMouseMode
    protected transient boolean visible = true;
 
    protected boolean mouseWheelListener = true;
+
+   protected boolean mouseWheelScrollLikeOSM = true;
 
    protected boolean noMouseWheelListenerTimer = false;
 
@@ -175,6 +179,12 @@ public class AbstractMouseMode
     * gets triggered.
     */
    public static final String MouseWheelTimerIntervalProperty = "mouseWheelTimerInterval";
+
+   /**
+    * scrollwhell zoom like OSM and Google Maps, ie mouse lat,lon is mapped to
+    * same x,y during scrollwheel zoom
+    */
+   public static final String MouseWheelScrollLikeOSMProperty = "mouseWheelScrollLikeOSM";
 
    /**
     * Construct an AbstractMouseMode. Default constructor, allocates the mouse
@@ -460,7 +470,9 @@ public class AbstractMouseMode
     * Invoked from the MouseWheelListener interface.
     */
    public void mouseWheelMoved(MouseWheelEvent e) {
-      if (mouseWheelListener) {
+       if (mouseWheelListener && mouseWheelScrollLikeOSM) {
+           scrollWheelZoomLikeOSM(e);
+       } else if (mouseWheelListener) {
          int rot = e.getWheelRotation();
          if (e.getSource() instanceof MapBean) {
             MapBean mb = (MapBean) e.getSource();
@@ -680,6 +692,9 @@ public class AbstractMouseMode
 
       noMouseWheelListenerTimer = PropUtils.booleanFromProperties(props, prefix + NoMouseWheelListenerTimerProperty, noMouseWheelListenerTimer);
       mouseWheelTimerInterval = PropUtils.intFromProperties(props, prefix + MouseWheelTimerIntervalProperty, mouseWheelTimerInterval);
+
+      mouseWheelScrollLikeOSM = PropUtils.booleanFromProperties(props, prefix
+              + MouseWheelScrollLikeOSMProperty, mouseWheelScrollLikeOSM);
    }
 
    public Properties getProperties(Properties props) {
@@ -765,6 +780,8 @@ public class AbstractMouseMode
       PropUtils.setI18NPropertyInfo(i18n, props, thisClass, MouseWheelTimerIntervalProperty, "Mouse Wheel Timer Interval",
                                     "Setting for the wait interval for the mouse wheel timer",
                                     null);
+
+      PropUtils.setI18NPropertyInfo(i18n, props, thisClass, MouseWheelScrollLikeOSMProperty, "Mouse Wheel Zoom like OSM", "Setting for using OSM like zoom", "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
       StringBuffer cOptions = new StringBuffer();
       Field[] cFields = Cursor.class.getFields();
@@ -876,4 +893,35 @@ public class AbstractMouseMode
    public void setNoMouseWheelListenerTimer(boolean noMouseWheelListenerTimer) {
       this.noMouseWheelListenerTimer = noMouseWheelListenerTimer;
    }
+
+   /**
+    * Zoom like G maps and OSM keeping the mouse x,y -> lat,lon constant between
+    * scale changes instead of just zooming with the center fixed. Avoids having
+    * to constantly manually recenter the map before/after zooming.
+    */
+   protected void scrollWheelZoomLikeOSM(MouseWheelEvent e) {
+       if (mouseWheelListener && e.getSource() instanceof MapBean) {
+           boolean direction = isZoomWhenMouseWheelUp();
+           float zoomIn = 1.1f;
+           float zoomOut = .9f;
+           float amount = zoomIn;
+           int rot = e.getWheelRotation();
+           if ((direction && rot < 0) || (!direction && rot > 0)) {
+               amount = zoomOut;
+           }
+           // keep cursor x,y pointing to the same lat,lon after scale
+           // has been changed
+           MapBean mapBean = (MapBean) e.getSource();
+           Proj proj = (Proj) mapBean.getProjection().makeClone();
+           Point2D mouseLatLon = mapBean.getCoordinates(e);
+           proj.setScale(mapBean.getScale() * amount);
+           Point2D newXyCenter = proj.forward(proj.getCenter());
+           Point2D newXy = proj.forward(mouseLatLon);
+           Point2D centerWithOffset = new Point2D.Double(newXyCenter.getX()
+                   + (newXy.getX() - e.getX()), newXyCenter.getY() + (newXy.getY() - e.getY()));
+           proj.setCenter(proj.inverse(centerWithOffset));
+           mapBean.setProjection(proj);
+       }
+   }
+
 }

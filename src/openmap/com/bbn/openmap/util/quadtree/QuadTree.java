@@ -140,12 +140,9 @@ public class QuadTree<T> implements DataOrganizer<T>, Serializable {
         if (collection == null) {
             collection = new ArrayList<Object>();
         }
-        // crossing the dateline, right?? Or at least containing the
-        // entire earth. Might be trouble for VERY LARGE scales. The
-        // last check is for micro-errors that happen to lon points
-        // where there might be a smudge overlap for very small
-        // scales.
-        if (west > east || MoreMath.approximately_equal(west, east, .001)) {
+        // crossing the dateline, right?? Only trigger when west is
+        // strictly greater than east, indicating a true dateline wrap.
+        if (west > east) {
             return top.get(north, west, south, 180, top.get(north, -180, south, east, collection));
         } else
             return top.get(north, west, south, east, collection);
