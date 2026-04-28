@@ -13,9 +13,22 @@
 
 package com.bbn.openmap.layer.image;
 
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.gui.MiniBrowser;
+import com.bbn.openmap.image.ImageServerConstants;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.OMScalingRaster;
+import com.bbn.openmap.omGraphics.OMWarpingImage;
+import com.bbn.openmap.proj.LLXY;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonGCT;
+import com.bbn.openmap.util.PropUtils;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -24,20 +37,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.gui.MiniBrowser;
-import com.bbn.openmap.image.ImageServerConstants;
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.PropUtils;
 
 /**
  * This class asks for an image from a web server. How it asks for that image is
@@ -76,17 +79,17 @@ public abstract class WebImageLayer extends OMGraphicHandlerLayer implements Ima
         }
 
         if (urlString == null) {
-            return;
+            return new OMGraphicList();
         }
 
-        java.net.URL url = null;
+        java.net.URL url;
 
         try {
             url = new java.net.URL(urlString);
             java.net.HttpURLConnection urlc = (java.net.HttpURLConnection) url.openConnection();
 
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("url content type: " + urlc.getContentType());
+                logger.log(Level.FINE, "url content type: {0}", urlc.getContentType());
             }
 
             if (urlc == null || urlc.getContentType() == null) {
