@@ -22,6 +22,27 @@
 
 package com.bbn.openmap;
 
+import com.bbn.openmap.event.CenterEvent;
+import com.bbn.openmap.event.CenterListener;
+import com.bbn.openmap.event.LayerEvent;
+import com.bbn.openmap.event.LayerListener;
+import com.bbn.openmap.event.PaintListener;
+import com.bbn.openmap.event.PaintListenerSupport;
+import com.bbn.openmap.event.PanEvent;
+import com.bbn.openmap.event.PanListener;
+import com.bbn.openmap.event.ProjectionChangeVetoException;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.ProjectionListener;
+import com.bbn.openmap.event.ProjectionSupport;
+import com.bbn.openmap.event.ZoomEvent;
+import com.bbn.openmap.event.ZoomListener;
+import com.bbn.openmap.geo.Geo;
+import com.bbn.openmap.proj.Mercator;
+import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjectionFactory;
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.Debug;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -51,31 +72,8 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.JComponent;
 import javax.swing.OverlayLayout;
-
-import com.bbn.openmap.event.CenterEvent;
-import com.bbn.openmap.event.CenterListener;
-import com.bbn.openmap.event.LayerEvent;
-import com.bbn.openmap.event.LayerListener;
-import com.bbn.openmap.event.PaintListener;
-import com.bbn.openmap.event.PaintListenerSupport;
-import com.bbn.openmap.event.PanEvent;
-import com.bbn.openmap.event.PanListener;
-import com.bbn.openmap.event.ProjectionChangeVetoException;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.event.ProjectionListener;
-import com.bbn.openmap.event.ProjectionSupport;
-import com.bbn.openmap.event.ZoomEvent;
-import com.bbn.openmap.event.ZoomListener;
-import com.bbn.openmap.geo.Geo;
-import com.bbn.openmap.proj.Mercator;
-import com.bbn.openmap.proj.Proj;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.ProjectionFactory;
-import com.bbn.openmap.proj.coords.LatLonPoint;
-import com.bbn.openmap.util.Debug;
 
 /**
  * The MapBean is the main component of the OpenMap Development Kit. It is a
@@ -152,7 +150,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
 	/**
 	 * OpenMap version.
 	 */
-	public static final String version = "6.0b";
+	public static final String version = "6.1b";
 
 	/**
 	 * Suppress the copyright message on initialization.
