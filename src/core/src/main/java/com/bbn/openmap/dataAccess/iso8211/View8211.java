@@ -159,7 +159,7 @@ public class View8211 {
 
       Debug.init();
 
-      String pszFilename = "/Volumes/mushmouth/data/ENC/CATALOG.031";
+      String pszFilename = null;
       boolean bFSPTHack = false;
 
       for (int iArg = 0; iArg < argv.length; iArg++) {
