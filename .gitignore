@@ -1,5 +1,9 @@
 /classes
-/package
-/nbproject/private/
-/build/
-/dist/
+target
+src/core/nbactions.xml
+src/wmsservlet/src/main/webapp/WEB-INF/glassfish-web.xml
+/ext
+.settings
+.java-version
+nb-configuration.xml
+.checkstyle

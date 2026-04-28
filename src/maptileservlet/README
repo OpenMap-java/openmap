@@ -11,24 +11,30 @@ servlet-api.jar is found.  This file is in the tomcat and glassfish
 installations.
 
 Next, you need to modify the WEB-INF/web.xml file so it points to your
-map tile data.  Each tile set is defined by a properties file, two
-have been provided in this package as an example, tileset1.properties
-and tileset2.properties
+map tile data.  Each tile set is defined by a properties file, four
+have been provided in this package as an example. The servlet will 
+look for the TileSetDefinitions property which should point to a 
+directory containing all of the map set properties files.  If you 
+add/remove/change a properties file in this directory, simply restart
+the servlet to pick up the changes. 
 
 	<context-param>
 		<param-name>TileSetDefinitions</param-name>
-		<param-value>tileset1.properties;tileset2.properties</param-value>
+		<param-value>./tileSetProperties</param-value>
 		<description>
 		Tile sets available for request.
 		</description>
 	</context-param>
 
-These properties file will be copied into the classes directory when
+The default properties file directory will be copied into the classes directory when
 the war file gets created, so the servlet can find them and configure
-itself to serve up tiles.  Don't modify the versions in the classes
-directory, they will be overwritten if you run ant on the build.xml
-file.  Each property file should contain the same basic properties for
-a MapTileLayer:
+itself to serve up tiles.  The relative path in that param-value path starts 
+at the classes directory.  You can change the param-value path to be an absolute 
+file path if you want to put the properties files out on your system.  Don't 
+modify the versions in the classes directory, they will be overwritten if you 
+run ant on the build.xml file.  
+
+Each property file should contain the same basic properties for a MapTileLayer:
 
 The 'name' property is important - it's the name your request will
 have in it to specify a particular tile set.
@@ -42,7 +48,7 @@ RelayMapTileSet can be used to fetch tiles from a remote server while maintainin
 a local cache copy of the tiles for subsequent distribution.  You can specify the 
 MapTileSet class using the 'class' property.
 
-class=com.bbn.openmap.maptileservlet.TileMillMapTileSet
+class=com.bbn.openmap.maptileservlet.MBRasterMapTileSet
 
 or
 
