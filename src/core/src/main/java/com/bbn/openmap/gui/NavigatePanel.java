@@ -19,20 +19,7 @@
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 package com.bbn.openmap.gui;
-
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionListener;
-import java.io.Serializable;
-import java.net.URL;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.event.CenterListener;
@@ -40,6 +27,16 @@ import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.event.PanListener;
 import com.bbn.openmap.event.PanSupport;
 import com.bbn.openmap.util.Debug;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.io.Serializable;
+import java.net.URL;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 /**
  * A Navigation Rosette Bean. This bean is a source for PanEvents and
@@ -48,15 +45,15 @@ import com.bbn.openmap.util.Debug;
 public class NavigatePanel extends OMToolComponent implements Serializable,
         ActionListener {
 
-    public final static String panNWCmd = "panNW";
-    public final static String panNCmd = "panN";
-    public final static String panNECmd = "panNE";
-    public final static String panECmd = "panE";
-    public final static String panSECmd = "panSE";
-    public final static String panSCmd = "panS";
-    public final static String panSWCmd = "panSW";
-    public final static String panWCmd = "panW";
-    public final static String centerCmd = "center";
+    public final static String PAN_NW_CMD = "panNW";
+    public final static String PAN_N_CMD = "panN";
+    public final static String PAN_NE_CMD = "panNE";
+    public final static String PAN_E_CMD = "panE";
+    public final static String PAN_SE_CMD = "panSE";
+    public final static String PAN_S_CMD = "panS";
+    public final static String PAN_SW_CMD = "panSW";
+    public final static String PAN_W_CMD = "panW";
+    public final static String CENTER_CMD = "center";
 
     protected transient JButton nwButton = null;
     protected transient JButton nButton = null;
@@ -86,19 +83,18 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
     // protected int height = 0; // calculated
     // protected int width = 0; // calculated
-
     protected boolean useDefaultCenter = false;
     protected float defaultCenterLat = 0;
     protected float defaultCenterLon = 0;
 
-    public final static String defaultKey = "navigatepanel";
+    public final static String DEFAULT_KEY = "navigatepanel";
 
     /**
      * Construct the NavigationPanel.
      */
     public NavigatePanel() {
         super();
-        setKey(defaultKey);
+        setKey(DEFAULT_KEY);
         panDelegate = new PanSupport(this);
         centerDelegate = new CenterSupport(this);
 
@@ -111,21 +107,21 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
         String info = i18n.get(NavigatePanel.class,
                 "panNW.tooltip",
                 "Pan Northwest");
-        nwButton = getButton(nwName, info, panNWCmd);
+        nwButton = getButton(nwName, info, PAN_NW_CMD);
         c2.gridx = 0;
         c2.gridy = 0;
         internalGridbag.setConstraints(nwButton, c2);
         panel.add(nwButton);
 
         info = i18n.get(NavigatePanel.class, "panN.tooltip", "Pan North");
-        nButton = getButton(nName, info, panNCmd);
+        nButton = getButton(nName, info, PAN_N_CMD);
         c2.gridx = 1;
         c2.gridy = 0;
         internalGridbag.setConstraints(nButton, c2);
         panel.add(nButton);
 
         info = i18n.get(NavigatePanel.class, "panNE.tooltip", "Pan Northeast");
-        neButton = getButton(neName, info, panNECmd);
+        neButton = getButton(neName, info, PAN_NE_CMD);
         c2.gridx = 2;
         c2.gridy = 0;
         internalGridbag.setConstraints(neButton, c2);
@@ -133,7 +129,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
         // begin middle row
         info = i18n.get(NavigatePanel.class, "panW.tooltip", "Pan West");
-        wButton = getButton(wName, info, panWCmd);
+        wButton = getButton(wName, info, PAN_W_CMD);
         c2.gridx = 0;
         c2.gridy = 1;
         internalGridbag.setConstraints(wButton, c2);
@@ -142,14 +138,14 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
         info = i18n.get(NavigatePanel.class,
                 "center.tooltip",
                 "Center Map at Starting Coords");
-        cButton = getButton(cName, info, centerCmd);
+        cButton = getButton(cName, info, CENTER_CMD);
         c2.gridx = 1;
         c2.gridy = 1;
         internalGridbag.setConstraints(cButton, c2);
         panel.add(cButton);
 
         info = i18n.get(NavigatePanel.class, "panE.tooltip", "Pan East");
-        eButton = getButton(eName, info, panECmd);
+        eButton = getButton(eName, info, PAN_E_CMD);
         c2.gridx = 2;
         c2.gridy = 1;
         internalGridbag.setConstraints(eButton, c2);
@@ -157,21 +153,21 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
         // begin bottom row
         info = i18n.get(NavigatePanel.class, "panSW.tooltip", "Pan Southwest");
-        swButton = getButton(swName, info, panSWCmd);
+        swButton = getButton(swName, info, PAN_SW_CMD);
         c2.gridx = 0;
         c2.gridy = 2;
         internalGridbag.setConstraints(swButton, c2);
         panel.add(swButton);
 
         info = i18n.get(NavigatePanel.class, "panS.tooltip", "Pan South");
-        sButton = getButton(sName, info, panSCmd);
+        sButton = getButton(sName, info, PAN_S_CMD);
         c2.gridx = 1;
         c2.gridy = 2;
         internalGridbag.setConstraints(sButton, c2);
         panel.add(sButton);
 
         info = i18n.get(NavigatePanel.class, "panSE.tooltip", "Pan Southeast");
-        seButton = getButton(seName, info, panSECmd);
+        seButton = getButton(seName, info, PAN_SE_CMD);
         c2.gridx = 2;
         c2.gridy = 2;
         internalGridbag.setConstraints(seButton, c2);
@@ -182,11 +178,11 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
     /**
      * Add the named button to the panel.
-     * 
+     *
      * @param name GIF image name
      * @param info ToolTip text
      * @param command String command name
-     * 
+     * @return JButton
      */
     protected JButton getButton(String name, String info, String command) {
         URL url = NavigatePanel.class.getResource(name);
@@ -204,7 +200,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
     /**
      * Add a CenterListener.
-     * 
+     *
      * @param listener CenterListener
      */
     public synchronized void addCenterListener(CenterListener listener) {
@@ -213,7 +209,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
     /**
      * Remove a CenterListener
-     * 
+     *
      * @param listener CenterListener
      */
     public synchronized void removeCenterListener(CenterListener listener) {
@@ -222,7 +218,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
     /**
      * Add a PanListener.
-     * 
+     *
      * @param listener PanListener
      */
     public synchronized void addPanListener(PanListener listener) {
@@ -231,7 +227,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
     /**
      * Remove a PanListener
-     * 
+     *
      * @param listener PanListener
      */
     public synchronized void removePanListener(PanListener listener) {
@@ -247,7 +243,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
     /**
      * Fire a PanEvent.
-     * 
+     *
      * @param az azimuth east of north
      */
     protected synchronized void firePanEvent(float az) {
@@ -257,9 +253,9 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
     /**
      * Get the pan factor.
      * <p>
-     * The panFactor is the amount of screen to shift when panning in
-     * a certain direction: 0=none, 1=half-screen shift.
-     * 
+     * The panFactor is the amount of screen to shift when panning in a certain
+     * direction: 0=none, 1=half-screen shift.
+     *
      * @return float panFactor (0.0 &lt;= panFactor &lt;= 1.0)
      */
     public float getPanFactor() {
@@ -269,10 +265,9 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
     /**
      * Set the pan factor.
      * <p>
-     * This defaults to 1.0. The panFactor is the amount of screen to
-     * shift when panning in a certain direction: 0=none,
-     * 1=half-screen shift.
-     * 
+     * This defaults to 1.0. The panFactor is the amount of screen to shift when
+     * panning in a certain direction: 0=none, 1=half-screen shift.
+     *
      * @param panFactor (0.0 &lt;= panFactor &lt;= 1.0)
      */
     public void setPanFactor(float panFactor) {
@@ -283,11 +278,11 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Use this function to set where you want the map projection to
-     * pan to when the user clicks on "center" button on the
-     * navigation panel. The scale does not change. When you call this
-     * function, the projection does not change.
-     * 
+     * Use this function to set where you want the map projection to pan to when
+     * the user clicks on "center" button on the navigation panel. The scale
+     * does not change. When you call this function, the projection does not
+     * change.
+     *
      * @param passedLat float the center latitude (in degrees)
      * @param passedLon float the center longitude (in degrees)
      */
@@ -299,52 +294,64 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
 
     /**
      * ActionListener Interface.
-     * 
+     *
      * @param e ActionEvent
      */
+    @Override
     public void actionPerformed(java.awt.event.ActionEvent e) {
 
         String command = e.getActionCommand();
 
         Debug.message("navpanel", "NavigatePanel.actionPerformed(): " + command);
-        if (command.equals(panNWCmd)) {
-            firePanEvent(-45f);
-        } else if (command.equals(panNCmd)) {
-            firePanEvent(0f);
-        } else if (command.equals(panNECmd)) {
-            firePanEvent(45f);
-        } else if (command.equals(panECmd)) {
-            firePanEvent(90f);
-        } else if (command.equals(panSECmd)) {
-            firePanEvent(135f);
-        } else if (command.equals(panSCmd)) {
-            firePanEvent(180f);
-        } else if (command.equals(panSWCmd)) {
-            firePanEvent(-135f);
-        } else if (command.equals(panWCmd)) {
-            firePanEvent(-90f);
-        } else if (command.equals(centerCmd)) {
-            // go back to the center point
+        switch (command) {
+            case PAN_NW_CMD:
+                firePanEvent(-45f);
+                break;
+            case PAN_N_CMD:
+                firePanEvent(0f);
+                break;
+            case PAN_NE_CMD:
+                firePanEvent(45f);
+                break;
+            case PAN_E_CMD:
+                firePanEvent(90f);
+                break;
+            case PAN_SE_CMD:
+                firePanEvent(135f);
+                break;
+            case PAN_S_CMD:
+                firePanEvent(180f);
+                break;
+            case PAN_SW_CMD:
+                firePanEvent(-135f);
+                break;
+            case PAN_W_CMD:
+                firePanEvent(-90f);
+                break;
+            case CENTER_CMD:
+                // go back to the center point
 
-            float lat;
-            float lon;
-            if (useDefaultCenter) {
-                lat = defaultCenterLat;
-                lon = defaultCenterLon;
-            } else {
-                lat = Environment.getFloat(Environment.Latitude, 0f);
-                lon = Environment.getFloat(Environment.Longitude, 0f);
-            }
-            fireCenterEvent(lat, lon);
+                float lat;
+                float lon;
+                if (useDefaultCenter) {
+                    lat = defaultCenterLat;
+                    lon = defaultCenterLon;
+                } else {
+                    lat = Environment.getFloat(Environment.Latitude, 0f);
+                    lon = Environment.getFloat(Environment.Longitude, 0f);
+                }
+                fireCenterEvent(lat, lon);
+                break;
+            default:
+                break;
         }
     }
 
     // /////////////////////////////////////////////////////////////////////////
-
     // // OMComponentPanel methods to make the tool work with
     // // the MapHandler to find objects it needs.
     // /////////////////////////////////////////////////////////////////////////
-
+    @Override
     public void findAndInit(Object obj) {
         if (obj instanceof PanListener) {
             addPanListener((PanListener) obj);
@@ -354,6 +361,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
         }
     }
 
+    @Override
     public void findAndUndo(Object obj) {
         if (obj instanceof PanListener) {
             removePanListener((PanListener) obj);
