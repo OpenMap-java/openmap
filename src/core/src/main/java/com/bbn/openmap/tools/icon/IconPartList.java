@@ -19,9 +19,9 @@
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 package com.bbn.openmap.tools.icon;
 
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -30,14 +30,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.bbn.openmap.omGraphics.DrawingAttributes;
-
 /**
- * An IconPartList is a group of IconParts that can be rendered
- * together. If you ask an IconPartList for it's geometry, it will
- * combine all its parts into one geometry, and use its
- * DrawingAttributes to render that combined shape. The IconPartList
- * is itself an IconPart, so the recursive possibilities are endless.
+ * An IconPartList is a group of IconParts that can be rendered together. If you
+ * ask an IconPartList for it's geometry, it will combine all its parts into one
+ * geometry, and use its DrawingAttributes to render that combined shape. The
+ * IconPartList is itself an IconPart, so the recursive possibilities are
+ * endless.
  */
 public class IconPartList implements IconPart, Iterable<IconPart>, Cloneable {
 
@@ -45,21 +43,25 @@ public class IconPartList implements IconPart, Iterable<IconPart>, Cloneable {
     protected DrawingAttributes renderingAttributes = null;
     protected Shape clip = null;
 
-    public IconPartList() {}
+    public IconPartList() {
+    }
 
     protected List<IconPart> getList() {
         if (parts == null) {
-            parts = new LinkedList<IconPart>();
+            parts = new LinkedList<>();
         }
         return parts;
     }
 
+    @Override
     public Iterator<IconPart> iterator() {
         return parts.iterator();
     }
 
     /**
      * First in drawn on bottom. Last in on top.
+     *
+     * @param part
      */
     public void add(IconPart part) {
         getList().add(part);
@@ -73,22 +75,24 @@ public class IconPartList implements IconPart, Iterable<IconPart>, Cloneable {
         getList().clear();
     }
 
+    @Override
     public void render(Graphics g, int width, int height) {
         render(g, width, height, null);
     }
 
     /**
-     * @param appDA drawing attributes to use under certain
-     *        conditions. Certain IconParts on this list may use these
-     *        drawing attributes if they want/should. May be null.
+     * @param appDA drawing attributes to use under certain conditions. Certain
+     * IconParts on this list may use these drawing attributes if they
+     * want/should. May be null.
      */
+    @Override
     public void render(Graphics g, int width, int height,
-                       DrawingAttributes appDA) {
+            DrawingAttributes appDA) {
 
-        // Handle clip area in Graphics, first
-        Shape clip = getClip();
-        if (clip != null) {
-            g.setClip(clip);
+        // Handle clipShape area in Graphics, first
+        Shape clipShape = getClip();
+        if (clipShape != null) {
+            g.setClip(clipShape);
         }
 
         DrawingAttributes da = getRenderingAttributes();
@@ -112,14 +116,17 @@ public class IconPartList implements IconPart, Iterable<IconPart>, Cloneable {
         }
     }
 
+    @Override
     public void setClip(Shape clipArea) {
         clip = clipArea;
     }
 
+    @Override
     public Shape getClip() {
         return clip;
     }
 
+    @Override
     public void setGeometry(Shape shape) {
         // dump the list, create a generic IconPart to hold the shape.
         List<IconPart> list = getList();
@@ -128,12 +135,13 @@ public class IconPartList implements IconPart, Iterable<IconPart>, Cloneable {
     }
 
     /**
-     * If you ask a IconPartList for its geometry, it will combine all
-     * its parts to make one Shape object. All the rendering
-     * attributes from the individual parts will be ignored. The
-     * contributions will be kept geometrically separate
-     * (disconnected) and their clipping areas will be ignored.
+     * If you ask a IconPartList for its geometry, it will combine all its parts
+     * to make one Shape object. All the rendering attributes from the
+     * individual parts will be ignored. The contributions will be kept
+     * geometrically separate (disconnected) and their clipping areas will be
+     * ignored.
      */
+    @Override
     public Shape getGeometry() {
         GeneralPath geometry = null;
         for (IconPart part : this) {
@@ -153,18 +161,21 @@ public class IconPartList implements IconPart, Iterable<IconPart>, Cloneable {
         return geometry;
     }
 
+    @Override
     public void setRenderingAttributes(DrawingAttributes da) {
         renderingAttributes = da;
     }
 
+    @Override
     public DrawingAttributes getRenderingAttributes() {
         return renderingAttributes;
     }
 
+    @Override
     public Object clone() {
         IconPartList clone = new IconPartList();
         for (IconPart part : this) {
-            clone.add((IconPart)part.clone());
+            clone.add((IconPart) part.clone());
         }
 
         clone.setRenderingAttributes(getRenderingAttributes());

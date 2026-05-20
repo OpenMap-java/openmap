@@ -19,21 +19,19 @@
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 package com.bbn.openmap.tools.icon;
 
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-
 import javax.swing.ImageIcon;
-
-import com.bbn.openmap.omGraphics.DrawingAttributes;
 
 /**
  * The OMIconFactory is a factory to build ImageIcons, with content described by
- * IconParts for a certain size.
+ * IconParts for a certain size. This is the main class for this package, where
+ * you get the ImageIcon to use for OMGraphics and buttons.
  */
 public class OMIconFactory {
 
@@ -41,6 +39,10 @@ public class OMIconFactory {
      * Create an ImageIcon that is a certain pixel height and width. This will
      * return an empty ImageIcon, and you'd have to do the rendering into its
      * image.
+     * 
+     * @param width pixels
+     * @param height pixels
+     * @return ImageIcon, blank and transparent
      */
     public static ImageIcon createImageIcon(int width, int height) {
         return createImageIcon(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -50,6 +52,11 @@ public class OMIconFactory {
      * Create an ImageIcon that is a certain pixel height and width, with a
      * specified image type (ARGB, RGB, etc). This will return an empty
      * ImageIcon, and you'd have to do the rendering into its image.
+     * 
+     * @param width pixels
+     * @param height pixels
+     * @param imageType BufferedImage TYPE
+     * @return ImageIcon
      */
     public static ImageIcon createImageIcon(int width, int height, int imageType) {
         return new ImageIcon(new BufferedImage(width, height, imageType));
@@ -59,6 +66,11 @@ public class OMIconFactory {
      * Create an ImageIcon that is a certain pixel height and width created with
      * a certain IconPart geometry. The geometry will be drawing with default
      * DrawingAttributes.
+     * 
+     * @param width pixels
+     * @param height pixels
+     * @param geometry IconPart to draw in ImageIcon, DrawingAttributes default
+     * @return ImageIcon
      */
     public static ImageIcon getIcon(int width, int height, IconPart geometry) {
         return getIcon(width, height, geometry, null);
@@ -68,9 +80,15 @@ public class OMIconFactory {
      * Create an ImageIcon that is a certain pixel height and width created with
      * a certain IconPart geometry. Also, the DrawingAttributes can be used to
      * add color/texture to the IconPart geometries.
+     * 
+     * @param width pixels
+     * @param height pixels
+     * @param geometry IconPart to draw
+     * @param appDA how to draw IconPart
+     * @return ImageIcon
      */
     public static ImageIcon getIcon(int width, int height, IconPart geometry,
-                                    DrawingAttributes appDA) {
+            DrawingAttributes appDA) {
         return getIcon(width, height, geometry, appDA, null);
     }
 
@@ -84,14 +102,21 @@ public class OMIconFactory {
      * to be painted that might be part of a theme. This appDA argument lets you
      * specify how those accents might be rendered. General DrawingAttributes
      * should be set on the IconPart, however.
+     * 
+     * @param width pixels
+     * @param height pixels
+     * @param geometry IconPart to draw
+     * @param appDA how to draw part
+     * @param af used for rotation or other funky mods
+     * @return ImageIcon
      */
     public static ImageIcon getIcon(int width, int height, IconPart geometry,
-                                    DrawingAttributes appDA, AffineTransform af) {
+            DrawingAttributes appDA, AffineTransform af) {
         ImageIcon icon = createImageIcon(width, height);
         Graphics2D g = (Graphics2D) icon.getImage().getGraphics();
-		if (af != null) {
-			g.setTransform(af);
-		}
+        if (af != null) {
+            g.setTransform(af);
+        }
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -105,9 +130,16 @@ public class OMIconFactory {
      * add color/texture to the IconPart geometries, and an angle can be
      * provided to rotate the geometry (zero is north up, positive clockwise,
      * angle in RADIANS).
+     * 
+     * @param width pixels
+     * @param height pixels
+     * @param geometry IconPart to draw
+     * @param appDA how to draw IconPart
+     * @param rot angle to rotate in RADIANS
+     * @return ImageIcon
      */
     public static ImageIcon getIcon(int width, int height, IconPart geometry,
-                                    DrawingAttributes appDA, double rot) {
+            DrawingAttributes appDA, double rot) {
         return getIcon(width,
                 height,
                 geometry,

@@ -22,27 +22,38 @@
 
 package com.bbn.openmap.tools.icon;
 
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.bbn.openmap.omGraphics.DrawingAttributes;
-
 /**
- * A collection of IconParts, available by name.
+ * A collection of IconParts, available by name.  A theme, you could say.
  */
 public class IconPartCollection extends IconPartCollectionEntry {
 
-	protected Map<String, IconPartCollectionEntry> entryMap;
-	protected List<IconPartCollection> collections;
+    /**
+     * The selection of parts, by name
+     */
+    protected Map<String, IconPartCollectionEntry> entryMap;
 
-	protected IconPartCollection() {
+    /**
+     *
+     */
+    protected List<IconPartCollection> collections;
+
+    /**
+     *
+     */
+    protected IconPartCollection() {
 	}
 
 	/**
 	 * Create a collection with a name and description.
+     * @param name
+     * @param description
 	 */
 	public IconPartCollection(String name, String description) {
 		setName(name);
@@ -51,6 +62,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
 	/**
 	 * Add an entry to the collection.
+     * @param entry
 	 */
 	public void add(IconPartCollectionEntry entry) {
 		if (entry != null) {
@@ -67,6 +79,8 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
 	/**
 	 * Remove an entry from the collection.
+     * @param entry
+     * @return 
 	 */
 	public Object remove(IconPartCollectionEntry entry) {
 		return getEntryMap().remove(entry.getName());
@@ -81,6 +95,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
 	/**
 	 * Get the set of names for the entries of this collection.
+     * @return 
 	 */
 	public Set<String> keySet() {
 		return getEntryMap().keySet();
@@ -89,6 +104,10 @@ public class IconPartCollection extends IconPartCollectionEntry {
 	/**
 	 * Get an icon part for the given name set with the given rendering attributes.
 	 * Calls get(name);
+     * 
+     * @param name
+     * @param da
+     * @return 
 	 */
 	public IconPart get(String name, DrawingAttributes da) {
 		IconPart ip = get(name);
@@ -104,26 +123,29 @@ public class IconPartCollection extends IconPartCollectionEntry {
 	 * name. If the name is a collection name, null will be returned. However,
 	 * before returning null, any IconPartCollection added to this collection will
 	 * be checked, too, and any hits will be returned.
+     * 
+     * @param name
+     * @return 
 	 */
 	public IconPart get(String name) {
 		IconPartCollectionEntry entry = getEntryMap().get(name.intern());
-		IconPart part = null;
+		IconPart iconPart = null;
 
 		if (entry != null) {
-			part = (IconPart) entry.getIconPart().clone();
+			iconPart = (IconPart) entry.getIconPart().clone();
 		}
 
-		if (part == null) {
+		if (iconPart == null) {
 			List<IconPartCollection> cllctns = getCollections();
 			for (IconPartCollection ipc : cllctns) {
-				part = ipc.get(name);
-				if (part != null) {
+				iconPart = ipc.get(name);
+				if (iconPart != null) {
 					break;
 				}
 			}
 		}
 
-		return part;
+		return iconPart;
 	}
 
 	/**
@@ -132,6 +154,8 @@ public class IconPartCollection extends IconPartCollectionEntry {
 	 * If the name is a collection name, the description of the collection will be
 	 * returned. Before returning null, any IconPartCollection added to this
 	 * collection will be checked, too, and any hits will be returned.
+     * @param name of the thing you want in the collection
+     * @return the description of the thing
 	 */
 	public String getDescription(String name) {
 		IconPartCollectionEntry entry = getEntryMap().get(name.intern());
@@ -158,6 +182,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
 	 * 
 	 * @param list a List of Strings, with the strings being names of entries into
 	 *             this collection.
+     * @return an IconPart composed from a list of parts.
 	 */
 	public IconPart compose(List<String> list) {
 		IconPartList ipl = new IconPartList();
@@ -180,7 +205,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
 	 * @return a List of description Strings for the given list of names.
 	 */
 	public List<String> composeDescription(List<String> list) {
-		LinkedList<String> ll = new LinkedList<String>();
+		LinkedList<String> ll = new LinkedList<>();
 
 		for (String entry : list) {
 			String des = getDescription(entry);
@@ -193,6 +218,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
 	/**
 	 * Set the entry Map.
+     * @param map
 	 */
 	protected void setEntryMap(Map<String, IconPartCollectionEntry> map) {
 		entryMap = map;
@@ -200,10 +226,11 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
 	/**
 	 * Get the entry Map.
+     * @return 
 	 */
 	protected Map<String, IconPartCollectionEntry> getEntryMap() {
 		if (entryMap == null) {
-			entryMap = new HashMap<String, IconPartCollectionEntry>();
+			entryMap = new HashMap<>();
 		}
 		return entryMap;
 	}
@@ -211,6 +238,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
 	/**
 	 * Set the List to be used for holding IconPartCollections added to this
 	 * collection.
+     * @param list
 	 */
 	protected void setCollections(List<IconPartCollection> list) {
 		collections = list;
@@ -218,19 +246,22 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
 	/**
 	 * Get the List of IconPartCollections that have been added.
+     * @return 
 	 */
 	protected List<IconPartCollection> getCollections() {
 		if (collections == null) {
-			collections = new LinkedList<IconPartCollection>();
+			collections = new LinkedList<>();
 		}
 		return collections;
 	}
 
-	public void setIconPart(IconPart part) {
+    @Override
+    public void setIconPart(IconPart part) {
 		this.part = part;
 	}
 
-	public IconPart getIconPart() {
+    @Override
+    public IconPart getIconPart() {
 		return part;
 	}
 }

@@ -22,10 +22,9 @@
 
 package com.bbn.openmap.tools.icon;
 
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import java.awt.Graphics;
 import java.awt.Shape;
-
-import com.bbn.openmap.omGraphics.DrawingAttributes;
 
 /**
  * An IconPart is an object that makes up a piece of what's rendered
@@ -48,6 +47,10 @@ public interface IconPart {
     /**
      * Have the IconPart render itself into the Graphic object for a
      * given height and width.
+     * 
+     * @param g Graphics to draw into
+     * @param width pixels
+     * @param height pixels
      */
     public void render(Graphics g, int width, int height);
 
@@ -59,6 +62,11 @@ public interface IconPart {
      * decide to ignore this provided DrawingAttributes and just use
      * what it has. appDA may be null, in which case the internal
      * DrawingAttributes will be used.
+     * 
+     * @param g Graphics for image to render into
+     * @param width pixels
+     * @param appDA how to draw icon part
+     * @param height pixels
      */
     public void render(Graphics g, int width, int height,
                        DrawingAttributes appDA);
@@ -66,31 +74,37 @@ public interface IconPart {
     /**
      * Set a clip area for the IconPart to draw only certain parts of
      * the geometry.
+     * @param clipArea java Shape
      */
     public void setClip(Shape clipArea);
 
     /**
      * Get a clip area for the IconPart.
+     * @return java Shape
      */
     public Shape getClip();
 
     /**
      * Set the geometry for this IconPart.
+     * @param shape java Shape
      */
     public void setGeometry(Shape shape);
 
     /**
      * Get the geometry for this IconPart.
+     * @return java Shape
      */
     public Shape getGeometry();
 
     /**
      * Set the rendering attributes for this IconPart.
+     * @param da
      */
     public void setRenderingAttributes(DrawingAttributes da);
 
     /**
      * Get the rendering attributes for this IconPart.
+     * @return 
      */
     public DrawingAttributes getRenderingAttributes();
     

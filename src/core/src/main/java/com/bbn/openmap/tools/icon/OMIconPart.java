@@ -103,6 +103,7 @@ public enum OMIconPart {
 	 * @param radius radius of circle
 	 * @param start  starting angle of arc in degrees
 	 * @param end    ending angle of arc in degrees
+     * @param type   BufferedImage TYPE
 	 * @return Shape from Arc2D
 	 */
 	public static Shape getArc(double x, double y, double radius, double start, double end, int type) {
