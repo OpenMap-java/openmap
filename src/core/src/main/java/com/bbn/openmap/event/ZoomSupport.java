@@ -22,6 +22,8 @@
 
 package com.bbn.openmap.event;
 
+import java.awt.Point;
+
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -49,16 +51,21 @@ public class ZoomSupport extends ListenerSupport<ZoomListener> {
      *        RELATIVE
      */
     public void fireZoom(int zoomType, float amount) {
+        fireZoom(zoomType, amount, null);
+    }
+    
+    public void fireZoom(int zoomType, float amount, Point screenLoc) {
 
         if (!((zoomType == ZoomEvent.RELATIVE) || (zoomType == ZoomEvent.ABSOLUTE))) {
             throw new IllegalArgumentException("Bad value, " + zoomType
                     + " for zoomType in " + "ZoomSupport.fireZoom()");
         }
 
-        if (isEmpty())
+        if (isEmpty()) {
             return;
+        }
 
-        ZoomEvent evt = new ZoomEvent(source, zoomType, amount);
+        ZoomEvent evt = new ZoomEvent(source, zoomType, amount).withScreenLocation(screenLoc);
 
         for (ZoomListener listener : this) {
             listener.zoom(evt);

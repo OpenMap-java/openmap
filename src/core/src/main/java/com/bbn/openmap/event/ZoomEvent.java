@@ -19,15 +19,17 @@
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 package com.bbn.openmap.event;
 
+import java.awt.Point;
+
 /**
- * An event to request that the map zoom in or out. Event specifies
- * the type and amount of zoom of the map.
+ * An event to request that the map zoom in or out. Event specifies the type and
+ * amount of zoom of the map.
  */
 public class ZoomEvent extends java.util.EventObject implements
         java.io.Serializable {
+
     /**
      * Type that specifies that the amount should be used as a multiplier to the
      * current scale.
@@ -50,29 +52,45 @@ public class ZoomEvent extends java.util.EventObject implements
     protected float amount;
 
     /**
+     * The map pixel location of the origin of the zoom event.
+     */
+    protected Point screenPoint;
+
+    /**
      * Construct a ZoomEvent.
-     * 
+     *
      * @param source the creator of the ZoomEvent.
-     * @param type the type of the event, referring to how to use the
-     *        amount.
+     * @param type the type of the event, referring to how to use the amount.
      * @param amount the value of the ZoomEvent.
      */
     public ZoomEvent(Object source, int type, float amount) {
         super(source);
         switch (type) {
-        case RELATIVE:
-        case ABSOLUTE:
-            break;
-        default:
-            throw new IllegalArgumentException("Invalid type: " + type);
+            case RELATIVE:
+            case ABSOLUTE:
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid type: " + type);
         }
         this.type = type;
         this.amount = amount;
     }
 
     /**
+     * Provide the pixel location of the mouse cursor if you want that position
+     * to remain in the same place in the window.
+     *
+     * @param screenPixelLocation from the MouseEvent
+     * @return this ZoomEvent
+     */
+    public ZoomEvent withScreenLocation(Point screenPixelLocation) {
+        screenPoint = screenPixelLocation;
+        return this;
+    }
+
+    /**
      * Check if the type is RELATIVE.
-     * 
+     *
      * @return boolean
      */
     public boolean isRelative() {
@@ -81,7 +99,7 @@ public class ZoomEvent extends java.util.EventObject implements
 
     /**
      * Check if the type is ABSOLUTE.
-     * 
+     *
      * @return boolean
      */
     public boolean isAbsolute() {
@@ -90,7 +108,7 @@ public class ZoomEvent extends java.util.EventObject implements
 
     /**
      * Get the amount of zoom.
-     * 
+     *
      * @return float
      */
     public float getAmount() {
@@ -98,12 +116,21 @@ public class ZoomEvent extends java.util.EventObject implements
     }
 
     /**
+     * The screen pixel location of the origin of the zoom event.
+     * @return Point
+     */
+    public Point getScreenPoint() {
+        return screenPoint;
+    }
+    
+    /**
      * Stringify the object.
-     * 
+     *
      * @return String
      */
+    @Override
     public String toString() {
         return "#<ZoomEvent " + (isRelative() ? "Relative " : "")
-                + (isAbsolute() ? "Absolute " : "") + amount + ">";
+                + (isAbsolute() ? "Absolute " : "") + amount + (screenPoint != null?" at " + screenPoint:"") + ">";
     }
 }
