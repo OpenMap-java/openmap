@@ -777,6 +777,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
      *
      * @param evt the ZoomEvent describing the new scale.
      */
+    @Override
     public void zoom(ZoomEvent evt) {
         float newScale;
         if (evt.isAbsolute()) {

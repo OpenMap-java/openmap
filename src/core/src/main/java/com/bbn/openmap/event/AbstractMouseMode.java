@@ -545,7 +545,7 @@ public class AbstractMouseMode
                     zoom = 1f / zoomFactor;
                 }
 
-                map.zoom(new ZoomEvent(map, ZoomEvent.RELATIVE, zoom));
+                map.zoom(new ZoomEvent(map, ZoomEvent.RELATIVE, zoom).withScreenLocation(e.getPoint()));
             }
             lastMouseWheelEventTime = currentTime;
         }
