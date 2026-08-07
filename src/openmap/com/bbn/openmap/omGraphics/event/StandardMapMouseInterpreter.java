@@ -518,7 +518,10 @@ public class StandardMapMouseInterpreter
      * 
      * @param e MouseEvent
      * @return the result of updateMouseMoved() if the timer isn't being used,
-     *         or false.
+     *         or consumeEvents while the mouse is still over the current
+     *         geometry of interest and the timer is running - returning false
+     *         there (as before) let layers below take the mouse-over and
+     *         overwrite this layer's tooltip (bug 13786).
      */
     public boolean mouseMoved(MouseEvent e) {
         if (!active) {
@@ -526,18 +529,45 @@ public class StandardMapMouseInterpreter
         }
         setCurrentMouseEvent(e);
 
-		if (getMovementInterest() == null || noTimerOverOMGraphic || mouseTimerInterval <= 0) {
-			return updateMouseMoved(e);
-		} else {
-			if (mouseTimer == null) {
-				mouseTimer = new Timer(mouseTimerInterval, mouseTimerListener);
-				mouseTimer.setRepeats(false);
-			}
+        GeometryOfInterest goi = getMovementInterest();
+
+        if (goi != null && !noTimerOverOMGraphic && mouseTimerInterval > 0
+                && stillOver(goi.getGeometry(), e)) {
+            if (mouseTimer == null) {
+                mouseTimer = new Timer(mouseTimerInterval, mouseTimerListener);
+                mouseTimer.setRepeats(false);
+            }
 
             mouseTimerListener.setEvent(e);
             mouseTimer.restart();
-            return false;
+            // Still on the OMGraphic we are tracking: debounce the highlight
+            // work, but do not tell the MouseDelegator we are uninterested,
+            // or lower layers will take the mouse-over from us.
+            return consumeEvents;
         }
+
+        // Left the graphic (or no timer): decide now, in this dispatch, so
+        // the layers below get the event immediately instead of after the
+        // timer interval.
+        if (mouseTimer != null) {
+            mouseTimer.stop();
+        }
+        return updateMouseMoved(e);
+    }
+
+    /**
+     * Is the mouse event within the hit area of the given OMGraphic? Uses the
+     * same tolerance as getGeometryUnder().
+     */
+    protected boolean stillOver(OMGraphic omg, MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+        if (e instanceof MapMouseEvent) {
+            Point2D pnt = ((MapMouseEvent) e).getProjectedLocation();
+            x = (int) pnt.getX();
+            y = (int) pnt.getY();
+        }
+        return omg.distance(x, y) < 4;
     }
 
     protected boolean noTimerOverOMGraphic = true;
@@ -662,7 +692,20 @@ public class StandardMapMouseInterpreter
         }
         GeometryOfInterest goi = getMovementInterest();
         if (goi != null) {
-            mouseNotOver(goi.getGeometry());
+            // The layer that consumed the event has already requested its own
+            // tooltip and info line. Unhighlight our geometry, but do not call
+            // mouseNotOver() - handleToolTip(null) in there would clear the
+            // tooltip that layer just set, and the InformationDelegator has no
+            // way to tell the hide came from somebody else (bug 13786).
+            if (grp != null) {
+                grp.unhighlight(goi.getGeometry());
+            }
+            lastToolTip = null;
+            if (mouseTimer != null) {
+                // kill any pending updateMouseMoved - it would re-fire our
+                // tooltip from a stale event over the consumer's
+                mouseTimer.stop();
+            }
             setMovementInterest(null);
         }
     }
@@ -824,6 +867,15 @@ public class StandardMapMouseInterpreter
      * Given a tool tip String, use the layer to get it displayed.
      */
     protected void handleToolTip(String tip, MouseEvent me) {
+        if (lastToolTip == null && (tip == null || tip.trim().length() == 0)) {
+            // new geometry of interest with no tooltip: take the tooltip down
+            // anyway - a leftover tip from a lower layer would otherwise keep
+            // showing over this graphic (bug 13786)
+            if (layer != null) {
+                layer.fireHideToolTip();
+            }
+            return;
+        }
         if (lastToolTip != null && lastToolTip.equals(tip)) {
             return;
         }
